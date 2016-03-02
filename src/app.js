@@ -71,7 +71,7 @@ module.exports = function(maps, options, prefix) {
                 y = parts[5].split('.')[0] | 0;
             source.getTile(z, x, y, function(err, data, headers) {
               if (err) {
-                //console.log('MBTiles error, serving empty');
+                //console.log('MBTiles error, serving empty', err);
                 callback(null, { data: new Buffer(0) });
               } else {
                 var response = {};
@@ -95,25 +95,27 @@ module.exports = function(maps, options, prefix) {
                 gzip: true
             }, function(err, res, body) {
                 if (err) {
-                    callback(err);
+                  //console.log('HTTP tile error', err);
+                  callback(null, { data: new Buffer(0) });
                 } else if (res.statusCode == 200) {
-                    var response = {};
+                  var response = {};
 
-                    if (res.headers.modified) {
-                      response.modified = new Date(res.headers.modified);
-                    }
-                    if (res.headers.expires) {
-                      response.expires = new Date(res.headers.expires);
-                    }
-                    if (res.headers.etag) {
-                      response.etag = res.headers.etag;
-                    }
+                  if (res.headers.modified) {
+                    response.modified = new Date(res.headers.modified);
+                  }
+                  if (res.headers.expires) {
+                    response.expires = new Date(res.headers.expires);
+                  }
+                  if (res.headers.etag) {
+                    response.etag = res.headers.etag;
+                  }
 
-                    response.data = body;
+                  response.data = body;
 
-                    callback(null, response);
+                  callback(null, response);
                 } else {
-                    callback(new Error(JSON.parse(body).message));
+                  //console.log('HTTP error', JSON.parse(body).message);
+                  callback(null, { data: new Buffer(0) });
                 }
             });
           }
@@ -303,6 +305,7 @@ module.exports = function(maps, options, prefix) {
           bbox: areaParams.bbox,
           center: areaParams.center,
           format: format,
+          limit: 4097,
           getTile: function(z, x, y, callback) {
             return getTile(z, x, y, scale, format, function(err, data, headers) {
               if (!err && data == null) {
@@ -313,14 +316,22 @@ module.exports = function(maps, options, prefix) {
             });
           }
         };
-    return abaculus(params, function(err, data, headers) {
-      if (err && !err.status) {
-        return next(err);
-      }
-      res.set(headers);
-      res.status((err && err.status) || 200);
-      return res.send((err && err.message) || data);
-    });
+    try {
+      return abaculus(params, function(err, data, headers) {
+        if (err && !err.status) {
+          return next(err);
+        }
+        if (headers) {
+          headers['Content-Type'] = 'image/' + format;
+          res.set(headers);
+        }
+        res.status((err && err.status) || 200);
+        return res.send((err && err.message) || data);
+      });
+    } catch (e) {
+      res.status(400);
+      return res.send(e.message);
+    }
   };
 
   var staticPattern =
