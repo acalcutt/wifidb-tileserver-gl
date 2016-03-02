@@ -5,15 +5,12 @@ var async = require('async'),
     crypto = require('crypto'),
     fs = require('fs'),
     path = require('path'),
-    stream = require('stream'),
-    url = require('url'),
     util = require('util'),
     zlib = require('zlib');
 
 var abaculus = require('abaculus'),
     clone = require('clone'),
     concat = require('concat-stream'),
-    debug = require('debug'),
     express = require('express'),
     mercator = new (require('sphericalmercator'))(),
     mbgl = require('mapbox-gl-native'),
@@ -21,7 +18,7 @@ var abaculus = require('abaculus'),
     PNG = require('pngjs').PNG,
     request = require('request');
 
-debug = debug('tileserver-gl');
+var utils = require('./utils');
 
 var FLOAT_PATTERN = '[+-]?(?:\\d+|\\d+\.?\\d+)';
 var SCALE_PATTERN = '@[23]x';
@@ -30,28 +27,9 @@ var getScale = function(scale) {
   return (scale || '@1x').slice(1, 2) | 0;
 };
 
-var getTileUrls = function(domains, host, path, tilePath, format, key, protocol) {
-  domains = domains && domains.length > 0 ? domains : [host];
-  var query = (key && key.length > 0) ? ('?key=' + key) : '';
-  if (path == '/') {
-    path = '';
-  }
-
-  var uris = [];
-  domains.forEach(function(domain) {
-    uris.push(protocol + '://' + domain + path +
-              tilePath.replace('{format}', format).replace(/\/+/g, '/') +
-              query);
-  });
-
-  return uris;
-};
-
-var md5sum = function(data) {
-  var hash = crypto.createHash('md5');
-  hash.update(data);
-  return hash.digest();
-};
+mbgl.on('message', function(e) {
+  console.log('mbgl:', e);
+});
 
 module.exports = function(maps, options, prefix) {
   var lock = new asyncLock();
@@ -70,7 +48,7 @@ module.exports = function(maps, options, prefix) {
   var map = {
     renderer: null,
     sources: {},
-    styleJSON: {}
+    tileJSON: {}
   };
   if (!maps[prefix]) {
     map.renderer = new mbgl.Map({
@@ -139,11 +117,23 @@ module.exports = function(maps, options, prefix) {
       }
     });
 
-    map.styleJSON = require(path.join(rootPath, styleUrl));
+    var styleJSON = require(path.join(rootPath, styleUrl));
+
+    map.tileJSON = {
+      'tilejson': '2.0.0',
+      'name': styleJSON.name,
+      'basename': prefix.substr(1),
+      'minzoom': 0,
+      'maxzoom': 20,
+      'bounds': [-180, -85.0511, 180, 85.0511],
+      'format': 'png',
+      'type': 'baselayer'
+    };
+    Object.assign(map.tileJSON, options.options || {});
 
     var queue = [];
-    Object.keys(map.styleJSON.sources).forEach(function(name) {
-      var source = map.styleJSON.sources[name];
+    Object.keys(styleJSON.sources).forEach(function(name) {
+      var source = styleJSON.sources[name];
       var url = source.url;
       if (url.lastIndexOf('mbtiles:', 0) === 0) {
         // found mbtiles source, replace with info from local file
@@ -156,6 +146,7 @@ module.exports = function(maps, options, prefix) {
               Object.assign(source, info);
               source.basename = name;
               source.tiles = [
+                // meta url which will be detected when requested
                 'mbtiles://' + name + tilePath.replace('{format}', 'pbf')
               ];
               callback(null);
@@ -166,7 +157,7 @@ module.exports = function(maps, options, prefix) {
     });
 
     async.parallel(queue, function(err, results) {
-      map.renderer.load(map.styleJSON);
+      map.renderer.load(styleJSON);
     });
 
     maps[prefix] = map;
@@ -196,14 +187,13 @@ module.exports = function(maps, options, prefix) {
         zoom: z,
         center: tileCenter,
         width: 2 * tileSize,
-        height: 2 * tileSize,
-        ratio: scale,
+        height: 2 * tileSize/*,
         debug: {
           tileBorders: true,
           parseStatus: true,
           timestamps: true,
           collision: true
-        }
+        }*/
       }, function(err, data) {
         done();
         if (err) console.log(err);
@@ -219,8 +209,9 @@ module.exports = function(maps, options, prefix) {
             return callback(null, null);
           }
 
+          var md5 = crypto.createHash('md5').update(buffer).digest('base64');
           var headers = {
-            'content-md5': md5sum(buffer).toString('base64'),
+            'content-md5': md5,
             'content-type': 'image/png'
           };
           /*
@@ -320,21 +311,13 @@ module.exports = function(maps, options, prefix) {
   });
 
   app.get('/index.json', function(req, res, next) {
-    var info = clone(map.styleJSON);
+    var info = clone(map.tileJSON);
 
-    if (prefix.length > 1) {
-      info.basename = prefix.substr(1);
-    }
-
-    info.tiles = getTileUrls(domains, req.headers.host, prefix,
-                             tilePath, 'png',
-                             req.query.key, req.protocol);
-    info.tilejson = '2.0.0';
+    info.tiles = utils.getTileUrls(req.protocol, domains, req.headers.host,
+                                   prefix, tilePath, 'png', req.query.key);
 
     return res.send(info);
   });
 
   return app;
 };
-
-module.exports.getTileUrls = getTileUrls;

@@ -1,7 +1,7 @@
 {
   "name": "tileserver-gl",
   "version": "0.0.1",
-  "description": "",
+  "description": "Map tile server for JSON GL styles - serverside generated raster tiles",
   "main": "src/main.js",
   "authors": [
     "Petr Sloup <petr.sloup@klokantech.com>"
@@ -17,7 +17,6 @@
     "clone": "1.0.2",
     "concat-stream": "1.5.1",
     "cors": "2.7.1",
-    "debug": "2.2.0",
     "express": "4.13.4",
     "mapbox-gl-native": "3.0.2-earcut",
     "mbtiles": "0.8.2",

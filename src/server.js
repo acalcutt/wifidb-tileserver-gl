@@ -10,13 +10,11 @@ var fs = require('fs'),
 var async = require('async'),
     clone = require('clone'),
     cors = require('cors'),
-    debug = require('debug'),
     express = require('express'),
     morgan = require('morgan');
 
-var serve = require('./app');
-
-debug = debug('tileserver-gl');
+var serve = require('./app'),
+    utils = require('./utils');
 
 module.exports = function(opts, callback) {
   var app = express().disable('x-powered-by'),
@@ -50,23 +48,17 @@ module.exports = function(opts, callback) {
     Object.keys(config).forEach(function(prefix) {
       var map = maps[prefix];
       queue.push(function(callback) {
-        var info = clone(map.styleJSON);
+        var info = clone(map.tileJSON);
 
         var domains = [],
-            tilePath = config[prefix].tilePath || '/{z}/{x}/{y}.{format}';
+            tilePath = '/{z}/{x}/{y}.{format}';
 
         if (config[prefix].domains && config[prefix].domains.length > 0) {
           domains = config[prefix].domains.split(',');
         }
 
-        if (prefix.length > 1) {
-          info.basename = prefix.substr(1);
-        }
-
-        info.tiles = serve.getTileUrls(domains, req.headers.host, prefix,
-                                       tilePath, 'png',
-                                       req.query.key, req.protocol);
-        info.tilejson = '2.0.0';
+        info.tiles = utils.getTileUrls(req.protocol, domains, req.headers.host,
+                                       prefix, tilePath, 'png', req.query.key);
 
         callback(null, info);
       });
