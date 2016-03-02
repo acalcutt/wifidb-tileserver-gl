@@ -15,8 +15,8 @@ var abaculus = require('abaculus'),
     mercator = new (require('sphericalmercator'))(),
     mbgl = require('mapbox-gl-native'),
     mbtiles = require('mbtiles'),
-    PNG = require('pngjs').PNG,
-    request = require('request');
+    request = require('request'),
+    sharp = require('sharp');
 
 var utils = require('./utils');
 
@@ -183,6 +183,12 @@ module.exports = function(maps, options, prefix) {
     .replace('{format}', ':format([\\w\\.]+)');
 
   var getTile = function(z, x, y, scale, format, callback) {
+    if (format == 'png' || format == 'webp') {
+    } else if (format == 'jpg' || format == 'jpeg') {
+      format = 'jpeg';
+    } else {
+      return callback(null, null);
+    }
 
     var mbglZ = Math.max(0, z - 1);
 
@@ -217,10 +223,6 @@ module.exports = function(maps, options, prefix) {
         done();
         if (err) console.log(err);
 
-        var png = new PNG({
-          width: tileSize * scale,
-          height: tileSize * scale
-        });
         if (z == 0) {
           // HACK: when serving zoom 0, resize the 0 tile from 512 to 256
           var data_ = clone(data);
@@ -240,9 +242,16 @@ module.exports = function(maps, options, prefix) {
             }
           }
         }
-        png.data = data;
 
-        var concatStream = concat(function(buffer) {
+        sharp(data, {
+          raw: {
+            width: tileSize * scale,
+            height: tileSize * scale,
+            channels: 4
+          }
+        }).toFormat(format)
+          .compressionLevel(9)
+          .toBuffer(function(err, buffer, info) {
           if (!buffer) {
             return callback(null, null);
           }
@@ -250,7 +259,7 @@ module.exports = function(maps, options, prefix) {
           var md5 = crypto.createHash('md5').update(buffer).digest('base64');
           var headers = {
             'content-md5': md5,
-            'content-type': 'image/png'
+            'content-type': 'image/' + format
           };
           /*
           if (format === 'pbf') {
@@ -260,7 +269,6 @@ module.exports = function(maps, options, prefix) {
           */
           return callback(null, buffer, headers);
         });
-        png.pack().pipe(concatStream);
       });
     });
   };
@@ -352,7 +360,8 @@ module.exports = function(maps, options, prefix) {
     var info = clone(map.tileJSON);
 
     info.tiles = utils.getTileUrls(req.protocol, domains, req.headers.host,
-                                   prefix, tilePath, 'png', req.query.key);
+                                   prefix, tilePath, info.format,
+                                   req.query.key);
 
     return res.send(info);
   });

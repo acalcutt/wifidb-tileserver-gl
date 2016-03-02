@@ -58,7 +58,8 @@ module.exports = function(opts, callback) {
         }
 
         info.tiles = utils.getTileUrls(req.protocol, domains, req.headers.host,
-                                       prefix, tilePath, 'png', req.query.key);
+                                       prefix, tilePath, info.format,
+                                       req.query.key);
 
         callback(null, info);
       });
