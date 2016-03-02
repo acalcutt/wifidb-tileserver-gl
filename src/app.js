@@ -28,7 +28,9 @@ var getScale = function(scale) {
 };
 
 mbgl.on('message', function(e) {
-  console.log('mbgl:', e);
+  if (e.severity == 'WARNING' || e.severity == 'ERROR') {
+    console.log('mbgl:', e);
+  }
 });
 
 module.exports = function(maps, options, prefix) {
@@ -46,76 +48,81 @@ module.exports = function(maps, options, prefix) {
 
   var styleUrl = options.style;
   var map = {
-    renderer: null,
+    renderers: [],
     sources: {},
     tileJSON: {}
   };
   if (!maps[prefix]) {
-    map.renderer = new mbgl.Map({
-      ratio: 0.5,
-      request: function(req, callback) {
-        var protocol = req.url.split(':')[0];
-        console.log('Handling request:', req);
-        if (protocol == req.url) {
-          fs.readFile(path.join(rootPath, unescape(req.url)), function(err, data) {
-            callback(err, { data: data });
-          });
-        } else if (protocol == 'mbtiles') {
-          var parts = req.url.split('/');
-          var source = map.sources[parts[2]];
-          var z = parts[3] | 0,
-              x = parts[4] | 0,
-              y = parts[5].split('.')[0] | 0;
-          source.getTile(z, x, y, function(err, data, headers) {
-            if (err) {
-              console.log('MBTiles error, serving empty');
-              callback(null, { data: new Buffer(0) });
-            } else {
-              var response = {};
-
-              if (headers['Last-Modified']) {
-                response.modified = new Date(headers['Last-Modified']);
-              }
-              if (headers['ETag']) {
-                response.etag = headers['ETag'];
-              }
-
-              response.data = zlib.unzipSync(data);
-
-              callback(null, response);
-            }
-          });
-        } else if (protocol == 'http' || protocol == 'https') {
-          request({
-              url: req.url,
-              encoding: null,
-              gzip: true
-          }, function(err, res, body) {
+    var createRenderer = function(ratio) {
+      return new mbgl.Map({
+        ratio: ratio,
+        request: function(req, callback) {
+          var protocol = req.url.split(':')[0];
+          //console.log('Handling request:', req);
+          if (protocol == req.url) {
+            fs.readFile(path.join(rootPath, unescape(req.url)), function(err, data) {
+              callback(err, { data: data });
+            });
+          } else if (protocol == 'mbtiles') {
+            var parts = req.url.split('/');
+            var source = map.sources[parts[2]];
+            var z = parts[3] | 0,
+                x = parts[4] | 0,
+                y = parts[5].split('.')[0] | 0;
+            source.getTile(z, x, y, function(err, data, headers) {
               if (err) {
-                  callback(err);
-              } else if (res.statusCode == 200) {
-                  var response = {};
-
-                  if (res.headers.modified) {
-                    response.modified = new Date(res.headers.modified);
-                  }
-                  if (res.headers.expires) {
-                    response.expires = new Date(res.headers.expires);
-                  }
-                  if (res.headers.etag) {
-                    response.etag = res.headers.etag;
-                  }
-
-                  response.data = body;
-
-                  callback(null, response);
+                //console.log('MBTiles error, serving empty');
+                callback(null, { data: new Buffer(0) });
               } else {
-                  callback(new Error(JSON.parse(body).message));
+                var response = {};
+
+                if (headers['Last-Modified']) {
+                  response.modified = new Date(headers['Last-Modified']);
+                }
+                if (headers['ETag']) {
+                  response.etag = headers['ETag'];
+                }
+
+                response.data = zlib.unzipSync(data);
+
+                callback(null, response);
               }
-          });
+            });
+          } else if (protocol == 'http' || protocol == 'https') {
+            request({
+                url: req.url,
+                encoding: null,
+                gzip: true
+            }, function(err, res, body) {
+                if (err) {
+                    callback(err);
+                } else if (res.statusCode == 200) {
+                    var response = {};
+
+                    if (res.headers.modified) {
+                      response.modified = new Date(res.headers.modified);
+                    }
+                    if (res.headers.expires) {
+                      response.expires = new Date(res.headers.expires);
+                    }
+                    if (res.headers.etag) {
+                      response.etag = res.headers.etag;
+                    }
+
+                    response.data = body;
+
+                    callback(null, response);
+                } else {
+                    callback(new Error(JSON.parse(body).message));
+                }
+            });
+          }
         }
-      }
-    });
+      });
+    };
+    map.renderers[1] = createRenderer(1);
+    map.renderers[2] = createRenderer(2);
+    map.renderers[3] = createRenderer(3);
 
     var styleJSON = require(path.join(rootPath, styleUrl));
 
@@ -157,7 +164,9 @@ module.exports = function(maps, options, prefix) {
     });
 
     async.parallel(queue, function(err, results) {
-      map.renderer.load(styleJSON);
+      map.renderers.forEach(function(renderer) {
+        renderer.load(styleJSON);
+      });
     });
 
     maps[prefix] = map;
@@ -175,33 +184,62 @@ module.exports = function(maps, options, prefix) {
 
   var getTile = function(z, x, y, scale, format, callback) {
 
+    var mbglZ = Math.max(0, z - 1);
+
+    var tileSize = 256;
     var tileCenter = mercator.ll([
       ((x + 0.5) / (1 << z)) * (256 << z),
       ((y + 0.5) / (1 << z)) * (256 << z)
     ], z);
 
-    var tileSize = 256 * scale;
+    var renderer = map.renderers[scale];
 
-    lock.acquire(map.renderer, function(done) {
-      map.renderer.render({
-        zoom: z,
-        center: tileCenter,
-        width: 2 * tileSize,
-        height: 2 * tileSize/*,
-        debug: {
-          tileBorders: true,
-          parseStatus: true,
-          timestamps: true,
-          collision: true
-        }*/
-      }, function(err, data) {
+    var params = {
+      /*
+      debug: {
+        tileBorders: true,
+        parseStatus: true,
+        timestamps: true,
+        collision: true
+      },
+      */
+      zoom: mbglZ,
+      center: tileCenter,
+      width: tileSize,
+      height: tileSize
+    };
+    if (z == 0) {
+      params.width *= 2;
+      params.height *= 2;
+    }
+    lock.acquire(renderer, function(done) {
+      renderer.render(params, function(err, data) {
         done();
         if (err) console.log(err);
 
         var png = new PNG({
-          width: tileSize,
-          height: tileSize
+          width: tileSize * scale,
+          height: tileSize * scale
         });
+        if (z == 0) {
+          // HACK: when serving zoom 0, resize the 0 tile from 512 to 256
+          var data_ = clone(data);
+          var dataSize_ = 2 * tileSize * scale;
+          var newSize_ = dataSize_ / 2;
+          data = new Buffer(4 * newSize_ * newSize_);
+          for (var x = 0; x < newSize_; x++) {
+            for (var y = 0; y < newSize_; y++) {
+              for (var b = 0; b < 4; b++) {
+                data[4 * (x * newSize_ + y) + b] = (
+                    data_[4 * (2 * x * dataSize_ + 2 * y) + b] +
+                    data_[4 * (2 * x * dataSize_ + (2 * y + 1)) + b] +
+                    data_[4 * ((2 * x + 1) * dataSize_ + 2 * y) + b] +
+                    data_[4 * ((2 * x + 1) * dataSize_ + (2 * y + 1)) + b]
+                  ) / 4;
+              }
+            }
+          }
+        }
         png.data = data;
 
         var concatStream = concat(function(buffer) {
