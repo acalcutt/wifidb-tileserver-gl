@@ -13,7 +13,8 @@ var async = require('async'),
     express = require('express'),
     morgan = require('morgan');
 
-var serve = require('./app'),
+var serve_raster = require('./serve_raster'),
+    serve_vector = require('./serve_vector'),
     utils = require('./utils');
 
 module.exports = function(opts, callback) {
@@ -36,7 +37,11 @@ module.exports = function(opts, callback) {
       app.use(prefix, cors());
     }
 
-    app.use(prefix, serve(maps, config[prefix], prefix));
+    if (config[prefix].style) {
+      app.use(prefix, serve_raster(maps, config[prefix], prefix));
+    } else {
+      app.use(prefix, serve_vector(maps, config[prefix], prefix));
+    }
   });
 
   // serve index.html on the root
@@ -50,16 +55,9 @@ module.exports = function(opts, callback) {
       queue.push(function(callback) {
         var info = clone(map.tileJSON);
 
-        var domains = [],
-            tilePath = '/{z}/{x}/{y}.{format}';
-
-        if (config[prefix].domains && config[prefix].domains.length > 0) {
-          domains = config[prefix].domains.split(',');
-        }
-
-        info.tiles = utils.getTileUrls(req.protocol, domains, req.headers.host,
-                                       prefix, tilePath, info.format,
-                                       req.query.key);
+        info.tiles = utils.getTileUrls(
+            req.protocol, config[prefix].domains, req.headers.host,
+            prefix, '/{z}/{x}/{y}.{format}', info.format, req.query.key);
 
         callback(null, info);
       });

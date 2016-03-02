@@ -37,12 +37,8 @@ module.exports = function(maps, options, prefix) {
   var lock = new asyncLock();
 
   var app = express().disable('x-powered-by'),
-      domains = [],
+      domains = options.domains,
       tilePath = '/{z}/{x}/{y}.{format}';
-
-  if (options.domains && options.domains.length > 0) {
-    domains = options.domains.split(',');
-  }
 
   var rootPath = path.join(process.cwd(), options.root);
 
