@@ -1,27 +1,15 @@
 'use strict';
 
-var async = require('async'),
-    asyncLock = require('async-lock'),
-    crypto = require('crypto'),
-    fs = require('fs'),
-    path = require('path'),
-    util = require('util'),
-    zlib = require('zlib');
+var crypto = require('crypto'),
+    path = require('path');
 
-var abaculus = require('abaculus'),
-    clone = require('clone'),
-    concat = require('concat-stream'),
+var clone = require('clone'),
     express = require('express'),
-    mercator = new (require('sphericalmercator'))(),
-    mbgl = require('mapbox-gl-native'),
-    mbtiles = require('mbtiles'),
-    request = require('request');
+    mbtiles = require('mbtiles');
 
 var utils = require('./utils');
 
 module.exports = function(maps, options, prefix) {
-  var lock = new asyncLock();
-
   var app = express().disable('x-powered-by'),
       domains = options.domains,
       tilePath = '/{z}/{x}/{y}.pbf';
