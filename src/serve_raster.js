@@ -1,7 +1,7 @@
 'use strict';
 
 var async = require('async'),
-    asyncLock = require('async-lock'),
+    advancedPool = require('advanced-pool'),
     crypto = require('crypto'),
     fs = require('fs'),
     path = require('path'),
@@ -32,8 +32,6 @@ mbgl.on('message', function(e) {
 });
 
 module.exports = function(maps, options, prefix) {
-  var lock = new asyncLock();
-
   var app = express().disable('x-powered-by'),
       domains = options.domains,
       tilePath = '/{z}/{x}/{y}.{format}';
@@ -46,9 +44,11 @@ module.exports = function(maps, options, prefix) {
     sources: {},
     tileJSON: {}
   };
-  if (!maps[prefix]) {
-    var createRenderer = function(ratio) {
-      return new mbgl.Map({
+
+  var styleJSON;
+  var createPool = function(ratio, min, max) {
+    var createRenderer = function(ratio, createCallback) {
+      var renderer = new mbgl.Map({
         ratio: ratio,
         request: function(req, callback) {
           var protocol = req.url.split(':')[0];
@@ -115,60 +115,66 @@ module.exports = function(maps, options, prefix) {
           }
         }
       });
+      renderer.load(styleJSON);
+      createCallback(null, renderer);
     };
-    map.renderers[1] = createRenderer(1);
-    map.renderers[2] = createRenderer(2);
-    map.renderers[3] = createRenderer(3);
-
-    var styleJSON = require(path.join(rootPath, styleUrl));
-
-    map.tileJSON = {
-      'tilejson': '2.0.0',
-      'name': styleJSON.name,
-      'basename': prefix.substr(1),
-      'minzoom': 0,
-      'maxzoom': 20,
-      'bounds': [-180, -85.0511, 180, 85.0511],
-      'format': 'png',
-      'type': 'baselayer'
-    };
-    Object.assign(map.tileJSON, options.options || {});
-
-    var queue = [];
-    Object.keys(styleJSON.sources).forEach(function(name) {
-      var source = styleJSON.sources[name];
-      var url = source.url;
-      if (url.lastIndexOf('mbtiles:', 0) === 0) {
-        // found mbtiles source, replace with info from local file
-        delete source.url;
-
-        queue.push(function(callback) {
-          var mbtilesUrl = url.substring('mbtiles://'.length);
-          map.sources[name] = new mbtiles(path.join(rootPath, mbtilesUrl), function(err) {
-            map.sources[name].getInfo(function(err, info) {
-              Object.assign(source, info);
-              source.basename = name;
-              source.tiles = [
-                // meta url which will be detected when requested
-                'mbtiles://' + name + tilePath.replace('{format}', 'pbf')
-              ];
-              callback(null);
-            });
-          });
-        });
+    return new advancedPool.Pool({
+      min: min,
+      max: max,
+      create: createRenderer.bind(null, ratio),
+      destroy: function(renderer) {
+        renderer.release();
       }
     });
+  };
 
-    async.parallel(queue, function(err, results) {
-      map.renderers.forEach(function(renderer) {
-        renderer.load(styleJSON);
+  styleJSON = require(path.join(rootPath, styleUrl));
+
+  map.tileJSON = {
+    'tilejson': '2.0.0',
+    'name': styleJSON.name,
+    'basename': prefix.substr(1),
+    'minzoom': 0,
+    'maxzoom': 20,
+    'bounds': [-180, -85.0511, 180, 85.0511],
+    'format': 'png',
+    'type': 'baselayer'
+  };
+  Object.assign(map.tileJSON, options.options || {});
+
+  var queue = [];
+  Object.keys(styleJSON.sources).forEach(function(name) {
+    var source = styleJSON.sources[name];
+    var url = source.url;
+    if (url.lastIndexOf('mbtiles:', 0) === 0) {
+      // found mbtiles source, replace with info from local file
+      delete source.url;
+
+      queue.push(function(callback) {
+        var mbtilesUrl = url.substring('mbtiles://'.length);
+        map.sources[name] = new mbtiles(path.join(rootPath, mbtilesUrl), function(err) {
+          map.sources[name].getInfo(function(err, info) {
+            Object.assign(source, info);
+            source.basename = name;
+            source.tiles = [
+              // meta url which will be detected when requested
+              'mbtiles://' + name + tilePath.replace('{format}', 'pbf')
+            ];
+            callback(null);
+          });
+        });
       });
-    });
+    }
+  });
 
-    maps[prefix] = map;
-  } else {
-    map = maps[prefix];
-  }
+  async.parallel(queue, function(err, results) {
+    // TODO: make pool sizes configurable
+    map.renderers[1] = createPool(1, 2, 8);
+    map.renderers[2] = createPool(2, 2, 4);
+    map.renderers[3] = createPool(3, 2, 4);
+  });
+
+  maps[prefix] = map;
 
   var tilePattern = tilePath
     .replace(/\.(?!.*\.)/, ':scale(' + SCALE_PATTERN + ')?.')
@@ -186,29 +192,21 @@ module.exports = function(maps, options, prefix) {
       return res.status(404).send('Invalid format');
     }
 
-    var mbglZ = Math.max(0, z - 1);
-    var renderer = map.renderers[scale];
-    var params = {
-      /*
-      debug: {
-        tileBorders: true,
-        parseStatus: true,
-        timestamps: true,
-        collision: true
-      },
-      */
-      zoom: mbglZ,
-      center: [lon, lat],
-      width: width,
-      height: height
-    };
-    if (z == 0) {
-      params.width *= 2;
-      params.height *= 2;
-    }
-    lock.acquire(renderer, function(done) {
+    var pool = map.renderers[scale];
+    pool.acquire(function(err, renderer) {
+      var mbglZ = Math.max(0, z - 1);
+      var params = {
+        zoom: mbglZ,
+        center: [lon, lat],
+        width: width,
+        height: height
+      };
+      if (z == 0) {
+        params.width *= 2;
+        params.height *= 2;
+      }
       renderer.render(params, function(err, data) {
-        done();
+        pool.release(renderer);
         if (err) console.log(err);
 
         var image = sharp(data, {
