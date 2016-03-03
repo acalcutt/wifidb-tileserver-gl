@@ -21,6 +21,7 @@
     "mapbox-gl-native": "3.0.2-earcut",
     "mbtiles": "0.8.2",
     "morgan": "1.7.0",
+    "nomnom": "1.8.1",
     "request": "2.69.0",
     "sharp": "0.13.1",
     "sphericalmercator": "1.0.4"
