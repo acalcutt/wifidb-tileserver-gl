@@ -1,8 +1,14 @@
 # tileserver-gl
 
 ## Installation
+
+### Docker
+ - `docker run -it -v $(pwd):/data -p 8080:80 klokantech/tileserver-gl`
+
+### Without docker
  - Make sure you have Node v4 or higher (`nvm install 4`)
  - `npm install`
+ - `node src/main.js`
 
 ## Configuration
 
