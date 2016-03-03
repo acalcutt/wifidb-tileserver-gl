@@ -8,9 +8,7 @@ var async = require('async'),
     util = require('util'),
     zlib = require('zlib');
 
-var abaculus = require('abaculus'),
-    clone = require('clone'),
-    concat = require('concat-stream'),
+var clone = require('clone'),
     express = require('express'),
     mercator = new (require('sphericalmercator'))(),
     mbgl = require('mapbox-gl-native'),
@@ -180,24 +178,16 @@ module.exports = function(maps, options, prefix) {
     .replace('{y}', ':y(\\d+)')
     .replace('{format}', ':format([\\w\\.]+)');
 
-  var getTile = function(z, x, y, scale, format, callback) {
+  var respondImage = function(z, lon, lat, width, height, scale, format, res, next) {
     if (format == 'png' || format == 'webp') {
     } else if (format == 'jpg' || format == 'jpeg') {
       format = 'jpeg';
     } else {
-      return callback(null, null);
+      return res.status(404).send('Invalid format');
     }
 
     var mbglZ = Math.max(0, z - 1);
-
-    var tileSize = 256;
-    var tileCenter = mercator.ll([
-      ((x + 0.5) / (1 << z)) * (256 << z),
-      ((y + 0.5) / (1 << z)) * (256 << z)
-    ], z);
-
     var renderer = map.renderers[scale];
-
     var params = {
       /*
       debug: {
@@ -208,9 +198,9 @@ module.exports = function(maps, options, prefix) {
       },
       */
       zoom: mbglZ,
-      center: tileCenter,
-      width: tileSize,
-      height: tileSize
+      center: [lon, lat],
+      width: width,
+      height: height
     };
     if (z == 0) {
       params.width *= 2;
@@ -221,51 +211,32 @@ module.exports = function(maps, options, prefix) {
         done();
         if (err) console.log(err);
 
-        if (z == 0) {
-          // HACK: when serving zoom 0, resize the 0 tile from 512 to 256
-          var data_ = clone(data);
-          var dataSize_ = 2 * tileSize * scale;
-          var newSize_ = dataSize_ / 2;
-          data = new Buffer(4 * newSize_ * newSize_);
-          for (var x = 0; x < newSize_; x++) {
-            for (var y = 0; y < newSize_; y++) {
-              for (var b = 0; b < 4; b++) {
-                data[4 * (x * newSize_ + y) + b] = (
-                    data_[4 * (2 * x * dataSize_ + 2 * y) + b] +
-                    data_[4 * (2 * x * dataSize_ + (2 * y + 1)) + b] +
-                    data_[4 * ((2 * x + 1) * dataSize_ + 2 * y) + b] +
-                    data_[4 * ((2 * x + 1) * dataSize_ + (2 * y + 1)) + b]
-                  ) / 4;
-              }
-            }
-          }
-        }
-
-        sharp(data, {
+        var image = sharp(data, {
           raw: {
-            width: tileSize * scale,
-            height: tileSize * scale,
+            width: params.width * scale,
+            height: params.height * scale,
             channels: 4
           }
-        }).toFormat(format)
+        });
+
+        if (z == 0) {
+          // HACK: when serving zoom 0, resize the 0 tile from 512 to 256
+          image.resize(width * scale, height * scale);
+        }
+
+        image.toFormat(format)
           .compressionLevel(9)
           .toBuffer(function(err, buffer, info) {
           if (!buffer) {
-            return callback(null, null);
+            return res.status(404).send('Not found');
           }
 
           var md5 = crypto.createHash('md5').update(buffer).digest('base64');
-          var headers = {
+          res.set({
             'content-md5': md5,
             'content-type': 'image/' + format
-          };
-          /*
-          if (format === 'pbf') {
-            headers['content-type'] = 'application/x-protobuf';
-            headers['content-encoding'] = 'gzip';
-          }
-          */
-          return callback(null, buffer, headers);
+          });
+          return res.status(200).send(buffer);
         });
       });
     });
@@ -277,58 +248,14 @@ module.exports = function(maps, options, prefix) {
         y = req.params.y | 0,
         scale = getScale(req.params.scale),
         format = req.params.format;
-    return getTile(z, x, y, scale, format, function(err, data, headers) {
-        if (err) {
-          return next(err);
-        }
-        if (headers) {
-          res.set(headers);
-        }
-        if (data == null) {
-          return res.status(404).send('Not found');
-        } else {
-          return res.status(200).send(data);
-        }
-    }, res, next);
+    var tileSize = 256;
+    var tileCenter = mercator.ll([
+      ((x + 0.5) / (1 << z)) * (256 << z),
+      ((y + 0.5) / (1 << z)) * (256 << z)
+    ], z);
+    return respondImage(z, tileCenter[0], tileCenter[1], tileSize, tileSize,
+                        scale, format, res, next);
   });
-
-  var processStaticMap = function(areaParams, req, res, next) {
-    var scale = getScale(req.params.scale),
-        format = req.params.format,
-        params = {
-          zoom: req.params.z | 0,
-          scale: scale,
-          bbox: areaParams.bbox,
-          center: areaParams.center,
-          format: format,
-          limit: 4097,
-          getTile: function(z, x, y, callback) {
-            return getTile(z, x, y, scale, format, function(err, data, headers) {
-              if (!err && data == null) {
-                err = new Error('Not found');
-                err.status = 404;
-              }
-              callback(err, data, headers);
-            });
-          }
-        };
-    try {
-      return abaculus(params, function(err, data, headers) {
-        if (err && !err.status) {
-          return next(err);
-        }
-        if (headers) {
-          headers['Content-Type'] = 'image/' + format;
-          res.set(headers);
-        }
-        res.status((err && err.status) || 200);
-        return res.send((err && err.message) || data);
-      });
-    } catch (e) {
-      res.status(400);
-      return res.send(e.message);
-    }
-  };
 
   var staticPattern =
       '/static/%s:scale(' + SCALE_PATTERN + ')?\.:format([\\w\\.]+)';
@@ -338,14 +265,14 @@ module.exports = function(maps, options, prefix) {
                   FLOAT_PATTERN, FLOAT_PATTERN);
 
   app.get(util.format(staticPattern, centerPattern), function(req, res, next) {
-    return processStaticMap({
-      center: {
-        x: +req.params.lon,
-        y: +req.params.lat,
-        w: req.params.width | 0,
-        h: req.params.height | 0
-      }
-    }, req, res, next);
+    var z = req.params.z | 0,
+        x = +req.params.lon,
+        y = +req.params.lat,
+        w = req.params.width | 0,
+        h = req.params.height | 0,
+        scale = getScale(req.params.scale),
+        format = req.params.format;
+    return respondImage(z, x, y, w, h, scale, format, res, next);
   });
 
   var boundsPattern =
@@ -353,14 +280,14 @@ module.exports = function(maps, options, prefix) {
                   FLOAT_PATTERN, FLOAT_PATTERN, FLOAT_PATTERN, FLOAT_PATTERN);
 
   app.get(util.format(staticPattern, boundsPattern), function(req, res, next) {
-    return processStaticMap({
-      bbox: [
-        +req.params.minx,
-        +req.params.miny,
-        +req.params.maxx,
-        +req.params.maxy
-      ]
-    }, req, res, next);
+    var z = req.params.z | 0,
+        x = ((+req.params.minx) + (+req.params.maxx)) / 2,
+        y = ((+req.params.miny) + (+req.params.maxy)) / 2,
+        w = req.params.width | 0,
+        h = req.params.height | 0,
+        scale = getScale(req.params.scale),
+        format = req.params.format;
+    return respondImage(z, x, y, w, h, scale, format, res, next);
   });
 
   app.get('/index.json', function(req, res, next) {
