@@ -16,7 +16,7 @@
     "clone": "1.0.2",
     "cors": "2.7.1",
     "express": "4.13.4",
-    "mapbox-gl-native": "3.0.2",
+    "mapbox-gl-native": "3.0.2-earcut",
     "mbtiles": "0.8.2",
     "morgan": "1.7.0",
     "nomnom": "1.8.1",
