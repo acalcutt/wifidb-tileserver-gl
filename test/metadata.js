@@ -16,4 +16,22 @@ describe('Metadata', function() {
         }).end(done);
     });
   });
+
+  describe('/test/index.json', function() {
+    it('is json', function(done) {
+      supertest(app)
+        .get('/test/index.json')
+        .expect(200)
+        .expect('Content-Type', /application\/json/, done);
+    });
+
+    it('has valid basename and tiles', function(done) {
+      supertest(app)
+        .get('/test/index.json')
+        .expect(function(res) {
+          res.body.basename.should.equal('test');
+          res.body.tiles.length.should.be.greaterThan(0);
+        }).end(done);
+    });
+  });
 });
