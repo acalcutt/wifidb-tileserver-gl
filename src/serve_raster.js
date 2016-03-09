@@ -246,6 +246,10 @@ module.exports = function(maps, options, prefix) {
         y = req.params.y | 0,
         scale = getScale(req.params.scale),
         format = req.params.format;
+    if (z < 0 || x < 0 || y < 0 ||
+        z > 20 || x >= Math.pow(2, z) || y >= Math.pow(2, z)) {
+      return res.status(404).send('Out of bounds');
+    }
     var tileSize = 256;
     var tileCenter = mercator.ll([
       ((x + 0.5) / (1 << z)) * (256 << z),
