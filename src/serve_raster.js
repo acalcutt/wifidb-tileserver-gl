@@ -169,8 +169,8 @@ module.exports = function(maps, options, prefix) {
 
   async.parallel(queue, function(err, results) {
     // TODO: make pool sizes configurable
-    map.renderers[1] = createPool(1, 2, 8);
-    map.renderers[2] = createPool(2, 2, 4);
+    map.renderers[1] = createPool(1, 4, 16);
+    map.renderers[2] = createPool(2, 2, 8);
     map.renderers[3] = createPool(3, 2, 4);
   });
 
