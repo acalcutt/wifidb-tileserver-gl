@@ -182,7 +182,7 @@ module.exports = function(maps, options, prefix) {
     .replace('{z}', ':z(\\d+)')
     .replace('{x}', ':x(\\d+)')
     .replace('{y}', ':y(\\d+)')
-    .replace('{format}', ':format([\\w\\.]+)');
+    .replace('{format}', ':format([\\w]+)');
 
   var respondImage = function(z, lon, lat, width, height, scale, format, res, next) {
     if (Math.abs(lon) > 180 || Math.abs(lat) > 85.06) {
@@ -267,7 +267,7 @@ module.exports = function(maps, options, prefix) {
   });
 
   var staticPattern =
-      '/static/%s:scale(' + SCALE_PATTERN + ')?\.:format([\\w\\.]+)';
+      '/static/%s:scale(' + SCALE_PATTERN + ')?\.:format([\\w]+)';
 
   var centerPattern =
       util.format(':lon(%s),:lat(%s),:z(\\d+)/:width(\\d+)x:height(\\d+)',
