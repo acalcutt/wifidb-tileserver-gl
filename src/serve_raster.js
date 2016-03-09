@@ -188,7 +188,8 @@ module.exports = function(maps, options, prefix) {
     if (Math.abs(lon) > 180 || Math.abs(lat) > 85.06) {
       return res.status(400).send('Invalid center');
     }
-    if (width <= 0 || height <= 0 || width > 2048 || height > 2048) {
+    if (Math.min(width, height) <= 0 ||
+        Math.max(width, height) * scale > 6000) {
       return res.status(400).send('Invalid size');
     }
     if (format == 'png' || format == 'webp') {
@@ -288,11 +289,15 @@ module.exports = function(maps, options, prefix) {
                   FLOAT_PATTERN, FLOAT_PATTERN, FLOAT_PATTERN, FLOAT_PATTERN);
 
   app.get(util.format(staticPattern, boundsPattern), function(req, res, next) {
+    var bbox = [+req.params.minx, +req.params.miny,
+                +req.params.maxx, +req.params.maxy];
     var z = req.params.z | 0,
-        x = ((+req.params.minx) + (+req.params.maxx)) / 2,
-        y = ((+req.params.miny) + (+req.params.maxy)) / 2,
-        w = req.params.width | 0,
-        h = req.params.height | 0,
+        x = (bbox[0] + bbox[2]) / 2,
+        y = (bbox[1] + bbox[3]) / 2;
+    var minCorner = mercator.px([bbox[0], bbox[3]], z),
+        maxCorner = mercator.px([bbox[2], bbox[1]], z);
+    var w = (maxCorner[0] - minCorner[0]) | 0,
+        h = (maxCorner[1] - minCorner[1]) | 0,
         scale = getScale(req.params.scale),
         format = req.params.format;
     return respondImage(z, x, y, w, h, scale, format, res, next);
