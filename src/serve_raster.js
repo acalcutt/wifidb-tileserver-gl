@@ -36,7 +36,7 @@ module.exports = function(maps, options, prefix) {
       domains = options.domains,
       tilePath = '/{z}/{x}/{y}.{format}';
 
-  var rootPath = path.join(process.cwd(), options.root);
+  var rootPath = path.join(process.cwd(), options.root || '');
 
   var styleUrl = options.style;
   var map = {

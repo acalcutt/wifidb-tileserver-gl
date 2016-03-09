@@ -14,7 +14,7 @@ module.exports = function(maps, options, prefix) {
       domains = options.domains,
       tilePath = '/{z}/{x}/{y}.pbf';
 
-  var rootPath = path.join(process.cwd(), options.root);
+  var rootPath = path.join(process.cwd(), options.root || '');
 
   var mbtilesPath = options.mbtiles;
   var map = {
