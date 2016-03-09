@@ -303,15 +303,5 @@ module.exports = function(maps, options, prefix) {
     return respondImage(z, x, y, w, h, scale, format, res, next);
   });
 
-  app.get('/index.json', function(req, res, next) {
-    var info = clone(map.tileJSON);
-
-    info.tiles = utils.getTileUrls(req.protocol, domains, req.headers.host,
-                                   prefix, tilePath, info.format,
-                                   req.query.key);
-
-    return res.send(info);
-  });
-
   return app;
 };

@@ -48,24 +48,38 @@ module.exports = function(opts, callback) {
   // serve index.html on the root
   app.use('/', express.static(path.join(__dirname, '../public')));
 
-  // aggregate index.json on root for multiple sources
-  app.get('/index.json', function(req, res, next) {
-    var queue = [];
-    Object.keys(config).forEach(function(prefix) {
-      var map = maps[prefix];
-      queue.push(function(callback) {
-        var info = clone(map.tileJSON);
+  app.get(/^(\/[^\/]+)\.json$/, function(req, res, next) {
+    var prefix = req.params[0];
+    if (prefix == '/index') {
+      var queue = [];
+      Object.keys(config).forEach(function(mapPrefix) {
+        var map = maps[mapPrefix];
+        queue.push(function(callback) {
+          var info = clone(map.tileJSON);
 
-        info.tiles = utils.getTileUrls(
-            req.protocol, config[prefix].domains, req.headers.host,
-            prefix, '/{z}/{x}/{y}.{format}', info.format, req.query.key);
+          info.tiles = utils.getTileUrls(
+              req.protocol, config[mapPrefix].domains, req.headers.host,
+              mapPrefix, '/{z}/{x}/{y}.{format}', info.format, req.query.key);
 
-        callback(null, info);
+          callback(null, info);
+        });
       });
-    });
-    return async.parallel(queue, function(err, results) {
-      return res.send(results);
-    });
+      return async.parallel(queue, function(err, results) {
+        return res.send(results);
+      });
+    } else {
+      var map = maps[prefix];
+      if (!map || !map.tileJSON) {
+        return res.status(404).send('Not found');
+      }
+      var info = clone(map.tileJSON);
+
+      info.tiles = utils.getTileUrls(
+          req.protocol, config[prefix].domains, req.headers.host,
+          prefix, '/{z}/{x}/{y}.{format}', info.format, req.query.key);
+
+      return res.send(info);
+    }
   });
 
   var server = app.listen(process.env.PORT || opts.port, function() {
