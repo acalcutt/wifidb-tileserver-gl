@@ -16,7 +16,7 @@ describe('Vector tiles', function() {
     testTile(prefix, 14, 8581, 5738, 200);
   });
 
-  describe('error tiles', function() {
+  describe('non-existent requests return 4xx', function() {
     testTile('non_existent', 0, 0, 0, 404);
     testTile(prefix, -1, 0, 0, 404); // err zoom
     testTile(prefix, 20, 0, 0, 404); // zoom out of bounds

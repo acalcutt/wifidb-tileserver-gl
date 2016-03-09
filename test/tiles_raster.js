@@ -10,20 +10,24 @@ var testTile = function(prefix, z, x, y, format, status, scale, type) {
 };
 
 describe('Raster tiles', function() {
-  describe('existing tiles', function() {
-    testTile('test', 0, 0, 0, 'png', 200, undefined, /image\/png/);
-    testTile('test', 0, 0, 0, 'jpg', 200, undefined, /image\/jpeg/);
-    testTile('test', 0, 0, 0, 'jpeg', 200, undefined, /image\/jpeg/);
-    testTile('test', 0, 0, 0, 'webp', 200, undefined, /image\/webp/);
+  describe('valid requests', function() {
+    describe('various formats', function() {
+      testTile('test', 0, 0, 0, 'png', 200, undefined, /image\/png/);
+      testTile('test', 0, 0, 0, 'jpg', 200, undefined, /image\/jpeg/);
+      testTile('test', 0, 0, 0, 'jpeg', 200, undefined, /image\/jpeg/);
+      testTile('test', 0, 0, 0, 'webp', 200, undefined, /image\/webp/);
+    });
 
-    testTile('test', 1, 1, 1, 'png', 200);
+    describe('different coordinates and scales', function() {
+      testTile('test', 1, 1, 1, 'png', 200);
 
-    testTile('test', 0, 0, 0, 'png', 200, 2);
-    testTile('test', 0, 0, 0, 'png', 200, 3);
-    testTile('test', 2, 1, 1, 'png', 200, 3);
+      testTile('test', 0, 0, 0, 'png', 200, 2);
+      testTile('test', 0, 0, 0, 'png', 200, 3);
+      testTile('test', 2, 1, 1, 'png', 200, 3);
+    });
   });
 
-  describe('error tiles', function() {
+  describe('invalid requests return 4xx', function() {
     testTile('non_existent', 0, 0, 0, 'png', 404);
     testTile('test', -1, 0, 0, 'png', 404);
     testTile('test', 25, 0, 0, 'png', 404);
