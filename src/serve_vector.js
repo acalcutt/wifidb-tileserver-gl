@@ -41,38 +41,36 @@ module.exports = function(maps, options, prefix) {
     .replace('{x}', ':x(\\d+)')
     .replace('{y}', ':y(\\d+)');
 
-  var getTile = function(z, x, y, callback) {
+  app.get(tilePattern, function(req, res, next) {
+    var z = req.params.z | 0,
+        x = req.params.x | 0,
+        y = req.params.y | 0;
+    if (z < map.tileJSON.minzoom || 0 || x < 0 || y < 0 ||
+        z > map.tileJSON.maxzoom ||
+        x >= Math.pow(2, z) || y >= Math.pow(2, z)) {
+      return res.status(404).send('Out of bounds');
+    }
     source.getTile(z, x, y, function(err, data, headers) {
       if (err) {
-        callback(err);
+        if (/does not exist/.test(err.message)) {
+          return res.status(404).send(err.message);
+        } else {
+          return res.status(500).send(err.message);
+        }
       } else {
         var md5 = crypto.createHash('md5').update(data).digest('base64');
         headers['content-md5'] = md5;
         headers['content-type'] = 'application/x-protobuf';
         headers['content-encoding'] = 'gzip';
+        res.set(headers);
 
-        callback(null, data, headers);
-      }
-    });
-  };
-
-  app.get(tilePattern, function(req, res, next) {
-    var z = req.params.z | 0,
-        x = req.params.x | 0,
-        y = req.params.y | 0;
-    return getTile(z, x, y, function(err, data, headers) {
-        if (err) {
-          return next(err);
-        }
-        if (headers) {
-          res.set(headers);
-        }
         if (data == null) {
           return res.status(404).send('Not found');
         } else {
           return res.status(200).send(data);
         }
-    }, res, next);
+      }
+    });
   });
 
   app.get('/index.json', function(req, res, next) {

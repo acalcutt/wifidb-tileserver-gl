@@ -185,11 +185,17 @@ module.exports = function(maps, options, prefix) {
     .replace('{format}', ':format([\\w\\.]+)');
 
   var respondImage = function(z, lon, lat, width, height, scale, format, res, next) {
+    if (Math.abs(lon) > 180 || Math.abs(lat) > 85.06) {
+      return res.status(400).send('Invalid center');
+    }
+    if (width <= 0 || height <= 0 || width > 2048 || height > 2048) {
+      return res.status(400).send('Invalid size');
+    }
     if (format == 'png' || format == 'webp') {
     } else if (format == 'jpg' || format == 'jpeg') {
       format = 'jpeg';
     } else {
-      return res.status(404).send('Invalid format');
+      return res.status(400).send('Invalid format');
     }
 
     var pool = map.renderers[scale];
