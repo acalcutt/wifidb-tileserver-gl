@@ -25,7 +25,8 @@ module.exports = function(opts, callback) {
 
   callback = callback || function() {};
 
-  if (process.env.NODE_ENV !== 'production') {
+  if (process.env.NODE_ENV !== 'production' &&
+      process.env.NODE_ENV !== 'test') {
     app.use(morgan('dev'));
   }
 
@@ -67,10 +68,16 @@ module.exports = function(opts, callback) {
     });
   });
 
-  app.listen(process.env.PORT || opts.port, function() {
+  var server = app.listen(process.env.PORT || opts.port, function() {
     console.log('Listening at http://%s:%d/',
                 this.address().address, this.address().port);
 
     return callback();
   });
+
+  setTimeout(callback, 1000);
+  return {
+    app: app,
+    server: server
+  };
 };
