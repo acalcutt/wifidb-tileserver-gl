@@ -1,9 +1,14 @@
-FROM node:5.7.1
+FROM debian:stretch
 MAINTAINER Petr Sloup <petr.sloup@klokantech.com>
 
 RUN apt-get -qq update \
-&& DEBIAN_FRONTEND=noninteractive apt-get -qq -y install \
+&& DEBIAN_FRONTEND=noninteractive apt-get -y install \
+    curl \
+    build-essential \
+    python \
     xvfb \
+&& curl -sL https://deb.nodesource.com/setup_5.x | bash - \
+&& apt-get -y install nodejs \
 && apt-get clean
 
 RUN mkdir -p /usr/src/app
