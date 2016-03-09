@@ -1,4 +1,5 @@
 # tileserver-gl
+[![Build Status](https://travis-ci.org/klokantech/tileserver-gl.svg?branch=master)](https://travis-ci.org/klokantech/tileserver-gl)
 
 ## Installation
 
