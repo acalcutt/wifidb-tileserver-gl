@@ -9,44 +9,40 @@ var clone = require('clone'),
 
 var utils = require('./utils');
 
-module.exports = function(maps, options, prefix) {
-  var app = express().disable('x-powered-by'),
-      domains = options.domains,
-      tilePath = '/{z}/{x}/{y}.pbf';
+module.exports = function(repo, options, id) {
+  var app = express().disable('x-powered-by');
 
   var rootPath = path.join(process.cwd(), options.root || '');
 
   var mbtilesPath = options.mbtiles;
-  var map = {
-    tileJSON: {}
+  var tileJSON = {
+    'tiles': options.domains
   };
-  maps[prefix] = map;
+
+  repo[id] = tileJSON;
 
   var source = new mbtiles(path.join(rootPath, mbtilesPath), function(err) {
     source.getInfo(function(err, info) {
-      map.tileJSON['name'] = prefix.substr(1);
+      tileJSON['name'] = id;
 
-      Object.assign(map.tileJSON, info);
+      Object.assign(tileJSON, info);
 
-      map.tileJSON['tilejson'] = '2.0.0';
-      map.tileJSON['basename'] = prefix.substr(1);
-      map.tileJSON['format'] = 'pbf';
+      tileJSON['tilejson'] = '2.0.0';
+      tileJSON['basename'] = id;
+      tileJSON['format'] = 'pbf';
 
-      Object.assign(map.tileJSON, options.options || {});
+      Object.assign(tileJSON, options.tilejson || {});
     });
   });
 
-  var tilePattern = tilePath
-    .replace('{z}', ':z(\\d+)')
-    .replace('{x}', ':x(\\d+)')
-    .replace('{y}', ':y(\\d+)');
+  var tilePattern = '/vector/' + id + '/:z(\\d+)/:x(\\d+)/:y(\\d+).pbf';
 
   app.get(tilePattern, function(req, res, next) {
     var z = req.params.z | 0,
         x = req.params.x | 0,
         y = req.params.y | 0;
-    if (z < map.tileJSON.minzoom || 0 || x < 0 || y < 0 ||
-        z > map.tileJSON.maxzoom ||
+    if (z < tileJSON.minzoom || 0 || x < 0 || y < 0 ||
+        z > tileJSON.maxzoom ||
         x >= Math.pow(2, z) || y >= Math.pow(2, z)) {
       return res.status(404).send('Out of bounds');
     }
@@ -71,6 +67,13 @@ module.exports = function(maps, options, prefix) {
         }
       }
     });
+  });
+
+  app.get('/vector/' + id + '.json', function(req, res, next) {
+    var info = clone(tileJSON);
+    info.tiles = utils.getTileUrls(req, info.tiles,
+                                   'vector/' + id, info.format);
+    return res.send(info);
   });
 
   return app;

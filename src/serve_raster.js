@@ -31,18 +31,15 @@ mbgl.on('message', function(e) {
   }
 });
 
-module.exports = function(maps, options, prefix) {
-  var app = express().disable('x-powered-by'),
-      domains = options.domains,
-      tilePath = '/{z}/{x}/{y}.{format}';
+module.exports = function(repo, options, id) {
+  var app = express().disable('x-powered-by');
 
   var rootPath = path.join(process.cwd(), options.root || '');
 
   var styleUrl = options.style;
   var map = {
     renderers: [],
-    sources: {},
-    tileJSON: {}
+    sources: {}
   };
 
   var styleJSON;
@@ -130,17 +127,18 @@ module.exports = function(maps, options, prefix) {
 
   styleJSON = require(path.join(rootPath, styleUrl));
 
-  map.tileJSON = {
+  var tileJSON = {
     'tilejson': '2.0.0',
     'name': styleJSON.name,
-    'basename': prefix.substr(1),
+    'basename': id,
     'minzoom': 0,
     'maxzoom': 20,
     'bounds': [-180, -85.0511, 180, 85.0511],
     'format': 'png',
-    'type': 'baselayer'
+    'type': 'baselayer',
+    'tiles': options.domains
   };
-  Object.assign(map.tileJSON, options.options || {});
+  Object.assign(tileJSON, options.tilejson || {});
 
   var queue = [];
   Object.keys(styleJSON.sources).forEach(function(name) {
@@ -158,7 +156,7 @@ module.exports = function(maps, options, prefix) {
             source.basename = name;
             source.tiles = [
               // meta url which will be detected when requested
-              'mbtiles://' + name + tilePath.replace('{format}', 'pbf')
+              'mbtiles://' + name + '/{z}/{x}/{y}.pbf'
             ];
             callback(null);
           });
@@ -174,15 +172,10 @@ module.exports = function(maps, options, prefix) {
     map.renderers[3] = createPool(3, 2, 4);
   });
 
-  maps[prefix] = map;
+  repo[id] = tileJSON;
 
-  var tilePattern = tilePath
-    .replace(/\.(?!.*\.)/, ':scale(' + SCALE_PATTERN + ')?.')
-    .replace(/\./g, '\.')
-    .replace('{z}', ':z(\\d+)')
-    .replace('{x}', ':x(\\d+)')
-    .replace('{y}', ':y(\\d+)')
-    .replace('{format}', ':format([\\w]+)');
+  var tilePattern = '/raster/' + id + '/:z(\\d+)/:x(\\d+)/:y(\\d+)' +
+                    ':scale(' + SCALE_PATTERN + ')?\.:format([\\w]+)';
 
   var respondImage = function(z, lon, lat, width, height, scale, format, res, next) {
     if (Math.abs(lon) > 180 || Math.abs(lat) > 85.06) {
@@ -267,7 +260,7 @@ module.exports = function(maps, options, prefix) {
   });
 
   var staticPattern =
-      '/static/%s:scale(' + SCALE_PATTERN + ')?\.:format([\\w]+)';
+      '/static/' + id + '/%s:scale(' + SCALE_PATTERN + ')?\.:format([\\w]+)';
 
   var centerPattern =
       util.format(':lon(%s),:lat(%s),:z(\\d+)/:width(\\d+)x:height(\\d+)',
@@ -301,6 +294,13 @@ module.exports = function(maps, options, prefix) {
         scale = getScale(req.params.scale),
         format = req.params.format;
     return respondImage(z, x, y, w, h, scale, format, res, next);
+  });
+
+  app.get('/raster/' + id + '.json', function(req, res, next) {
+    var info = clone(tileJSON);
+    info.tiles = utils.getTileUrls(req, info.tiles,
+                                   'raster/' + id, info.format);
+    return res.send(info);
   });
 
   return app;

@@ -7,19 +7,23 @@ process.env.UV_THREADPOOL_SIZE =
 var fs = require('fs'),
     path = require('path');
 
-var async = require('async'),
-    clone = require('clone'),
+var clone = require('clone'),
     cors = require('cors'),
     express = require('express'),
     morgan = require('morgan');
 
 var serve_raster = require('./serve_raster'),
+    serve_style = require('./serve_style'),
     serve_vector = require('./serve_vector'),
     utils = require('./utils');
 
 module.exports = function(opts, callback) {
   var app = express().disable('x-powered-by'),
-      maps = {};
+      serving = {
+        styles: {},
+        raster: {},
+        vector: {}
+      };
 
   app.enable('trust proxy');
 
@@ -33,54 +37,89 @@ module.exports = function(opts, callback) {
   var configPath = path.resolve(opts.config),
       config = require(configPath);
 
-  Object.keys(config).forEach(function(prefix) {
-    if (config[prefix].cors !== false) {
-      app.use(prefix, cors());
+  var vector = clone(config.vector);
+
+  Object.keys(config.styles || {}).forEach(function(id) {
+    var item = config.styles[id];
+    if (!item.style || item.style.length == 0) {
+      console.log('Missing "style" property for ' + id);
+      return;
     }
 
-    if (config[prefix].style) {
-      app.use(prefix, serve_raster(maps, config[prefix], prefix));
-    } else {
-      app.use(prefix, serve_vector(maps, config[prefix], prefix));
+    if (item.vector !== false) {
+      app.use('/', serve_style(serving.styles, item, id,
+        function(mbtiles) {
+          var vectorItemId;
+          Object.keys(vector).forEach(function(id) {
+            if (vector[id].mbtiles == mbtiles) {
+              vectorItemId = id;
+            }
+          });
+          if (vectorItemId) { // mbtiles exist in the vector config
+            return vectorItemId;
+          } else {
+            var id = mbtiles.substr(0, mbtiles.lastIndexOf('.')) || mbtiles;
+            while (vector[id]) id += '_';
+            vector[id] = {
+              'mbtiles': mbtiles
+            };
+            return id;
+          }
+        }));
+    }
+    if (item.raster !== false) {
+      app.use('/', serve_raster(serving.raster, item, id));
     }
   });
 
-  // serve index.html on the root
+  //TODO: cors
+
+  Object.keys(vector).forEach(function(id) {
+    var item = vector[id];
+    if (!item.mbtiles || item.mbtiles.length == 0) {
+      console.log('Missing "mbtiles" property for ' + id);
+      return;
+    }
+
+    app.use('/', serve_vector(serving.vector, item, id));
+  });
+
+  app.get('/styles.json', function(req, res, next) {
+    var result = [];
+    Object.keys(serving.styles).forEach(function(id) {
+      var styleJSON = serving.styles[id];
+      result.push({
+        version: styleJSON.version,
+        name: styleJSON.name,
+        id: id,
+        url: req.protocol + '://' + req.headers.host + '/styles/' + id + '.json'
+      });
+    });
+    res.send(result);
+  });
+
+  var addTileJSONs = function(arr, req, type) {
+    Object.keys(serving[type]).forEach(function(id) {
+      var info = clone(serving[type][id]);
+      info.tiles = utils.getTileUrls(req, info.tiles,
+                                     type + '/' + id, info.format);
+      arr.push(info);
+    });
+    return arr;
+  };
+
+  app.get('/raster.json', function(req, res, next) {
+    res.send(addTileJSONs([], req, 'raster'));
+  });
+  app.get('/vector.json', function(req, res, next) {
+    res.send(addTileJSONs([], req, 'vector'));
+  });
+  app.get('/index.json', function(req, res, next) {
+    res.send(addTileJSONs(addTileJSONs([], req, 'raster'), req, 'vector'));
+  });
+
+  // serve viewer on the root
   app.use('/', express.static(path.join(__dirname, '../public')));
-
-  app.get(/^(\/[^\/]+)\.json$/, function(req, res, next) {
-    var prefix = req.params[0];
-    if (prefix == '/index') {
-      var queue = [];
-      Object.keys(config).forEach(function(mapPrefix) {
-        var map = maps[mapPrefix];
-        queue.push(function(callback) {
-          var info = clone(map.tileJSON);
-
-          info.tiles = utils.getTileUrls(
-              req.protocol, config[mapPrefix].domains, req.headers.host,
-              mapPrefix, '/{z}/{x}/{y}.{format}', info.format, req.query.key);
-
-          callback(null, info);
-        });
-      });
-      return async.parallel(queue, function(err, results) {
-        return res.send(results);
-      });
-    } else {
-      var map = maps[prefix];
-      if (!map || !map.tileJSON) {
-        return res.status(404).send('Not found');
-      }
-      var info = clone(map.tileJSON);
-
-      info.tiles = utils.getTileUrls(
-          req.protocol, config[prefix].domains, req.headers.host,
-          prefix, '/{z}/{x}/{y}.{format}', info.format, req.query.key);
-
-      return res.send(info);
-    }
-  });
 
   var server = app.listen(process.env.PORT || opts.port, function() {
     console.log('Listening at http://%s:%d/',
