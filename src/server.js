@@ -12,7 +12,8 @@ var clone = require('clone'),
     express = require('express'),
     morgan = require('morgan');
 
-var serve_raster = require('./serve_raster'),
+var serve_font = require('./serve_font'),
+    serve_raster = require('./serve_raster'),
     serve_style = require('./serve_style'),
     serve_vector = require('./serve_vector'),
     utils = require('./utils');
@@ -22,7 +23,11 @@ module.exports = function(opts, callback) {
       serving = {
         styles: {},
         raster: {},
-        vector: {}
+        vector: {},
+        fonts: { // default fonts, always expose these (if they exist)
+          'Open Sans Regular': true,
+          'Arial Unicode MS Regular': true
+        }
       };
 
   app.enable('trust proxy');
@@ -65,12 +70,16 @@ module.exports = function(opts, callback) {
             };
             return id;
           }
+        }, function(font) {
+          serving.fonts[font] = true;
         }));
     }
     if (item.raster !== false) {
       app.use('/', serve_raster(serving.raster, item, id));
     }
   });
+
+  app.use('/', serve_font('glyphs', serving.fonts));
 
   //TODO: cors
 

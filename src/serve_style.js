@@ -7,7 +7,7 @@ var clone = require('clone'),
     express = require('express');
 
 
-module.exports = function(repo, options, id, reportVector) {
+module.exports = function(repo, options, id, reportVector, reportFont) {
   var app = express().disable('x-powered-by');
 
   var rootPath = path.join(process.cwd(), options.root || '');
@@ -24,6 +24,20 @@ module.exports = function(repo, options, id, reportVector) {
       source.url = 'local://vector/' + identifier + '.json';
     }
   });
+
+  var findFontReferences = function(obj) {
+    Object.keys(obj).forEach(function(key) {
+      var value = obj[key];
+      if (key == 'text-font') {
+        if (value && value.length > 0) {
+          value.forEach(reportFont);
+        }
+      } else if (value && typeof value == 'object') {
+        findFontReferences(value);
+      }
+    });
+  };
+  styleJSON.layers.forEach(findFontReferences);
 
   var spritePath = path.join(rootPath, styleJSON.sprite);
 
