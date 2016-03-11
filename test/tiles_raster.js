@@ -1,6 +1,6 @@
 var testTile = function(prefix, z, x, y, format, status, scale, type) {
   if (scale) y += '@' + scale + 'x';
-  var path = '/' + prefix + '/' + z + '/' + x + '/' + y + '.' + format;
+  var path = '/raster/' + prefix + '/' + z + '/' + x + '/' + y + '.' + format;
   it(path + ' returns ' + status, function(done) {
     var test = supertest(app).get(path);
     test.expect(status);
@@ -38,5 +38,7 @@ describe('Raster tiles', function() {
 
     testTile('test', 0, 0, 0, 'png', 404, 1);
     testTile('test', 0, 0, 0, 'png', 404, 4);
+
+    testTile('hybrid', 0, 0, 0, 'png', 404);
   });
 });
