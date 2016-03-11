@@ -18,6 +18,7 @@
     }
     #header {height:120px;}
     #sidebar, #code, #map, #wall {top:120px;}
+    #styles-link {position:absolute;top:90px;left:0;right:0;text-align:center;z-index:10000;font-size:16px;color:#eee;}
   </style>
 <body>
   <script>
@@ -26,5 +27,6 @@
       tilejson: "raster/%n.json" + location.search
     });
   </script>
+  <a href="/styles.html" id="styles-link">View available styles</a>
 </body>
 </html>
