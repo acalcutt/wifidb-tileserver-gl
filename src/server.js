@@ -39,8 +39,16 @@ module.exports = function(opts, callback) {
     app.use(morgan('dev'));
   }
 
-  var configPath = path.resolve(opts.config),
-      config = require(configPath);
+  var configPath = path.resolve(opts.config);
+
+  var config;
+  try {
+    config = require(configPath);
+  } catch (e) {
+    console.log('ERROR: Config file not found or invalid!');
+    console.log('       See README.md for instructions and sample data.');
+    process.exit(1);
+  }
 
   var options = config.options || {};
   var paths = options.paths || {};
