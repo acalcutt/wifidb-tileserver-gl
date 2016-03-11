@@ -79,7 +79,10 @@ module.exports = function(opts, callback) {
     }
   });
 
-  app.use('/', serve_font('glyphs', serving.fonts));
+  if (Object.keys(serving.styles).length > 0) {
+    // serve fonts only if serving some styles
+    app.use('/', serve_font('glyphs', serving.fonts));
+  }
 
   //TODO: cors
 
