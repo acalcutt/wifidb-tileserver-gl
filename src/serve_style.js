@@ -7,14 +7,12 @@ var clone = require('clone'),
     express = require('express');
 
 
-module.exports = function(repo, options, id, reportVector, reportFont) {
+module.exports = function(options, repo, params, id, reportVector, reportFont) {
   var app = express().disable('x-powered-by');
 
-  var rootPath = path.join(process.cwd(), options.root || '');
+  var styleFile = path.join(options.paths.styles, params.style);
 
-  var styleUrl = path.join(rootPath, options.style);
-
-  var styleJSON = clone(require(styleUrl));
+  var styleJSON = clone(require(styleFile));
   Object.keys(styleJSON.sources).forEach(function(name) {
     var source = styleJSON.sources[name];
     var url = source.url;
@@ -39,7 +37,8 @@ module.exports = function(repo, options, id, reportVector, reportFont) {
   };
   styleJSON.layers.forEach(findFontReferences);
 
-  var spritePath = path.join(rootPath, styleJSON.sprite);
+  var spritePath = path.join(options.paths.sprites,
+                             path.basename(styleFile, '.json'));
 
   styleJSON.sprite = 'local://styles/' + id + '/sprite';
   styleJSON.glyphs = 'local://fonts/{fontstack}/{range}.pbf';

@@ -9,19 +9,18 @@ var clone = require('clone'),
 
 var utils = require('./utils');
 
-module.exports = function(repo, options, id) {
+module.exports = function(options, repo, params, id) {
   var app = express().disable('x-powered-by');
 
-  var rootPath = path.join(process.cwd(), options.root || '');
-
-  var mbtilesPath = options.mbtiles;
+  var mbtilesFile = params.mbtiles;
   var tileJSON = {
-    'tiles': options.domains
+    'tiles': params.domains || options.domains
   };
 
   repo[id] = tileJSON;
 
-  var source = new mbtiles(path.join(rootPath, mbtilesPath), function(err) {
+  var source = new mbtiles(path.join(options.paths.mbtiles, mbtilesFile),
+                           function(err) {
     source.getInfo(function(err, info) {
       tileJSON['name'] = id;
 
@@ -31,7 +30,7 @@ module.exports = function(repo, options, id) {
       tileJSON['basename'] = id;
       tileJSON['format'] = 'pbf';
 
-      Object.assign(tileJSON, options.tilejson || {});
+      Object.assign(tileJSON, params.tilejson || {});
     });
   });
 

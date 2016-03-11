@@ -8,16 +8,16 @@ var clone = require('clone'),
     express = require('express');
 
 
-module.exports = function(fontPath, allowedFonts) {
+module.exports = function(options, allowedFonts) {
   var app = express().disable('x-powered-by');
 
-  var rootPath = path.join(process.cwd(), fontPath || '');
+  var fontPath = options.paths.fonts;
 
   var getFontPbf = function(name, range, callback) {
     // if some of the files failed to load (does not exist or not allowed),
     // return empty buffer so the other fonts can still work
     if (allowedFonts[name]) {
-      var filename = rootPath + '/' + name + '/' + range + '.pbf';
+      var filename = path.join(fontPath, name, range + '.pbf');
       return fs.readFile(filename, function(err, data) {
         if (err) {
           console.log('Font load error:', filename);

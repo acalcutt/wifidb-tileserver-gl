@@ -42,6 +42,15 @@ module.exports = function(opts, callback) {
   var configPath = path.resolve(opts.config),
       config = require(configPath);
 
+  var options = config.options || {};
+  var paths = options.paths || {};
+  options.paths = paths;
+  paths.root = path.join(process.cwd(), paths.root || '');
+  paths.styles = path.join(paths.root, paths.styles || '');
+  paths.fonts = path.join(paths.root, paths.fonts || '');
+  paths.sprites = path.join(paths.root, paths.sprites || '');
+  paths.mbtiles = path.join(paths.root, paths.mbtiles || '');
+
   var vector = clone(config.vector);
 
   Object.keys(config.styles || {}).forEach(function(id) {
@@ -52,7 +61,7 @@ module.exports = function(opts, callback) {
     }
 
     if (item.vector !== false) {
-      app.use('/', serve_style(serving.styles, item, id,
+      app.use('/', serve_style(options, serving.styles, item, id,
         function(mbtiles) {
           var vectorItemId;
           Object.keys(vector).forEach(function(id) {
@@ -75,13 +84,13 @@ module.exports = function(opts, callback) {
         }));
     }
     if (item.raster !== false) {
-      app.use('/', serve_raster(serving.raster, item, id));
+      app.use('/', serve_raster(options, serving.raster, item, id));
     }
   });
 
   if (Object.keys(serving.styles).length > 0) {
     // serve fonts only if serving some styles
-    app.use('/', serve_font('glyphs', serving.fonts));
+    app.use('/', serve_font(options, serving.fonts));
   }
 
   //TODO: cors
@@ -93,7 +102,7 @@ module.exports = function(opts, callback) {
       return;
     }
 
-    app.use('/', serve_vector(serving.vector, item, id));
+    app.use('/', serve_vector(options, serving.vector, item, id));
   });
 
   app.get('/styles.json', function(req, res, next) {

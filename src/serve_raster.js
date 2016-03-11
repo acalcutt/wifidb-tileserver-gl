@@ -31,12 +31,12 @@ mbgl.on('message', function(e) {
   }
 });
 
-module.exports = function(repo, options, id) {
+module.exports = function(options, repo, params, id) {
   var app = express().disable('x-powered-by');
 
-  var rootPath = path.join(process.cwd(), options.root || '');
+  var rootPath = options.paths.root;
 
-  var styleUrl = options.style;
+  var styleFile = params.style;
   var map = {
     renderers: [],
     sources: {}
@@ -50,8 +50,10 @@ module.exports = function(repo, options, id) {
         request: function(req, callback) {
           var protocol = req.url.split(':')[0];
           //console.log('Handling request:', req);
-          if (protocol == req.url) {
-            fs.readFile(path.join(rootPath, unescape(req.url)), function(err, data) {
+          if (protocol == 'sprites' || protocol == 'fonts') {
+            var dir = options.paths[protocol];
+            var file = unescape(req.url).substring(protocol.length + 3);
+            fs.readFile(path.join(dir, file), function(err, data) {
               callback(err, { data: data });
             });
           } else if (protocol == 'mbtiles') {
@@ -125,7 +127,9 @@ module.exports = function(repo, options, id) {
     });
   };
 
-  styleJSON = require(path.join(rootPath, styleUrl));
+  styleJSON = require(path.join(options.paths.styles, styleFile));
+  styleJSON.sprite = 'sprites://' + path.basename(styleFile, '.json');
+  styleJSON.glyphs = 'fonts://{fontstack}/{range}.pbf';
 
   var tileJSON = {
     'tilejson': '2.0.0',
@@ -135,10 +139,10 @@ module.exports = function(repo, options, id) {
     'maxzoom': 20,
     'bounds': [-180, -85.0511, 180, 85.0511],
     'format': 'png',
-    'type': 'baselayer',
-    'tiles': options.domains
+    'type': 'baselayer'
   };
-  Object.assign(tileJSON, options.tilejson || {});
+  Object.assign(tileJSON, params.tilejson || {});
+  tileJSON.tiles = params.domains || options.domains;
 
   var queue = [];
   Object.keys(styleJSON.sources).forEach(function(name) {
@@ -149,8 +153,9 @@ module.exports = function(repo, options, id) {
       delete source.url;
 
       queue.push(function(callback) {
-        var mbtilesUrl = url.substring('mbtiles://'.length);
-        map.sources[name] = new mbtiles(path.join(rootPath, mbtilesUrl), function(err) {
+        var mbtilesFile = url.substring('mbtiles://'.length);
+        map.sources[name] = new mbtiles(
+          path.join(options.paths.mbtiles, mbtilesFile), function(err) {
           map.sources[name].getInfo(function(err, info) {
             Object.assign(source, info);
             source.basename = name;
