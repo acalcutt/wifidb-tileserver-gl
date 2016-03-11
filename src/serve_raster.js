@@ -182,7 +182,8 @@ module.exports = function(options, repo, params, id) {
   var tilePattern = '/raster/' + id + '/:z(\\d+)/:x(\\d+)/:y(\\d+)' +
                     ':scale(' + SCALE_PATTERN + ')?\.:format([\\w]+)';
 
-  var respondImage = function(z, lon, lat, width, height, scale, format, res, next) {
+  var respondImage = function(z, lon, lat, bearing, pitch,
+                              width, height, scale, format, res, next) {
     if (Math.abs(lon) > 180 || Math.abs(lat) > 85.06) {
       return res.status(400).send('Invalid center');
     }
@@ -203,6 +204,8 @@ module.exports = function(options, repo, params, id) {
       var params = {
         zoom: mbglZ,
         center: [lon, lat],
+        bearing: bearing,
+        pitch: pitch,
         width: width,
         height: height
       };
@@ -260,26 +263,30 @@ module.exports = function(options, repo, params, id) {
       ((x + 0.5) / (1 << z)) * (256 << z),
       ((y + 0.5) / (1 << z)) * (256 << z)
     ], z);
-    return respondImage(z, tileCenter[0], tileCenter[1], tileSize, tileSize,
-                        scale, format, res, next);
+    return respondImage(z, tileCenter[0], tileCenter[1], 0, 0,
+                        tileSize, tileSize, scale, format, res, next);
   });
 
   var staticPattern =
       '/static/' + id + '/%s:scale(' + SCALE_PATTERN + ')?\.:format([\\w]+)';
 
   var centerPattern =
-      util.format(':lon(%s),:lat(%s),:z(\\d+)/:width(\\d+)x:height(\\d+)',
-                  FLOAT_PATTERN, FLOAT_PATTERN);
+      util.format(':lon(%s),:lat(%s),:z(\\d+):bearing(,%s)?:pitch(,%s)?/' +
+                  ':width(\\d+)x:height(\\d+)',
+                  FLOAT_PATTERN, FLOAT_PATTERN, FLOAT_PATTERN, FLOAT_PATTERN);
 
   app.get(util.format(staticPattern, centerPattern), function(req, res, next) {
     var z = req.params.z | 0,
         x = +req.params.lon,
         y = +req.params.lat,
+        bearing = +(req.params.bearing || ',0').substring(1),
+        pitch = +(req.params.pitch || ',0').substring(1),
         w = req.params.width | 0,
         h = req.params.height | 0,
         scale = getScale(req.params.scale),
         format = req.params.format;
-    return respondImage(z, x, y, w, h, scale, format, res, next);
+    return respondImage(z, x, y, bearing, pitch,
+                        w, h, scale, format, res, next);
   });
 
   var boundsPattern =
@@ -298,7 +305,7 @@ module.exports = function(options, repo, params, id) {
         h = (maxCorner[1] - minCorner[1]) | 0,
         scale = getScale(req.params.scale),
         format = req.params.format;
-    return respondImage(z, x, y, w, h, scale, format, res, next);
+    return respondImage(z, x, y, 0, 0, w, h, scale, format, res, next);
   });
 
   app.get('/raster/' + id + '.json', function(req, res, next) {

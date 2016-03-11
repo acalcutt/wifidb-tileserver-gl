@@ -26,6 +26,12 @@ describe('Static endpoints', function() {
         testStatic('test', '80,40,20/600x300', 'png', 200, 3);
         testStatic('test', '8.5,40.5,20/300x150', 'png', 200, 3);
         testStatic('test', '-8.5,-40.5,20/300x150', 'png', 200, 3);
+
+        testStatic('test', '8,40,2,0,0/300x150', 'png', 200);
+        testStatic('test', '8,40,2,180,45/300x150', 'png', 200, 2);
+        testStatic('test', '8,40,2,10/300x150', 'png', 200, 3);
+        testStatic('test', '8,40,2,10.3,20.4/300x300', 'png', 200);
+        testStatic('test', '0,0,2,390,120/300x300', 'png', 200);
       });
     });
 
@@ -39,6 +45,9 @@ describe('Static endpoints', function() {
       testStatic('test', '0,0,-1/256x256', 'png', 404);
       testStatic('test', '0,0,1.5/256x256', 'png', 404);
       testStatic('test', '0,0,0/256.5x256.5', 'png', 404);
+
+      testStatic('test', '0,0,0,/256x256', 'png', 404);
+      testStatic('test', '0,0,0,0,/256x256', 'png', 404);
     });
   });
 
