@@ -43,7 +43,12 @@ The config file can contain definition of several paths where the tiles will be 
     "domains": [
       "localhost:8080",
       "127.0.0.1:8080"
-    ]
+    ],
+    "formatEncoding": {
+      "png": 6,
+      "jpeg": 80,
+      "webp": 90
+    }
   },
   "styles": {
     "test": {

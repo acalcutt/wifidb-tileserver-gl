@@ -230,9 +230,19 @@ module.exports = function(options, repo, params, id) {
           image.resize(width * scale, height * scale);
         }
 
-        image.toFormat(format)
-          .compressionLevel(9)
-          .toBuffer(function(err, buffer, info) {
+        image.toFormat(format);
+
+        var formatEncoding = (params.formatEncoding || {})[format] ||
+                             (options.formatEncoding || {})[format];
+        if (format == 'png') {
+          image.compressionLevel(formatEncoding || 6)
+               .withoutAdaptiveFiltering();
+        } else if (format == 'jpeg') {
+          image.quality(formatEncoding || 80);
+        } else if (format == 'webp') {
+          image.quality(formatEncoding || 90);
+        }
+        image.toBuffer(function(err, buffer, info) {
           if (!buffer) {
             return res.status(404).send('Not found');
           }
