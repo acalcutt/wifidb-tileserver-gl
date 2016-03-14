@@ -53,13 +53,13 @@ module.exports = function(opts, callback) {
   var options = config.options || {};
   var paths = options.paths || {};
   options.paths = paths;
-  paths.root = path.join(process.cwd(), paths.root || '');
-  paths.styles = path.join(paths.root, paths.styles || '');
-  paths.fonts = path.join(paths.root, paths.fonts || '');
-  paths.sprites = path.join(paths.root, paths.sprites || '');
-  paths.mbtiles = path.join(paths.root, paths.mbtiles || '');
+  paths.root = path.resolve(process.cwd(), paths.root || '');
+  paths.styles = path.resolve(paths.root, paths.styles || '');
+  paths.fonts = path.resolve(paths.root, paths.fonts || '');
+  paths.sprites = path.resolve(paths.root, paths.sprites || '');
+  paths.mbtiles = path.resolve(paths.root, paths.mbtiles || '');
 
-  var vector = clone(config.vector);
+  var vector = clone(config.vector || {});
 
   Object.keys(config.styles || {}).forEach(function(id) {
     var item = config.styles[id];
