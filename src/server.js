@@ -10,6 +10,7 @@ var fs = require('fs'),
 var clone = require('clone'),
     cors = require('cors'),
     express = require('express'),
+    handlebars = require('handlebars'),
     morgan = require('morgan');
 
 var serve_font = require('./serve_font'),
@@ -147,8 +148,61 @@ module.exports = function(opts, callback) {
     res.send(addTileJSONs(addTileJSONs([], req, 'raster'), req, 'vector'));
   });
 
-  // serve viewer on the root
-  app.use('/', express.static(path.join(__dirname, '../public')));
+  //------------------------------------
+  // serve web presentations
+  app.use('/', express.static(path.join(__dirname, '../public/resources')));
+
+  handlebars.registerHelper('json', function(context) {
+      return JSON.stringify(context);
+  });
+
+  var templates = path.join(__dirname, '../public/templates');
+  var serveTemplate = function(path, template, dataGetter) {
+    fs.readFile(templates + '/' + template + '.tmpl', function(err, content) {
+      if (err) {
+        console.log('Template not found:', err);
+      }
+      var compiled = handlebars.compile(content.toString());
+
+      app.use(path, function(req, res, next) {
+        var data = {};
+        if (dataGetter) {
+          data = dataGetter(req.params);
+          if (!data) {
+            return res.status(404).send('Not found');
+          }
+        }
+        return res.status(200).send(compiled(data));
+      });
+    });
+  };
+
+  serveTemplate(/^\/$/, 'index', function() {
+    var styles = clone(config.styles || {});
+    Object.keys(styles).forEach(function(id) {
+      styles[id].name = (serving.styles[id] || serving.raster[id]).name;
+      styles[id].serving_style = serving.styles[id];
+      styles[id].serving_raster = serving.raster[id];
+    });
+    return {
+      styles: styles,
+      data: serving.vector
+    };
+  });
+
+  serveTemplate('/styles/:id/', 'viewer', function(params) {
+    var id = params.id;
+    var style = clone((config.styles || {})[id]);
+    if (!style) {
+      return null;
+    }
+    style.id = id;
+    style.name = (serving.styles[id] || serving.raster[id]).name;
+    style.serving_style = serving.styles[id];
+    style.serving_raster = serving.raster[id];
+    return style;
+  });
+
 
   var server = app.listen(process.env.PORT || opts.port, function() {
     console.log('Listening at http://%s:%d/',

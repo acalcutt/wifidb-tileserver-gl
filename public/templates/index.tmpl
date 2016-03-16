@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>TileServer GL</title>
+  <style>
+    h3 {display:inline-block;}
+  </style>
+<body>
+  <h1>TileServer GL</h1>
+  <h2>Styles</h2>
+  <ul>
+  {{#each styles}}
+    <li>
+      {{#if serving_raster}}
+        <img src="/raster/{{@key}}/0/0/0.png" width="32" alt="{{name}} preview" />
+      {{else}}
+        N/A
+      {{/if}}
+      <h3>{{name}}</h3>
+      <span>(id: {{@key}})</span>
+      {{#if serving_style}}
+        <a href="/styles/{{@key}}/?vector">Viewer (vector)</a>
+      {{/if}}
+      {{#if serving_raster}}
+        <a href="/styles/{{@key}}/?raster">Viewer (raster)</a>
+      {{/if}}
+      {{#if serving_style}}
+        {{#if serving_raster}}
+          <a href="/styles/{{@key}}/">Viewer (auto)</a>
+        {{/if}}
+      {{/if}}
+      {{#if serving_raster}}
+        <a href="/raster/{{@key}}.json">TileJSON</a>
+        {{/if}}
+    </li>
+  {{/each}}
+  </ul>
+
+  <h2>Data</h2>
+  <ul>
+  {{#each data}}
+    <li>
+      <h3>{{name}}</h3>
+      <span>(id: {{@key}})</span>
+      <a href="/vector/{{@key}}/">X-Ray viewer</a>
+      <a href="/vector/{{@key}}.json">TileJSON</a>
+    </li>
+  {{/each}}
+  </ul>
+</body>
+</html>

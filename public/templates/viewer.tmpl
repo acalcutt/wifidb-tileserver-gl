@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>{{name}} - TileServer GL</title>
+  <link rel="stylesheet" type="text/css" href="/mapbox-gl.css" />
+  <script src="/mapbox-gl.js"></script>
+  <link rel="stylesheet" type="text/css" href="/mapbox.css" />
+  <script src="/mapbox.js"></script>
+  <script src="/leaflet-hash.js"></script>
+  <style>
+    body { margin:0; padding:0; }
+    #map { position:absolute; top:0; bottom:0; width:100%; }
+  </style>
+<body>
+  <h1 style="display:none;">{{name}}</h1>
+  <div id='map'></div>
+  <script>
+    var preference = (location.search || '').substr(1);
+    if (preference != 'vector' && preference != 'raster') {
+      preference = mapboxgl.supported() ? 'vector' : 'raster';
+    }
+    if (preference == 'vector') {
+      var map = new mapboxgl.Map({
+        container: 'map',
+        style: '/styles/{{id}}.json',
+        hash: true
+      });
+      map.addControl(new mapboxgl.Navigation());
+    } else {
+      var map = L.mapbox.map('map', '/raster/{{id}}.json', { zoomControl: false });
+      new L.Control.Zoom({ position: 'topright' }).addTo(map);
+      setTimeout(function() {
+        new L.Hash(map);
+      }, 0);
+    }
+  </script>
+</body>
+</html>

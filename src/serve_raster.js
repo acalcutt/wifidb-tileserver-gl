@@ -143,6 +143,18 @@ module.exports = function(options, repo, params, id) {
   };
   Object.assign(tileJSON, params.tilejson || {});
   tileJSON.tiles = params.domains || options.domains;
+  if (tileJSON.bounds && !tileJSON.center) {
+    var fitWidth = 1024;
+    var tiles = fitWidth / 256;
+    tileJSON.center = [
+      (tileJSON.bounds[0] + tileJSON.bounds[2]) / 2,
+      (tileJSON.bounds[1] + tileJSON.bounds[3]) / 2,
+      Math.round(
+        -Math.log((tileJSON.bounds[2] - tileJSON.bounds[0]) / 360 / tiles) /
+        Math.LN2
+      )
+    ];
+  }
 
   var queue = [];
   Object.keys(styleJSON.sources).forEach(function(name) {
