@@ -180,9 +180,18 @@ module.exports = function(opts, callback) {
   serveTemplate(/^\/$/, 'index', function() {
     var styles = clone(config.styles || {});
     Object.keys(styles).forEach(function(id) {
-      styles[id].name = (serving.styles[id] || serving.raster[id]).name;
-      styles[id].serving_style = serving.styles[id];
-      styles[id].serving_raster = serving.raster[id];
+      var style = styles[id];
+      style.name = (serving.styles[id] || serving.raster[id] || {}).name;
+      style.serving_style = serving.styles[id];
+      style.serving_raster = serving.raster[id];
+      if (style.serving_raster) {
+        var center = style.serving_raster.center;
+        if (center) {
+          style.viewer_hash = '#' + center[2] + '/' +
+                              center[1].toFixed(5) + '/' +
+                              center[0].toFixed(5);
+        }
+      }
     });
     return {
       styles: styles,
