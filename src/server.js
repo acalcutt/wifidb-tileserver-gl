@@ -218,6 +218,9 @@ module.exports = function(opts, callback) {
     return style;
   });
 
+  app.use('/raster/:id/', function(req, res, next) {
+    return res.redirect(301, '/styles/' + req.params.id + '/');
+  });
 
   var server = app.listen(process.env.PORT || opts.port, function() {
     console.log('Listening at http://%s:%d/',
