@@ -31,6 +31,7 @@ module.exports = function(options, repo, params, id) {
       tileJSON['format'] = 'pbf';
 
       Object.assign(tileJSON, params.tilejson || {});
+      utils.fixTileJSONCenter(tileJSON);
     });
   });
 

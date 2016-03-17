@@ -22,3 +22,18 @@ module.exports.getTileUrls = function(req, domains, path, format) {
 
   return uris;
 };
+
+module.exports.fixTileJSONCenter = function(tileJSON) {
+  if (tileJSON.bounds && !tileJSON.center) {
+    var fitWidth = 1024;
+    var tiles = fitWidth / 256;
+    tileJSON.center = [
+      (tileJSON.bounds[0] + tileJSON.bounds[2]) / 2,
+      (tileJSON.bounds[1] + tileJSON.bounds[3]) / 2,
+      Math.round(
+        -Math.log((tileJSON.bounds[2] - tileJSON.bounds[0]) / 360 / tiles) /
+        Math.LN2
+      )
+    ];
+  }
+};

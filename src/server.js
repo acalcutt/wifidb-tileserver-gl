@@ -153,10 +153,6 @@ module.exports = function(opts, callback) {
   // serve web presentations
   app.use('/', express.static(path.join(__dirname, '../public/resources')));
 
-  handlebars.registerHelper('json', function(context) {
-      return JSON.stringify(context);
-  });
-
   var templates = path.join(__dirname, '../public/templates');
   var serveTemplate = function(path, template, dataGetter) {
     fs.readFile(templates + '/' + template + '.tmpl', function(err, content) {
@@ -199,9 +195,19 @@ module.exports = function(opts, callback) {
         }
       }
     });
+    var data = clone(serving.vector || {});
+    Object.keys(data).forEach(function(id) {
+      var vector = data[id];
+      var center = vector.center;
+      if (center) {
+        vector.viewer_hash = '#' + center[2] + '/' +
+                             center[1].toFixed(5) + '/' +
+                             center[0].toFixed(5);
+      }
+    });
     return {
       styles: styles,
-      data: serving.vector
+      data: data
     };
   });
 
@@ -220,6 +226,16 @@ module.exports = function(opts, callback) {
 
   app.use('/raster/:id/', function(req, res, next) {
     return res.redirect(301, '/styles/' + req.params.id + '/');
+  });
+
+  serveTemplate('/vector/:id/', 'xray', function(params) {
+    var id = params.id;
+    var vector = serving.vector[id];
+    if (!vector) {
+      return null;
+    }
+    vector.id = id;
+    return vector;
   });
 
   var server = app.listen(process.env.PORT || opts.port, function() {
