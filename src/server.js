@@ -174,7 +174,7 @@ module.exports = function(opts, callback) {
     });
   };
 
-  serveTemplate(/^\/$/, 'index', function() {
+  serveTemplate('/$', 'index', function() {
     var styles = clone(config.styles || {});
     Object.keys(styles).forEach(function(id) {
       var style = styles[id];
@@ -211,7 +211,7 @@ module.exports = function(opts, callback) {
     };
   });
 
-  serveTemplate('/styles/:id/', 'viewer', function(params) {
+  serveTemplate('/styles/:id/$', 'viewer', function(params) {
     var id = params.id;
     var style = clone((config.styles || {})[id]);
     if (!style) {
@@ -224,11 +224,11 @@ module.exports = function(opts, callback) {
     return style;
   });
 
-  app.use('/raster/:id/', function(req, res, next) {
+  app.use('/raster/:id/$', function(req, res, next) {
     return res.redirect(301, '/styles/' + req.params.id + '/');
   });
 
-  serveTemplate('/vector/:id/', 'xray', function(params) {
+  serveTemplate('/vector/:id/$', 'xray', function(params) {
     var id = params.id;
     var vector = serving.vector[id];
     if (!vector) {
