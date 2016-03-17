@@ -12,8 +12,8 @@
   <ul>
   {{#each styles}}
     <li>
-      {{#if serving_raster}}
-        <img src="/raster/{{@key}}/0/0/0.png" width="32" alt="{{name}} preview" />
+      {{#if thumbnail}}
+        <img src="/raster/{{@key}}/{{thumbnail}}" width="64" alt="{{name}} preview" />
       {{else}}
         N/A
       {{/if}}

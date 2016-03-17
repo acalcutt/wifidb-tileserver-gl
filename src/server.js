@@ -11,6 +11,7 @@ var clone = require('clone'),
     cors = require('cors'),
     express = require('express'),
     handlebars = require('handlebars'),
+    mercator = new (require('sphericalmercator'))(),
     morgan = require('morgan');
 
 var serve_font = require('./serve_font'),
@@ -190,6 +191,11 @@ module.exports = function(opts, callback) {
           style.viewer_hash = '#' + center[2] + '/' +
                               center[1].toFixed(5) + '/' +
                               center[0].toFixed(5);
+
+          var centerPx = mercator.px([center[0], center[1]], center[2]);
+          style.thumbnail = center[2] + '/' +
+              Math.floor(centerPx[0] / 256) + '/' +
+              Math.floor(centerPx[1] / 256) + '.png';
         }
       }
     });
