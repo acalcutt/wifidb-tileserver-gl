@@ -103,7 +103,7 @@ module.exports = function(opts, callback) {
     app.use('/', serve_font(options, serving.fonts));
   }
 
-  //TODO: cors
+  app.use(cors());
 
   Object.keys(vector).forEach(function(id) {
     var item = vector[id];
