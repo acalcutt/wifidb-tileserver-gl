@@ -24,12 +24,12 @@
     "mbtiles": "0.8.2",
     "morgan": "1.7.0",
     "nomnom": "1.8.1",
-    "request": "2.69.0",
-    "sharp": "0.13.1",
+    "request": "2.70.0",
+    "sharp": "0.14.0",
     "sphericalmercator": "1.0.4"
   },
   "devDependencies": {
-    "should": "^8.2.2",
+    "should": "^8.3.0",
     "mocha": "^2.4.5",
     "supertest": "^1.2.0"
   }
