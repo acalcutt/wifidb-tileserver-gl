@@ -7,7 +7,7 @@ RUN apt-get -qq update \
     build-essential \
     python \
     xvfb \
-&& curl -sL https://deb.nodesource.com/setup_5.x | bash - \
+&& curl -sL https://deb.nodesource.com/setup_4.x | bash - \
 && apt-get -y install nodejs \
 && apt-get clean
 
