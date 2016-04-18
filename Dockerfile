@@ -13,7 +13,7 @@ RUN apt-get -qq update \
 
 RUN mkdir -p /usr/src/app
 COPY / /usr/src/app
-RUN cd /usr/src/app && npm install
+RUN cd /usr/src/app && npm install --production
 
 VOLUME /data
 WORKDIR /data
