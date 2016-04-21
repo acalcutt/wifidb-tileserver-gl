@@ -7,7 +7,7 @@ var clone = require('clone'),
     express = require('express');
 
 
-module.exports = function(options, repo, params, id, reportVector, reportFont) {
+module.exports = function(options, repo, params, id, reportTiles, reportFont) {
   var app = express().disable('x-powered-by');
 
   var styleFile = path.join(options.paths.styles, params.style);
@@ -18,8 +18,8 @@ module.exports = function(options, repo, params, id, reportVector, reportFont) {
     var url = source.url;
     if (url.lastIndexOf('mbtiles:', 0) === 0) {
       var mbtiles = url.substring('mbtiles://'.length);
-      var identifier = reportVector(mbtiles);
-      source.url = 'local://vector/' + identifier + '.json';
+      var identifier = reportTiles(mbtiles);
+      source.url = 'local://data/' + identifier + '.json';
     }
   });
 

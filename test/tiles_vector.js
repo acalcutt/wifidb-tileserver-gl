@@ -1,5 +1,5 @@
 var testTile = function(prefix, z, x, y, status) {
-  var path = '/vector/' + prefix + '/' + z + '/' + x + '/' + y + '.pbf';
+  var path = '/data/' + prefix + '/' + z + '/' + x + '/' + y + '.pbf';
   it(path + ' returns ' + status, function(done) {
     var test = supertest(app).get(path);
     if (status) test.expect(status);

@@ -43,8 +43,13 @@
       <div class="item">
         <div class="sample-img"></div>
         <h3>{{name}}</h3>
-        <p>Id: {{@key}} | <a href="/vector/{{@key}}.json">TileJSON</a></p>
-        <a class="btn" href="/vector/{{@key}}/{{viewer_hash}}">X-Ray viewer</a>
+        <p>Id: {{@key}} | <a href="/data/{{@key}}.json">TileJSON</a></p>
+        {{#is_vector}}
+        <a class="btn" href="/data/{{@key}}/{{viewer_hash}}">X-Ray viewer</a>
+        {{/is_vector}}
+        {{^is_vector}}
+        Raster tiles
+        {{/is_vector}}
       </div>
     {{/each}}
     </div>

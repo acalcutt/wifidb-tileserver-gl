@@ -17,7 +17,7 @@ var clone = require('clone'),
 var serve_font = require('./serve_font'),
     serve_raster = require('./serve_raster'),
     serve_style = require('./serve_style'),
-    serve_vector = require('./serve_vector'),
+    serve_tiles = require('./serve_tiles'),
     utils = require('./utils');
 
 module.exports = function(opts, callback) {
@@ -25,7 +25,7 @@ module.exports = function(opts, callback) {
       serving = {
         styles: {},
         raster: {},
-        vector: {},
+        tiles: {},
         fonts: { // default fonts, always expose these (if they exist)
           'Open Sans Regular': true,
           'Arial Unicode MS Regular': true
@@ -61,7 +61,7 @@ module.exports = function(opts, callback) {
   paths.sprites = path.resolve(paths.root, paths.sprites || '');
   paths.mbtiles = path.resolve(paths.root, paths.mbtiles || '');
 
-  var vector = clone(config.vector || {});
+  var tiles = clone(config.data || {});
 
   Object.keys(config.styles || {}).forEach(function(id) {
     var item = config.styles[id];
@@ -70,21 +70,21 @@ module.exports = function(opts, callback) {
       return;
     }
 
-    if (item.vector !== false) {
+    if (item.serve_data !== false) {
       app.use('/', serve_style(options, serving.styles, item, id,
         function(mbtiles) {
-          var vectorItemId;
-          Object.keys(vector).forEach(function(id) {
-            if (vector[id].mbtiles == mbtiles) {
-              vectorItemId = id;
+          var tilesItemId;
+          Object.keys(tiles).forEach(function(id) {
+            if (tiles[id].mbtiles == mbtiles) {
+              tilesItemId = id;
             }
           });
-          if (vectorItemId) { // mbtiles exist in the vector config
-            return vectorItemId;
+          if (tilesItemId) { // mbtiles exist in the tiles config
+            return tilesItemId;
           } else {
             var id = mbtiles.substr(0, mbtiles.lastIndexOf('.')) || mbtiles;
-            while (vector[id]) id += '_';
-            vector[id] = {
+            while (tiles[id]) id += '_';
+            tiles[id] = {
               'mbtiles': mbtiles
             };
             return id;
@@ -105,14 +105,14 @@ module.exports = function(opts, callback) {
 
   app.use(cors());
 
-  Object.keys(vector).forEach(function(id) {
-    var item = vector[id];
+  Object.keys(tiles).forEach(function(id) {
+    var item = tiles[id];
     if (!item.mbtiles || item.mbtiles.length == 0) {
       console.log('Missing "mbtiles" property for ' + id);
       return;
     }
 
-    app.use('/', serve_vector(options, serving.vector, item, id));
+    app.use('/', serve_tiles(options, serving.tiles, item, id));
   });
 
   app.get('/styles.json', function(req, res, next) {
@@ -142,11 +142,11 @@ module.exports = function(opts, callback) {
   app.get('/raster.json', function(req, res, next) {
     res.send(addTileJSONs([], req, 'raster'));
   });
-  app.get('/vector.json', function(req, res, next) {
-    res.send(addTileJSONs([], req, 'vector'));
+  app.get('/data.json', function(req, res, next) {
+    res.send(addTileJSONs([], req, 'tiles'));
   });
   app.get('/index.json', function(req, res, next) {
-    res.send(addTileJSONs(addTileJSONs([], req, 'raster'), req, 'vector'));
+    res.send(addTileJSONs(addTileJSONs([], req, 'raster'), req, 'tiles'));
   });
 
   //------------------------------------
@@ -195,15 +195,16 @@ module.exports = function(opts, callback) {
         }
       }
     });
-    var data = clone(serving.vector || {});
+    var data = clone(serving.tiles || {});
     Object.keys(data).forEach(function(id) {
-      var vector = data[id];
-      var center = vector.center;
+      var tiles = data[id];
+      var center = tiles.center;
       if (center) {
-        vector.viewer_hash = '#' + center[2] + '/' +
-                             center[1].toFixed(5) + '/' +
-                             center[0].toFixed(5);
+        tiles.viewer_hash = '#' + center[2] + '/' +
+                            center[1].toFixed(5) + '/' +
+                            center[0].toFixed(5);
       }
+      tiles.is_vector = tiles.format == 'pbf';
     });
     return {
       styles: styles,
@@ -228,14 +229,14 @@ module.exports = function(opts, callback) {
     return res.redirect(301, '/styles/' + req.params.id + '/');
   });
 
-  serveTemplate('/vector/:id/$', 'xray', function(params) {
+  serveTemplate('/data/:id/$', 'xray', function(params) {
     var id = params.id;
-    var vector = serving.vector[id];
-    if (!vector) {
+    var tiles = serving.tiles[id];
+    if (!tiles) {
       return null;
     }
-    vector.id = id;
-    return vector;
+    tiles.id = id;
+    return tiles;
   });
 
   var server = app.listen(process.env.PORT || opts.port, function() {

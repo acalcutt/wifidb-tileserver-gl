@@ -23,24 +23,27 @@ module.exports = function(options, repo, params, id) {
                            function(err) {
     source.getInfo(function(err, info) {
       tileJSON['name'] = id;
+      tileJSON['format'] = 'pbf';
 
       Object.assign(tileJSON, info);
 
       tileJSON['tilejson'] = '2.0.0';
       tileJSON['basename'] = id;
-      tileJSON['format'] = 'pbf';
 
       Object.assign(tileJSON, params.tilejson || {});
       utils.fixTileJSONCenter(tileJSON);
     });
   });
 
-  var tilePattern = '/vector/' + id + '/:z(\\d+)/:x(\\d+)/:y(\\d+).pbf';
+  var tilePattern = '/data/' + id + '/:z(\\d+)/:x(\\d+)/:y(\\d+).:format([\\w]+)';
 
   app.get(tilePattern, function(req, res, next) {
     var z = req.params.z | 0,
         x = req.params.x | 0,
         y = req.params.y | 0;
+    if (req.params.format != tileJSON.format) {
+      return res.status(404).send('Invalid format');
+    }
     if (z < tileJSON.minzoom || 0 || x < 0 || y < 0 ||
         z > tileJSON.maxzoom ||
         x >= Math.pow(2, z) || y >= Math.pow(2, z)) {
@@ -56,8 +59,10 @@ module.exports = function(options, repo, params, id) {
       } else {
         var md5 = crypto.createHash('md5').update(data).digest('base64');
         headers['content-md5'] = md5;
-        headers['content-type'] = 'application/x-protobuf';
-        headers['content-encoding'] = 'gzip';
+        if (tileJSON['format'] == 'pbf') {
+          headers['content-type'] = 'application/x-protobuf';
+          headers['content-encoding'] = 'gzip';
+        }
         res.set(headers);
 
         if (data == null) {
@@ -69,10 +74,10 @@ module.exports = function(options, repo, params, id) {
     });
   });
 
-  app.get('/vector/' + id + '.json', function(req, res, next) {
+  app.get('/data/' + id + '.json', function(req, res, next) {
     var info = clone(tileJSON);
     info.tiles = utils.getTileUrls(req, info.tiles,
-                                   'vector/' + id, info.format);
+                                   'data/' + id, info.format);
     return res.send(info);
   });
 
