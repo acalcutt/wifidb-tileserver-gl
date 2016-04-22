@@ -31,7 +31,7 @@ module.exports = function(options, allowedFonts) {
     }
   };
 
-  app.get('/fonts/:fontstack/:range([\\d]+-[\\d]+).pbf',
+  app.get('/:fontstack/:range([\\d]+-[\\d]+).pbf',
       function(req, res, next) {
     var fontstack = decodeURI(req.params.fontstack);
     var range = req.params.range;

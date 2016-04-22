@@ -15,17 +15,17 @@ var clone = require('clone'),
     morgan = require('morgan');
 
 var serve_font = require('./serve_font'),
-    serve_raster = require('./serve_raster'),
+    serve_rendered = require('./serve_rendered'),
     serve_style = require('./serve_style'),
-    serve_tiles = require('./serve_tiles'),
+    serve_data = require('./serve_data'),
     utils = require('./utils');
 
 module.exports = function(opts, callback) {
   var app = express().disable('x-powered-by'),
       serving = {
         styles: {},
-        raster: {},
-        tiles: {},
+        rendered: {},
+        data: {},
         fonts: { // default fonts, always expose these (if they exist)
           'Open Sans Regular': true,
           'Arial Unicode MS Regular': true
@@ -61,7 +61,7 @@ module.exports = function(opts, callback) {
   paths.sprites = path.resolve(paths.root, paths.sprites || '');
   paths.mbtiles = path.resolve(paths.root, paths.mbtiles || '');
 
-  var tiles = clone(config.data || {});
+  var data = clone(config.data || {});
 
   Object.keys(config.styles || {}).forEach(function(id) {
     var item = config.styles[id];
@@ -71,20 +71,20 @@ module.exports = function(opts, callback) {
     }
 
     if (item.serve_data !== false) {
-      app.use('/', serve_style(options, serving.styles, item, id,
+      app.use('/styles/', serve_style(options, serving.styles, item, id,
         function(mbtiles) {
-          var tilesItemId;
-          Object.keys(tiles).forEach(function(id) {
-            if (tiles[id].mbtiles == mbtiles) {
-              tilesItemId = id;
+          var dataItemId;
+          Object.keys(data).forEach(function(id) {
+            if (data[id].mbtiles == mbtiles) {
+              dataItemId = id;
             }
           });
-          if (tilesItemId) { // mbtiles exist in the tiles config
-            return tilesItemId;
+          if (dataItemId) { // mbtiles exist in the data config
+            return dataItemId;
           } else {
             var id = mbtiles.substr(0, mbtiles.lastIndexOf('.')) || mbtiles;
-            while (tiles[id]) id += '_';
-            tiles[id] = {
+            while (data[id]) id += '_';
+            data[id] = {
               'mbtiles': mbtiles
             };
             return id;
@@ -93,26 +93,27 @@ module.exports = function(opts, callback) {
           serving.fonts[font] = true;
         }));
     }
-    if (item.raster !== false) {
-      app.use('/', serve_raster(options, serving.raster, item, id));
+    if (item.serve_rendered !== false) {
+      app.use('/styles/' + id + '/',
+              serve_rendered(options, serving.rendered, item, id));
     }
   });
 
   if (Object.keys(serving.styles).length > 0) {
     // serve fonts only if serving some styles
-    app.use('/', serve_font(options, serving.fonts));
+    app.use('/fonts/', serve_font(options, serving.fonts));
   }
 
   app.use(cors());
 
-  Object.keys(tiles).forEach(function(id) {
-    var item = tiles[id];
+  Object.keys(data).forEach(function(id) {
+    var item = data[id];
     if (!item.mbtiles || item.mbtiles.length == 0) {
       console.log('Missing "mbtiles" property for ' + id);
       return;
     }
 
-    app.use('/', serve_tiles(options, serving.tiles, item, id));
+    app.use('/data/', serve_data(options, serving.data, item, id));
   });
 
   app.get('/styles.json', function(req, res, next) {
@@ -139,14 +140,14 @@ module.exports = function(opts, callback) {
     return arr;
   };
 
-  app.get('/raster.json', function(req, res, next) {
-    res.send(addTileJSONs([], req, 'raster'));
+  app.get('/rendered.json', function(req, res, next) {
+    res.send(addTileJSONs([], req, 'rendered'));
   });
   app.get('/data.json', function(req, res, next) {
-    res.send(addTileJSONs([], req, 'tiles'));
+    res.send(addTileJSONs([], req, 'data'));
   });
   app.get('/index.json', function(req, res, next) {
-    res.send(addTileJSONs(addTileJSONs([], req, 'raster'), req, 'tiles'));
+    res.send(addTileJSONs(addTileJSONs([], req, 'rendered'), req, 'data'));
   });
 
   //------------------------------------
@@ -178,11 +179,11 @@ module.exports = function(opts, callback) {
     var styles = clone(config.styles || {});
     Object.keys(styles).forEach(function(id) {
       var style = styles[id];
-      style.name = (serving.styles[id] || serving.raster[id] || {}).name;
-      style.serving_style = serving.styles[id];
-      style.serving_raster = serving.raster[id];
-      if (style.serving_raster) {
-        var center = style.serving_raster.center;
+      style.name = (serving.styles[id] || serving.rendered[id] || {}).name;
+      style.serving_data = serving.styles[id];
+      style.serving_rendered = serving.rendered[id];
+      if (style.serving_rendered) {
+        var center = style.serving_rendered.center;
         if (center) {
           style.viewer_hash = '#' + center[2] + '/' +
                               center[1].toFixed(5) + '/' +
@@ -195,16 +196,24 @@ module.exports = function(opts, callback) {
         }
       }
     });
-    var data = clone(serving.tiles || {});
+    var data = clone(serving.data || {});
     Object.keys(data).forEach(function(id) {
-      var tiles = data[id];
-      var center = tiles.center;
+      var data_ = data[id];
+      var center = data_.center;
       if (center) {
-        tiles.viewer_hash = '#' + center[2] + '/' +
+        data_.viewer_hash = '#' + center[2] + '/' +
                             center[1].toFixed(5) + '/' +
                             center[0].toFixed(5);
       }
-      tiles.is_vector = tiles.format == 'pbf';
+      data_.is_vector = data_.format == 'pbf';
+      if (!data_.is_vector) {
+        if (center) {
+          var centerPx = mercator.px([center[0], center[1]], center[2]);
+          data_.thumbnail = center[2] + '/' +
+              Math.floor(centerPx[0] / 256) + '/' +
+              Math.floor(centerPx[1] / 256) + '.' + data_.format;
+        }
+      }
     });
     return {
       styles: styles,
@@ -219,24 +228,26 @@ module.exports = function(opts, callback) {
       return null;
     }
     style.id = id;
-    style.name = (serving.styles[id] || serving.raster[id]).name;
-    style.serving_style = serving.styles[id];
-    style.serving_raster = serving.raster[id];
+    style.name = (serving.styles[id] || serving.rendered[id]).name;
+    style.serving_data = serving.styles[id];
+    style.serving_rendered = serving.rendered[id];
     return style;
   });
 
-  app.use('/raster/:id/$', function(req, res, next) {
+  /*
+  app.use('/rendered/:id/$', function(req, res, next) {
     return res.redirect(301, '/styles/' + req.params.id + '/');
   });
+  */
 
   serveTemplate('/data/:id/$', 'xray', function(params) {
     var id = params.id;
-    var tiles = serving.tiles[id];
-    if (!tiles) {
+    var data = serving.data[id];
+    if (!data) {
       return null;
     }
-    tiles.id = id;
-    return tiles;
+    data.id = id;
+    return data;
   });
 
   var server = app.listen(process.env.PORT || opts.port, function() {

@@ -13,24 +13,24 @@
     {{#each styles}}
       <div class="item">
         {{#if thumbnail}}
-          <img src="/raster/{{@key}}/{{thumbnail}}" alt="{{name}} preview" />
+          <img src="/styles/{{@key}}/rendered/{{thumbnail}}" alt="{{name}} preview" />
         {{else}}
           <div class="sample-img"></div>
         {{/if}}
         <h3>{{name}}</h3>
         <p>Id: {{@key}}
-          {{#if serving_raster}}
-            | <a href="/raster/{{@key}}.json">TileJSON</a>
+          {{#if serving_rendered}}
+            | <a href="/styles/{{@key}}/rendered.json">TileJSON</a>
           {{/if}}
         </p>
-        {{#if serving_style}}
+        {{#if serving_data}}
           <a class="btn" href="/styles/{{@key}}/?vector{{viewer_hash}}">Vector view</a>
         {{/if}}
-        {{#if serving_raster}}
+        {{#if serving_rendered}}
           <a class="btn" href="/styles/{{@key}}/?raster{{viewer_hash}}">Raster view</a>
         {{/if}}
-        {{#if serving_style}}
-          {{#if serving_raster}}
+        {{#if serving_data}}
+          {{#if serving_rendered}}
             <a class="btn" href="/styles/{{@key}}/{{viewer_hash}}">Auto view</a>
           {{/if}}
         {{/if}}
@@ -41,14 +41,17 @@
     <div class="box">
     {{#each data}}
       <div class="item">
-        <div class="sample-img"></div>
+        {{#if thumbnail}}
+          <img src="/data/{{@key}}/{{thumbnail}}" alt="{{name}} preview" />
+        {{else}}
+          <div class="sample-img"></div>
+        {{/if}}
         <h3>{{name}}</h3>
-        <p>Id: {{@key}} | <a href="/data/{{@key}}.json">TileJSON</a></p>
+        <p>Id: {{@key}} | {{#is_vector}}Vector{{/is_vector}}{{^is_vector}}Raster{{/is_vector}} data | <a href="/data/{{@key}}.json">TileJSON</a></p>
         {{#is_vector}}
         <a class="btn" href="/data/{{@key}}/{{viewer_hash}}">X-Ray viewer</a>
         {{/is_vector}}
         {{^is_vector}}
-        Raster tiles
         {{/is_vector}}
       </div>
     {{/each}}

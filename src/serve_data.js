@@ -35,7 +35,7 @@ module.exports = function(options, repo, params, id) {
     });
   });
 
-  var tilePattern = '/data/' + id + '/:z(\\d+)/:x(\\d+)/:y(\\d+).:format([\\w]+)';
+  var tilePattern = '/' + id + '/:z(\\d+)/:x(\\d+)/:y(\\d+).:format([\\w]+)';
 
   app.get(tilePattern, function(req, res, next) {
     var z = req.params.z | 0,
@@ -74,7 +74,7 @@ module.exports = function(options, repo, params, id) {
     });
   });
 
-  app.get('/data/' + id + '.json', function(req, res, next) {
+  app.get('/' + id + '.json', function(req, res, next) {
     var info = clone(tileJSON);
     info.tiles = utils.getTileUrls(req, info.tiles,
                                    'data/' + id, info.format);

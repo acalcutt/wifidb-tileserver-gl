@@ -45,7 +45,7 @@ module.exports = function(options, repo, params, id, reportTiles, reportFont) {
 
   repo[id] = styleJSON;
 
-  app.get('/styles/' + id + '.json', function(req, res, next) {
+  app.get('/' + id + '.json', function(req, res, next) {
     var fixUrl = function(url) {
       return url.replace(
           'local://', req.protocol + '://' + req.headers.host + '/');
@@ -61,7 +61,7 @@ module.exports = function(options, repo, params, id, reportTiles, reportFont) {
     return res.send(styleJSON_);
   });
 
-  app.get('/styles/' + id + '/sprite:scale(@[23]x)?\.:format([\\w]+)',
+  app.get('/' + id + '/sprite:scale(@[23]x)?\.:format([\\w]+)',
       function(req, res, next) {
     var scale = req.params.scale,
         format = req.params.format;

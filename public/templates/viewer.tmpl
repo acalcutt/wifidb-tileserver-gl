@@ -28,7 +28,7 @@
       });
       map.addControl(new mapboxgl.Navigation());
     } else {
-      var map = L.mapbox.map('map', '/raster/{{id}}.json', { zoomControl: false });
+      var map = L.mapbox.map('map', '/styles/{{id}}/rendered.json', { zoomControl: false });
       new L.Control.Zoom({ position: 'topright' }).addTo(map);
       setTimeout(function() {
         new L.Hash(map);

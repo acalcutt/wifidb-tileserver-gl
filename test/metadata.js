@@ -40,7 +40,7 @@ var testTileJSON = function(url, basename) {
 
 describe('Metadata', function() {
   testTileJSONArray('/index.json');
-  testTileJSONArray('/raster.json');
+  testTileJSONArray('/rendered.json');
   testTileJSONArray('/data.json');
 
   describe('/styles.json is valid array', function() {
@@ -64,6 +64,6 @@ describe('Metadata', function() {
     });
   });
 
-  testTileJSON('/raster/test.json', 'test');
+  testTileJSON('/styles/test/rendered.json', 'test');
   testTileJSON('/data/zurich-vector.json', 'zurich-vector');
 });

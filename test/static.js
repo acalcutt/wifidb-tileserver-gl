@@ -1,6 +1,6 @@
 var testStatic = function(prefix, q, format, status, scale, type) {
   if (scale) q += '@' + scale + 'x';
-  var path = '/static/' + prefix + '/' + q + '.' + format;
+  var path = '/styles/' + prefix + '/rendered/static/' + q + '.' + format;
   it(path + ' returns ' + status, function(done) {
     var test = supertest(app).get(path);
     if (status) test.expect(status);

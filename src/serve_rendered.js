@@ -61,7 +61,8 @@ module.exports = function(options, repo, params, id) {
             var source = map.sources[parts[2]];
             var z = parts[3] | 0,
                 x = parts[4] | 0,
-                y = parts[5].split('.')[0] | 0;
+                y = parts[5].split('.')[0] | 0,
+                format = parts[5].split('.')[1];
             source.getTile(z, x, y, function(err, data, headers) {
               if (err) {
                 //console.log('MBTiles error, serving empty', err);
@@ -76,7 +77,11 @@ module.exports = function(options, repo, params, id) {
                   response.etag = headers['ETag'];
                 }
 
-                response.data = zlib.unzipSync(data);
+                if (format == 'pbf') {
+                  response.data = zlib.unzipSync(data);
+                } else {
+                  response.data = data;
+                }
 
                 callback(null, response);
               }
@@ -162,7 +167,7 @@ module.exports = function(options, repo, params, id) {
             source.basename = name;
             source.tiles = [
               // meta url which will be detected when requested
-              'mbtiles://' + name + '/{z}/{x}/{y}.pbf'
+              'mbtiles://' + name + '/{z}/{x}/{y}.' + (info.format || 'pbf')
             ];
             callback(null);
           });
@@ -180,7 +185,7 @@ module.exports = function(options, repo, params, id) {
 
   repo[id] = tileJSON;
 
-  var tilePattern = '/raster/' + id + '/:z(\\d+)/:x(\\d+)/:y(\\d+)' +
+  var tilePattern = '/rendered/:z(\\d+)/:x(\\d+)/:y(\\d+)' +
                     ':scale(' + SCALE_PATTERN + ')?\.:format([\\w]+)';
 
   var respondImage = function(z, lon, lat, bearing, pitch,
@@ -279,7 +284,7 @@ module.exports = function(options, repo, params, id) {
   });
 
   var staticPattern =
-      '/static/' + id + '/%s:scale(' + SCALE_PATTERN + ')?\.:format([\\w]+)';
+      '/rendered/static/%s:scale(' + SCALE_PATTERN + ')?\.:format([\\w]+)';
 
   var centerPattern =
       util.format(':lon(%s),:lat(%s),:z(\\d+):bearing(,%s)?:pitch(,%s)?/' +
@@ -290,8 +295,8 @@ module.exports = function(options, repo, params, id) {
     var z = req.params.z | 0,
         x = +req.params.lon,
         y = +req.params.lat,
-        bearing = +(req.params.bearing || ',0').substring(1),
-        pitch = +(req.params.pitch || ',0').substring(1),
+        bearing = +((req.params.bearing || ',0').substring(1)),
+        pitch = +((req.params.pitch || ',0').substring(1)),
         w = req.params.width | 0,
         h = req.params.height | 0,
         scale = getScale(req.params.scale),
@@ -319,10 +324,10 @@ module.exports = function(options, repo, params, id) {
     return respondImage(z, x, y, 0, 0, w, h, scale, format, res, next);
   });
 
-  app.get('/raster/' + id + '.json', function(req, res, next) {
+  app.get('/rendered.json', function(req, res, next) {
     var info = clone(tileJSON);
     info.tiles = utils.getTileUrls(req, info.tiles,
-                                   'raster/' + id, info.format);
+                                   'styles/' + id + '/rendered', info.format);
     return res.send(info);
   });
 

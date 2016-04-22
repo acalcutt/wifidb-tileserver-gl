@@ -1,6 +1,6 @@
 var testTile = function(prefix, z, x, y, format, status, scale, type) {
   if (scale) y += '@' + scale + 'x';
-  var path = '/raster/' + prefix + '/' + z + '/' + x + '/' + y + '.' + format;
+  var path = '/styles/' + prefix + '/rendered/' + z + '/' + x + '/' + y + '.' + format;
   it(path + ' returns ' + status, function(done) {
     var test = supertest(app).get(path);
     test.expect(status);
