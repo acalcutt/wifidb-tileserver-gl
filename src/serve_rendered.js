@@ -284,7 +284,7 @@ module.exports = function(options, repo, params, id) {
   });
 
   var staticPattern =
-      '/rendered/static/%s:scale(' + SCALE_PATTERN + ')?\.:format([\\w]+)';
+      '/static/%s:scale(' + SCALE_PATTERN + ')?\.:format([\\w]+)';
 
   var centerPattern =
       util.format(':lon(%s),:lat(%s),:z(\\d+):bearing(,%s)?:pitch(,%s)?/' +
