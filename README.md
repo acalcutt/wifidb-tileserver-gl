@@ -60,7 +60,7 @@ The config file can contain definition of several paths where the tiles will be 
     },
     "hybrid": {
       "style": "satellite-hybrid-v8.json",
-      "raster": false,
+      "serve_rendered": false,
       "tilejson": {
         "format": "webp",
         "center": [8.536715, 47.377455, 6]
@@ -68,13 +68,13 @@ The config file can contain definition of several paths where the tiles will be 
     },
     "streets": {
       "style": "streets-v8.json",
-      "vector": false,
+      "serve_data": false,
       "tilejson": {
         "center": [8.536715, 47.377455, 6]
       }
     }
   },
-  "vector": {
+  "data": {
     "zurich-vector": {
       "mbtiles": "zurich.mbtiles"
     }
@@ -89,13 +89,13 @@ The config file can contain definition of several paths where the tiles will be 
 - Style is served at `/styles/{id}.json` (+ array at `/styles.json`)
   - Sprites at `/styles/{id}/sprite[@2x].{format}`
   - Fonts at `/fonts/{fontstack}/{start}-{end}.pbf`
-- Rasterized tiles are at `/raster/{id}/{z}/{x}/{y}[@2x].{format}`
+- Rendered tiles are at `/styles/{id}/rendered/{z}/{x}/{y}[@2x].{format}`
   - The optional `@2x` (or `@3x`) part can be used to render HiDPI (retina) tiles
   - Available formats: `png`, `jpg` (`jpeg`), `webp`
-  - TileJSON at `/raster/{id}.json`
+  - TileJSON at `/styles/{id}/rendered.json`
 - Static images are rendered at:
-  - `/static/{id}/{lon},{lat},{zoom}/{width}x{height}[@2x].{format}` (center-based)
-  - `/static/{id}/{minx},{miny},{maxx},{maxy}/{zoom}[@2x].{format}` (area-based)
-- Vector tiles at `/vector/{mbtiles}/{z}/{x}/{y}.pbf`
-  - TileJSON at `/vector/{mbtiles}.json`
-- Array of all TileJSONs at `/index.json` (`/raster.json`; `/vector.json`)
+  - `/styles/{id}/rendered/static/{lon},{lat},{zoom}/{width}x{height}[@2x].{format}` (center-based)
+  - `/styles/{id}/rendered/static/{minx},{miny},{maxx},{maxy}/{zoom}[@2x].{format}` (area-based)
+- Source data at `/data/{mbtiles}/{z}/{x}/{y}.{format}`
+  - TileJSON at `/data/{mbtiles}.json`
+- Array of all TileJSONs at `/index.json` (`/rendered.json`; `/data.json`)
