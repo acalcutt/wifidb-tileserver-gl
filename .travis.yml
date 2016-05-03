@@ -19,5 +19,4 @@ install:
   - mkdir test_data
   - mv tmp_test_data/tileserver-gl-data-*/* -t test_data
 script:
-  - cd tileserver-gl-data-0.0.3
   - xvfb-run --server-args="-screen 0 1024x768x24" npm test
