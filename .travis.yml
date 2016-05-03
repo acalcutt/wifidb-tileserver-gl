@@ -14,7 +14,10 @@ before_install:
   - sudo apt-get install -qq xvfb
 install:
   - npm install
-  - wget https://github.com/klokantech/tileserver-gl/releases/download/v0.0.2/test_data.zip
-  - unzip -q test_data.zip -d test_data
+  - wget -O test_data.zip https://github.com/klokantech/tileserver-gl-data/archive/v0.0.3.zip
+  - unzip -q test_data.zip -d tmp_test_data
+  - mkdir test_data
+  - mv tmp_test_data/tileserver-gl-data-*/* -t test_data
 script:
+  - cd tileserver-gl-data-0.0.3
   - xvfb-run --server-args="-screen 0 1024x768x24" npm test
