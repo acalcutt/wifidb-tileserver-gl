@@ -9,6 +9,7 @@ var async = require('async'),
     zlib = require('zlib');
 
 var clone = require('clone'),
+    Color = require('color'),
     express = require('express'),
     mercator = new (require('sphericalmercator'))(),
     mbgl = require('mapbox-gl-native'),
@@ -66,7 +67,7 @@ module.exports = function(options, repo, params, id) {
             source.getTile(z, x, y, function(err, data, headers) {
               if (err) {
                 //console.log('MBTiles error, serving empty', err);
-                callback(null, { data: new Buffer(0) });
+                callback(null, { data: source.emptyTile });
               } else {
                 var response = {};
 
@@ -163,12 +164,32 @@ module.exports = function(options, repo, params, id) {
         map.sources[name] = new mbtiles(
           path.join(options.paths.mbtiles, mbtilesFile), function(err) {
           map.sources[name].getInfo(function(err, info) {
+            var type = source.type;
             Object.assign(source, info);
+            source.type = type;
             source.basename = name;
             source.tiles = [
               // meta url which will be detected when requested
               'mbtiles://' + name + '/{z}/{x}/{y}.' + (info.format || 'pbf')
             ];
+            if (source.format == 'pbf') {
+              map.sources[name].emptyTile = new Buffer(0);
+            } else {
+              var color = new Color(source.color || '#fff');
+              var format = source.format;
+              if (format == 'jpg') {
+                format = 'jpeg';
+              }
+              sharp(new Buffer(color.rgbArray()), {
+                raw: {
+                  width: 1,
+                  height: 1,
+                  channels: 3
+                }
+              }).toFormat(format).toBuffer(function(err, buffer, info) {
+                map.sources[name].emptyTile = buffer;
+              });
+            }
             callback(null);
           });
         });
