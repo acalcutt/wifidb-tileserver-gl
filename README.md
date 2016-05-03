@@ -94,8 +94,8 @@ The config file can contain definition of several paths where the tiles will be 
   - Available formats: `png`, `jpg` (`jpeg`), `webp`
   - TileJSON at `/styles/{id}/rendered.json`
 - Static images are rendered at:
-  - `/styles/{id}/rendered/static/{lon},{lat},{zoom}/{width}x{height}[@2x].{format}` (center-based)
-  - `/styles/{id}/rendered/static/{minx},{miny},{maxx},{maxy}/{zoom}[@2x].{format}` (area-based)
+  - `/styles/{id}/static/{lon},{lat},{zoom}/{width}x{height}[@2x].{format}` (center-based)
+  - `/styles/{id}/static/{minx},{miny},{maxx},{maxy}/{zoom}[@2x].{format}` (area-based)
 - Source data at `/data/{mbtiles}/{z}/{x}/{y}.{format}`
   - TileJSON at `/data/{mbtiles}.json`
 - Array of all TileJSONs at `/index.json` (`/rendered.json`; `/data.json`)
