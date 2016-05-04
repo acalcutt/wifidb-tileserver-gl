@@ -253,13 +253,14 @@ module.exports = function(opts, callback) {
   });
   */
 
-  serveTemplate('/data/:id/$', 'xray', function(params) {
+  serveTemplate('/data/:id/$', 'data', function(params) {
     var id = params.id;
-    var data = serving.data[id];
+    var data = clone(serving.data[id]);
     if (!data) {
       return null;
     }
     data.id = id;
+    data.is_vector = data.format == 'pbf';
     return data;
   });
 

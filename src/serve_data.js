@@ -30,6 +30,7 @@ module.exports = function(options, repo, params, id) {
       tileJSON['tilejson'] = '2.0.0';
       tileJSON['basename'] = id;
       tileJSON['filesize'] = fs.statSync(mbtilesFile)['size'];
+      delete tileJSON['scheme'];
 
       Object.assign(tileJSON, params.tilejson || {});
       utils.fixTileJSONCenter(tileJSON);

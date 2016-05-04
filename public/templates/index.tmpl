@@ -49,9 +49,10 @@
         <h3>{{name}}</h3>
         <p>Id: {{@key}} |{{#if formatted_filesize}} {{formatted_filesize}} |{{/if}} {{#is_vector}}Vector{{/is_vector}}{{^is_vector}}Raster{{/is_vector}} data | <a href="/data/{{@key}}.json">TileJSON</a></p>
         {{#is_vector}}
-        <a class="btn" href="/data/{{@key}}/{{viewer_hash}}">X-Ray viewer</a>
+        <a class="btn" href="/data/{{@key}}/{{viewer_hash}}">X-Ray view</a>
         {{/is_vector}}
         {{^is_vector}}
+        <a class="btn" href="/data/{{@key}}/{{viewer_hash}}">Raster view</a>
         {{/is_vector}}
       </div>
     {{/each}}
