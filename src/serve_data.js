@@ -1,6 +1,7 @@
 'use strict';
 
 var crypto = require('crypto'),
+    fs = require('fs'),
     path = require('path');
 
 var clone = require('clone'),
@@ -12,15 +13,14 @@ var utils = require('./utils');
 module.exports = function(options, repo, params, id) {
   var app = express().disable('x-powered-by');
 
-  var mbtilesFile = params.mbtiles;
+  var mbtilesFile = path.join(options.paths.mbtiles, params.mbtiles);
   var tileJSON = {
     'tiles': params.domains || options.domains
   };
 
   repo[id] = tileJSON;
 
-  var source = new mbtiles(path.join(options.paths.mbtiles, mbtilesFile),
-                           function(err) {
+  var source = new mbtiles(mbtilesFile, function(err) {
     source.getInfo(function(err, info) {
       tileJSON['name'] = id;
       tileJSON['format'] = 'pbf';
@@ -29,6 +29,7 @@ module.exports = function(options, repo, params, id) {
 
       tileJSON['tilejson'] = '2.0.0';
       tileJSON['basename'] = id;
+      tileJSON['filesize'] = fs.statSync(mbtilesFile)['size'];
 
       Object.assign(tileJSON, params.tilejson || {});
       utils.fixTileJSONCenter(tileJSON);

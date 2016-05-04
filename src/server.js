@@ -214,6 +214,19 @@ module.exports = function(opts, callback) {
               Math.floor(centerPx[1] / 256) + '.' + data_.format;
         }
       }
+      if (data_.filesize) {
+        var suffix = 'kB';
+        var size = parseInt(data_.filesize, 10) / 1024;
+        if (size > 1024) {
+          suffix = 'MB';
+          size /= 1024;
+        }
+        if (size > 1024) {
+          suffix = 'GB';
+          size /= 1024;
+        }
+        data_.formatted_filesize = size.toFixed(2) + ' ' + suffix;
+      }
     });
     return {
       styles: styles,
