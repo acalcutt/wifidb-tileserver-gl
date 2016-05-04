@@ -140,6 +140,7 @@ module.exports = function(options, repo, params, id) {
   var tileJSON = {
     'tilejson': '2.0.0',
     'name': styleJSON.name,
+    'attribution': '',
     'basename': id,
     'minzoom': 0,
     'maxzoom': 20,
@@ -147,6 +148,7 @@ module.exports = function(options, repo, params, id) {
     'format': 'png',
     'type': 'baselayer'
   };
+  var attributionOverride = params.tilejson && params.tilejson.attribution;
   Object.assign(tileJSON, params.tilejson || {});
   tileJSON.tiles = params.domains || options.domains;
   utils.fixTileJSONCenter(tileJSON);
@@ -189,6 +191,13 @@ module.exports = function(options, repo, params, id) {
               }).toFormat(format).toBuffer(function(err, buffer, info) {
                 map.sources[name].emptyTile = buffer;
               });
+            }
+            if (!attributionOverride &&
+                source.attribution && source.attribution.length > 0) {
+              if (tileJSON.attribution.length > 0) {
+                tileJSON.attribution += '; ';
+              }
+              tileJSON.attribution += source.attribution;
             }
             callback(null);
           });
