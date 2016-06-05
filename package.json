@@ -10,6 +10,7 @@
     "type": "git",
     "url": "https://github.com/klokantech/tileserver-gl.git"
   },
+  "license": "BSD-2-Clause",
   "scripts": {
     "test": "mocha test/**.js"
   },
