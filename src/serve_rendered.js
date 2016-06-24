@@ -8,14 +8,18 @@ var async = require('async'),
     util = require('util'),
     zlib = require('zlib');
 
-var clone = require('clone'),
+// sharp has to be required before node-canvas
+// see https://github.com/lovell/sharp/issues/371
+var sharp = require('sharp');
+
+var Canvas = require('canvas'),
+    clone = require('clone'),
     Color = require('color'),
     express = require('express'),
     mercator = new (require('sphericalmercator'))(),
     mbgl = require('mapbox-gl-native'),
     mbtiles = require('mbtiles'),
-    request = require('request'),
-    sharp = require('sharp');
+    request = require('request');
 
 var utils = require('./utils');
 
@@ -219,7 +223,8 @@ module.exports = function(options, repo, params, id) {
                     ':scale(' + SCALE_PATTERN + ')?\.:format([\\w]+)';
 
   var respondImage = function(z, lon, lat, bearing, pitch,
-                              width, height, scale, format, res, next) {
+                              width, height, scale, format, res, next,
+                              opt_overlay) {
     if (Math.abs(lon) > 180 || Math.abs(lat) > 85.06) {
       return res.status(400).send('Invalid center');
     }
@@ -264,6 +269,10 @@ module.exports = function(options, repo, params, id) {
         if (z == 0) {
           // HACK: when serving zoom 0, resize the 0 tile from 512 to 256
           image.resize(width * scale, height * scale);
+        }
+
+        if (opt_overlay) {
+          image.overlayWith(opt_overlay);
         }
 
         image.toFormat(format);
@@ -352,6 +361,90 @@ module.exports = function(options, repo, params, id) {
         scale = getScale(req.params.scale),
         format = req.params.format;
     return respondImage(z, x, y, 0, 0, w, h, scale, format, res, next);
+  });
+
+  var pathPattern = 'path/:width(\\d+)x:height(\\d+)';
+
+  app.get(util.format(staticPattern, pathPattern), function(req, res, next) {
+    var pathParts = (req.query.path || '').split('|');
+    var path = [];
+    pathParts.forEach(function(pair) {
+      var pairParts = pair.split(',');
+      if (pairParts.length == 2) {
+        if (req.query.latlng == '1' || req.query.latlng == 'true') {
+          path.push([+(pairParts[1]), +(pairParts[0])]);
+        } else {
+          path.push([+(pairParts[0]), +(pairParts[1])]);
+        }
+      }
+    });
+    if (path.length < 2) {
+      return res.status(400).send('Invalid path');
+    }
+
+    var w = req.params.width | 0,
+        h = req.params.height | 0,
+        scale = getScale(req.params.scale),
+        format = req.params.format;
+
+    var bbox = [Infinity, Infinity, -Infinity, -Infinity];
+    path.forEach(function(pair) {
+      bbox[0] = Math.min(bbox[0], pair[0]);
+      bbox[1] = Math.min(bbox[1], pair[1]);
+      bbox[2] = Math.max(bbox[2], pair[0]);
+      bbox[3] = Math.max(bbox[3], pair[1]);
+    });
+
+    var z = 20,
+        x = (bbox[0] + bbox[2]) / 2,
+        y = (bbox[1] + bbox[3]) / 2;
+
+    var padding = req.query.padding !== undefined ?
+                  parseFloat(req.query.padding) : 0.1;
+
+    var minCorner = mercator.px([bbox[0], bbox[3]], z),
+        maxCorner = mercator.px([bbox[2], bbox[1]], z);
+    while ((((maxCorner[0] - minCorner[0]) * (1 + 2 * padding) > w) ||
+            ((maxCorner[1] - minCorner[1]) * (1 + 2 * padding) > h)) && z > 0) {
+      z--;
+      minCorner[0] /= 2;
+      minCorner[1] /= 2;
+      maxCorner[0] /= 2;
+      maxCorner[1] /= 2;
+    }
+
+    var precisePx = function(ll, zoom) {
+      var px = mercator.px(ll, 20);
+      var scale = Math.pow(2, zoom - 20);
+      return [px[0] * scale, px[1] * scale];
+    };
+
+    var canvas = new Canvas(scale * w, scale * h);
+    var ctx = canvas.getContext('2d');
+    var center = precisePx([x, y], z);
+    ctx.scale(scale, scale);
+    ctx.translate(-center[0] + w / 2, -center[1] + h / 2);
+    var lineWidth = req.query.width !== undefined ?
+                    parseFloat(req.query.width) : 1;
+    ctx.lineWidth = lineWidth;
+    ctx.strokeStyle = req.query.stroke || 'rgba(0,64,255,0.7)';
+    ctx.fillStyle = req.query.fill || 'rgba(255,255,255,0.4)';
+    ctx.beginPath();
+    path.forEach(function(pair) {
+      var px = precisePx(pair, z);
+      ctx.lineTo(px[0], px[1]);
+    });
+    if (path[0][0] == path[path.length - 1][0] &&
+        path[0][1] == path[path.length - 1][1]) {
+      ctx.closePath();
+    }
+    ctx.fill();
+    if (lineWidth > 0) {
+      ctx.stroke();
+    }
+
+    return respondImage(z, x, y, 0, 0, w, h, scale, format, res, next,
+                        canvas.toBuffer());
   });
 
   app.get('/rendered.json', function(req, res, next) {

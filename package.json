@@ -17,6 +17,7 @@
   "dependencies": {
     "async": "1.5.2",
     "advanced-pool": "0.3.2",
+    "canvas": "1.4.0",
     "clone": "1.0.2",
     "color": "0.11.2",
     "cors": "2.7.1",

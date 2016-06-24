@@ -6,6 +6,7 @@ RUN apt-get -qq update \
     curl \
     build-essential \
     python \
+    libcairo2-dev \
     xvfb \
 && curl -sL https://deb.nodesource.com/setup_4.x | bash - \
 && apt-get -y install nodejs \
