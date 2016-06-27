@@ -1,6 +1,9 @@
-var testStatic = function(prefix, q, format, status, scale, type) {
+var testStatic = function(prefix, q, format, status, scale, type, query) {
   if (scale) q += '@' + scale + 'x';
   var path = '/styles/' + prefix + '/static/' + q + '.' + format;
+  if (query) {
+    path += query;
+  }
   it(path + ' returns ' + status, function(done) {
     var test = supertest(app).get(path);
     if (status) test.expect(status);
@@ -74,6 +77,23 @@ describe('Static endpoints', function() {
       testStatic('test', '0,0,1,1/1x1', 'gif', 400);
 
       testStatic('test', '-180,-80,180,80/0.5x2.6', 'png', 404);
+    });
+  });
+
+  describe('autofit path', function() {
+    describe('valid requests', function() {
+      testStatic('test', 'auto/256x256', 'png', 200, undefined, /image\/png/, '?path=10,10|20,20');
+
+      describe('different parameters', function() {
+        testStatic('test', 'auto/20x20', 'png', 200, 2, /image\/png/, '?path=10,10|20,20');
+        testStatic('test', 'auto/200x200', 'png', 200, 3, /image\/png/, '?path=-10,-10|-20,-20');
+      });
+    });
+
+    describe('invalid requests return 4xx', function() {
+      testStatic('test', 'auto/256x256', 'png', 400);
+      testStatic('test', 'auto/256x256', 'png', 400, undefined, undefined, '?path=10,10');
+      testStatic('test', 'auto/2560x2560', 'png', 400, undefined, undefined, '?path=10,10|20,20');
     });
   });
 });
