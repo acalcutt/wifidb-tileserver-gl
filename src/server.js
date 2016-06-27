@@ -63,6 +63,8 @@ module.exports = function(opts, callback) {
 
   var data = clone(config.data || {});
 
+  app.use(cors());
+
   Object.keys(config.styles || {}).forEach(function(id) {
     var item = config.styles[id];
     if (!item.style || item.style.length == 0) {
@@ -103,8 +105,6 @@ module.exports = function(opts, callback) {
     // serve fonts only if serving some styles
     app.use('/fonts/', serve_font(options, serving.fonts));
   }
-
-  app.use(cors());
 
   Object.keys(data).forEach(function(id) {
     var item = data[id];
