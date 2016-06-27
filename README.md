@@ -43,7 +43,17 @@ See https://github.com/klokantech/tileserver-gl-data/blob/master/config.json
   - TileJSON at `/styles/{id}/rendered.json`
 - Static images are rendered at:
   - `/styles/{id}/static/{lon},{lat},{zoom}[,{bearing},{pitch}]/{width}x{height}[@2x].{format}` (center-based)
-  - `/styles/{id}/static/{minx},{miny},{maxx},{maxy}/{zoom}[@2x].{format}` (area-based)
+  - `/styles/{id}/static/{minx},{miny},{maxx},{maxy}/{width}x{height}[@2x].{format}` (area-based)
+  - `/styles/{id}/static/auto/{width}x{height}[@2x].{format}` (autofit path -- see below)
+  - The static image endpoints additionally support following query parameters:
+    - `path` - comma-separated `lng,lat`, pipe-separated pairs
+      - e.g. `5.9,45.8|5.9,47.8|10.5,47.8|10.5,45.8|5.9,45.8`
+    - `latlng` - indicates the `path` coordinates are in `lat,lng` order rather than the usual `lng,lat`
+    - `fill` - color to use as the fill (e.g. `red`, `rgba(255,255,255,0.5)`, `#0000ff`)
+    - `stroke` - color of the path stroke
+    - `width` - width of the stroke
+    - `padding` - "percetange" padding for fitted endpoints (area-based and path autofit)
+      - value of `0.1` means "add 10% size to each side to make sure the area of interest is nicely visible"
 - Source data at `/data/{mbtiles}/{z}/{x}/{y}.{format}`
   - TileJSON at `/data/{mbtiles}.json`
 - Array of all TileJSONs at `/index.json` (`/rendered.json`; `/data.json`)
