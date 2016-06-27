@@ -27,11 +27,11 @@ describe('Static endpoints', function() {
         testStatic('test', '8.5,40.5,20/300x150', 'png', 200, 3);
         testStatic('test', '-8.5,-40.5,20/300x150', 'png', 200, 3);
 
-        testStatic('test', '8,40,2,0,0/300x150', 'png', 200);
-        testStatic('test', '8,40,2,180,45/300x150', 'png', 200, 2);
-        testStatic('test', '8,40,2,10/300x150', 'png', 200, 3);
-        testStatic('test', '8,40,2,10.3,20.4/300x300', 'png', 200);
-        testStatic('test', '0,0,2,390,120/300x300', 'png', 200);
+        testStatic('test', '8,40,2@0,0/300x150', 'png', 200);
+        testStatic('test', '8,40,2@180,45/300x150', 'png', 200, 2);
+        testStatic('test', '8,40,2@10/300x150', 'png', 200, 3);
+        testStatic('test', '8,40,2@10.3,20.4/300x300', 'png', 200);
+        testStatic('test', '0,0,2@390,120/300x300', 'png', 200);
       });
     });
 
@@ -54,27 +54,26 @@ describe('Static endpoints', function() {
   describe('area-based', function() {
     describe('valid requests', function() {
       describe('various formats', function() {
-        testStatic('test', '-180,-80,180,80/0', 'png', 200, undefined, /image\/png/);
-        testStatic('test', '-180,-80,180,80/0', 'jpg', 200, undefined, /image\/jpeg/);
-        testStatic('test', '-180,-80,180,80/0', 'jpeg', 200, undefined, /image\/jpeg/);
-        testStatic('test', '-180,-80,180,80/0', 'webp', 200, undefined, /image\/webp/);
+        testStatic('test', '-180,-80,180,80/10x10', 'png', 200, undefined, /image\/png/);
+        testStatic('test', '-180,-80,180,80/10x10', 'jpg', 200, undefined, /image\/jpeg/);
+        testStatic('test', '-180,-80,180,80/10x10', 'jpeg', 200, undefined, /image\/jpeg/);
+        testStatic('test', '-180,-80,180,80/10x10', 'webp', 200, undefined, /image\/webp/);
       });
 
       describe('different parameters', function() {
-        testStatic('test', '-180,-90,180,90/0', 'png', 200, 2);
-        testStatic('test', '0,0,1,1/3', 'png', 200, 3);
+        testStatic('test', '-180,-90,180,90/20x20', 'png', 200, 2);
+        testStatic('test', '0,0,1,1/200x200', 'png', 200, 3);
 
-        testStatic('test', '-280,-80,0,80/0', 'png', 200);
+        testStatic('test', '-280,-80,0,80/280x160', 'png', 200);
       });
     });
 
     describe('invalid requests return 4xx', function() {
-      testStatic('test', '0,87,1,88/5', 'png', 400);
+      testStatic('test', '0,87,1,88/5x2', 'png', 400);
 
-      testStatic('test', '18,-9,-18,9/0', 'png', 400);
-      testStatic('test', '0,0,1,1/1', 'gif', 400);
+      testStatic('test', '0,0,1,1/1x1', 'gif', 400);
 
-      testStatic('test', '-180,-80,180,80/0.5', 'png', 404);
+      testStatic('test', '-180,-80,180,80/0.5x2.6', 'png', 404);
     });
   });
 });
