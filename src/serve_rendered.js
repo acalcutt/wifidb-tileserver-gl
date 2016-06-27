@@ -428,7 +428,7 @@ module.exports = function(options, repo, params, id) {
                         res, next, overlay);
   });
 
-  var pathPattern = 'path/:width(\\d+)x:height(\\d+)';
+  var pathPattern = 'auto/:width(\\d+)x:height(\\d+)';
 
   app.get(util.format(staticPattern, pathPattern), function(req, res, next) {
     var path = extractPathFromQuery(req.query);
