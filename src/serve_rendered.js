@@ -376,12 +376,32 @@ module.exports = function(options, repo, params, id) {
     return canvas.toBuffer();
   };
 
+  var calcZForBBox = function(bbox, w, h, query) {
+    var z = 25;
+
+    var padding = query.padding !== undefined ?
+                  parseFloat(query.padding) : 0.1;
+
+    var minCorner = mercator.px([bbox[0], bbox[3]], z),
+        maxCorner = mercator.px([bbox[2], bbox[1]], z);
+    while ((((maxCorner[0] - minCorner[0]) * (1 + 2 * padding) > w) ||
+            ((maxCorner[1] - minCorner[1]) * (1 + 2 * padding) > h)) && z > 0) {
+      z--;
+      minCorner[0] /= 2;
+      minCorner[1] /= 2;
+      maxCorner[0] /= 2;
+      maxCorner[1] /= 2;
+    }
+
+    return z;
+  };
+
   var staticPattern =
-      '/static/%s:scale(' + SCALE_PATTERN + ')?\.:format([\\w]+)';
+      '/static/%s/:width(\\d+)x:height(\\d+)' +
+      ':scale(' + SCALE_PATTERN + ')?\.:format([\\w]+)';
 
   var centerPattern =
-      util.format(':lon(%s),:lat(%s),:z(\\d+):bearing(,%s)?:pitch(,%s)?/' +
-                  ':width(\\d+)x:height(\\d+)',
+      util.format(':lon(%s),:lat(%s),:z(\\d+):bearing(,%s)?:pitch(,%s)?',
                   FLOAT_PATTERN, FLOAT_PATTERN, FLOAT_PATTERN, FLOAT_PATTERN);
 
   app.get(util.format(staticPattern, centerPattern), function(req, res, next) {
@@ -404,23 +424,23 @@ module.exports = function(options, repo, params, id) {
   });
 
   var boundsPattern =
-      util.format(':minx(%s),:miny(%s),:maxx(%s),:maxy(%s)/:z(\\d+)',
+      util.format(':minx(%s),:miny(%s),:maxx(%s),:maxy(%s)',
                   FLOAT_PATTERN, FLOAT_PATTERN, FLOAT_PATTERN, FLOAT_PATTERN);
 
   app.get(util.format(staticPattern, boundsPattern), function(req, res, next) {
     var bbox = [+req.params.minx, +req.params.miny,
                 +req.params.maxx, +req.params.maxy];
-    var z = req.params.z | 0,
+    var w = req.params.width | 0,
+        h = req.params.height | 0,
+        scale = getScale(req.params.scale),
+        format = req.params.format;
+
+    var z = calcZForBBox(bbox, w, h, req.query),
         x = (bbox[0] + bbox[2]) / 2,
         y = (bbox[1] + bbox[3]) / 2,
         bearing = 0,
         pitch = 0;
-    var minCorner = mercator.px([bbox[0], bbox[3]], z),
-        maxCorner = mercator.px([bbox[2], bbox[1]], z);
-    var w = (maxCorner[0] - minCorner[0]) | 0,
-        h = (maxCorner[1] - minCorner[1]) | 0,
-        scale = getScale(req.params.scale),
-        format = req.params.format;
+
     var path = extractPathFromQuery(req.query);
     var overlay = renderOverlay(z, x, y, bearing, pitch, w, h, scale,
                                 path, req.query);
@@ -428,9 +448,9 @@ module.exports = function(options, repo, params, id) {
                         res, next, overlay);
   });
 
-  var pathPattern = 'auto/:width(\\d+)x:height(\\d+)';
+  var autoPattern = 'auto';
 
-  app.get(util.format(staticPattern, pathPattern), function(req, res, next) {
+  app.get(util.format(staticPattern, autoPattern), function(req, res, next) {
     var path = extractPathFromQuery(req.query);
     if (path.length < 2) {
       return res.status(400).send('Invalid path');
@@ -451,23 +471,9 @@ module.exports = function(options, repo, params, id) {
       bbox[3] = Math.max(bbox[3], pair[1]);
     });
 
-    var z = 20,
+    var z = calcZForBBox(bbox, w, h, req.query),
         x = (bbox[0] + bbox[2]) / 2,
         y = (bbox[1] + bbox[3]) / 2;
-
-    var padding = req.query.padding !== undefined ?
-                  parseFloat(req.query.padding) : 0.1;
-
-    var minCorner = mercator.px([bbox[0], bbox[3]], z),
-        maxCorner = mercator.px([bbox[2], bbox[1]], z);
-    while ((((maxCorner[0] - minCorner[0]) * (1 + 2 * padding) > w) ||
-            ((maxCorner[1] - minCorner[1]) * (1 + 2 * padding) > h)) && z > 0) {
-      z--;
-      minCorner[0] /= 2;
-      minCorner[1] /= 2;
-      maxCorner[0] /= 2;
-      maxCorner[1] /= 2;
-    }
 
     var overlay = renderOverlay(z, x, y, bearing, pitch, w, h, scale,
                                 path, req.query);
