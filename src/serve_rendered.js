@@ -353,7 +353,14 @@ module.exports = function(options, repo, params, id) {
     var ctx = canvas.getContext('2d');
     var center = precisePx([x, y], z);
     ctx.scale(scale, scale);
-    ctx.translate(-center[0] + w / 2, -center[1] + h / 2);
+    if (bearing) {
+      ctx.translate(w / 2, h / 2);
+      ctx.rotate(-bearing / 180 * Math.PI);
+      ctx.translate(-center[0], -center[1]);
+    } else {
+      // optimized path
+      ctx.translate(-center[0] + w / 2, -center[1] + h / 2);
+    }
     var lineWidth = query.width !== undefined ?
                     parseFloat(query.width) : 1;
     ctx.lineWidth = lineWidth;
