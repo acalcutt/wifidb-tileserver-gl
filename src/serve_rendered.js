@@ -322,6 +322,60 @@ module.exports = function(options, repo, params, id) {
                         tileSize, tileSize, scale, format, res, next);
   });
 
+  var extractPathFromQuery = function(query) {
+    var pathParts = (query.path || '').split('|');
+    var path = [];
+    pathParts.forEach(function(pair) {
+      var pairParts = pair.split(',');
+      if (pairParts.length == 2) {
+        if (query.latlng == '1' || query.latlng == 'true') {
+          path.push([+(pairParts[1]), +(pairParts[0])]);
+        } else {
+          path.push([+(pairParts[0]), +(pairParts[1])]);
+        }
+      }
+    });
+    return path;
+  };
+
+  var renderOverlay = function(z, x, y, bearing, pitch, w, h, scale,
+                               path, query) {
+    if (!path || path.length < 2) {
+      return null;
+    }
+    var precisePx = function(ll, zoom) {
+      var px = mercator.px(ll, 20);
+      var scale = Math.pow(2, zoom - 20);
+      return [px[0] * scale, px[1] * scale];
+    };
+
+    var canvas = new Canvas(scale * w, scale * h);
+    var ctx = canvas.getContext('2d');
+    var center = precisePx([x, y], z);
+    ctx.scale(scale, scale);
+    ctx.translate(-center[0] + w / 2, -center[1] + h / 2);
+    var lineWidth = query.width !== undefined ?
+                    parseFloat(query.width) : 1;
+    ctx.lineWidth = lineWidth;
+    ctx.strokeStyle = query.stroke || 'rgba(0,64,255,0.7)';
+    ctx.fillStyle = query.fill || 'rgba(255,255,255,0.4)';
+    ctx.beginPath();
+    path.forEach(function(pair) {
+      var px = precisePx(pair, z);
+      ctx.lineTo(px[0], px[1]);
+    });
+    if (path[0][0] == path[path.length - 1][0] &&
+        path[0][1] == path[path.length - 1][1]) {
+      ctx.closePath();
+    }
+    ctx.fill();
+    if (lineWidth > 0) {
+      ctx.stroke();
+    }
+
+    return canvas.toBuffer();
+  };
+
   var staticPattern =
       '/static/%s:scale(' + SCALE_PATTERN + ')?\.:format([\\w]+)';
 
@@ -340,8 +394,13 @@ module.exports = function(options, repo, params, id) {
         h = req.params.height | 0,
         scale = getScale(req.params.scale),
         format = req.params.format;
-    return respondImage(z, x, y, bearing, pitch,
-                        w, h, scale, format, res, next);
+
+    var path = extractPathFromQuery(req.query);
+    var overlay = renderOverlay(z, x, y, bearing, pitch, w, h, scale,
+                                path, req.query);
+
+    return respondImage(z, x, y, bearing, pitch, w, h, scale, format,
+                        res, next, overlay);
   });
 
   var boundsPattern =
@@ -353,37 +412,34 @@ module.exports = function(options, repo, params, id) {
                 +req.params.maxx, +req.params.maxy];
     var z = req.params.z | 0,
         x = (bbox[0] + bbox[2]) / 2,
-        y = (bbox[1] + bbox[3]) / 2;
+        y = (bbox[1] + bbox[3]) / 2,
+        bearing = 0,
+        pitch = 0;
     var minCorner = mercator.px([bbox[0], bbox[3]], z),
         maxCorner = mercator.px([bbox[2], bbox[1]], z);
     var w = (maxCorner[0] - minCorner[0]) | 0,
         h = (maxCorner[1] - minCorner[1]) | 0,
         scale = getScale(req.params.scale),
         format = req.params.format;
-    return respondImage(z, x, y, 0, 0, w, h, scale, format, res, next);
+    var path = extractPathFromQuery(req.query);
+    var overlay = renderOverlay(z, x, y, bearing, pitch, w, h, scale,
+                                path, req.query);
+    return respondImage(z, x, y, bearing, pitch, w, h, scale, format,
+                        res, next, overlay);
   });
 
   var pathPattern = 'path/:width(\\d+)x:height(\\d+)';
 
   app.get(util.format(staticPattern, pathPattern), function(req, res, next) {
-    var pathParts = (req.query.path || '').split('|');
-    var path = [];
-    pathParts.forEach(function(pair) {
-      var pairParts = pair.split(',');
-      if (pairParts.length == 2) {
-        if (req.query.latlng == '1' || req.query.latlng == 'true') {
-          path.push([+(pairParts[1]), +(pairParts[0])]);
-        } else {
-          path.push([+(pairParts[0]), +(pairParts[1])]);
-        }
-      }
-    });
+    var path = extractPathFromQuery(req.query);
     if (path.length < 2) {
       return res.status(400).send('Invalid path');
     }
 
     var w = req.params.width | 0,
         h = req.params.height | 0,
+        bearing = 0,
+        pitch = 0,
         scale = getScale(req.params.scale),
         format = req.params.format;
 
@@ -413,38 +469,11 @@ module.exports = function(options, repo, params, id) {
       maxCorner[1] /= 2;
     }
 
-    var precisePx = function(ll, zoom) {
-      var px = mercator.px(ll, 20);
-      var scale = Math.pow(2, zoom - 20);
-      return [px[0] * scale, px[1] * scale];
-    };
+    var overlay = renderOverlay(z, x, y, bearing, pitch, w, h, scale,
+                                path, req.query);
 
-    var canvas = new Canvas(scale * w, scale * h);
-    var ctx = canvas.getContext('2d');
-    var center = precisePx([x, y], z);
-    ctx.scale(scale, scale);
-    ctx.translate(-center[0] + w / 2, -center[1] + h / 2);
-    var lineWidth = req.query.width !== undefined ?
-                    parseFloat(req.query.width) : 1;
-    ctx.lineWidth = lineWidth;
-    ctx.strokeStyle = req.query.stroke || 'rgba(0,64,255,0.7)';
-    ctx.fillStyle = req.query.fill || 'rgba(255,255,255,0.4)';
-    ctx.beginPath();
-    path.forEach(function(pair) {
-      var px = precisePx(pair, z);
-      ctx.lineTo(px[0], px[1]);
-    });
-    if (path[0][0] == path[path.length - 1][0] &&
-        path[0][1] == path[path.length - 1][1]) {
-      ctx.closePath();
-    }
-    ctx.fill();
-    if (lineWidth > 0) {
-      ctx.stroke();
-    }
-
-    return respondImage(z, x, y, 0, 0, w, h, scale, format, res, next,
-                        canvas.toBuffer());
+    return respondImage(z, x, y, bearing, pitch, w, h, scale, format,
+                        res, next, overlay);
   });
 
   app.get('/rendered.json', function(req, res, next) {
