@@ -42,7 +42,7 @@ See https://github.com/klokantech/tileserver-gl-data/blob/master/config.json
   - Available formats: `png`, `jpg` (`jpeg`), `webp`
   - TileJSON at `/styles/{id}/rendered.json`
 - Static images are rendered at:
-  - `/styles/{id}/static/{lon},{lat},{zoom}[,{bearing},{pitch}]/{width}x{height}[@2x].{format}` (center-based)
+  - `/styles/{id}/static/{lon},{lat},{zoom}[@{bearing}[,{pitch}]]/{width}x{height}[@2x].{format}` (center-based)
   - `/styles/{id}/static/{minx},{miny},{maxx},{maxy}/{width}x{height}[@2x].{format}` (area-based)
   - `/styles/{id}/static/auto/{width}x{height}[@2x].{format}` (autofit path -- see below)
   - The static image endpoints additionally support following query parameters:

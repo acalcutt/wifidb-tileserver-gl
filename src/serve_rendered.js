@@ -408,15 +408,15 @@ module.exports = function(options, repo, params, id) {
       ':scale(' + SCALE_PATTERN + ')?\.:format([\\w]+)';
 
   var centerPattern =
-      util.format(':lon(%s),:lat(%s),:z(\\d+):bearing(,%s)?:pitch(,%s)?',
+      util.format(':lon(%s),:lat(%s),:z(\\d+)(@:bearing(%s)(,:pitch(%s))?)?',
                   FLOAT_PATTERN, FLOAT_PATTERN, FLOAT_PATTERN, FLOAT_PATTERN);
 
   app.get(util.format(staticPattern, centerPattern), function(req, res, next) {
     var z = req.params.z | 0,
         x = +req.params.lon,
         y = +req.params.lat,
-        bearing = +((req.params.bearing || ',0').substring(1)),
-        pitch = +((req.params.pitch || ',0').substring(1)),
+        bearing = +(req.params.bearing || '0'),
+        pitch = +(req.params.pitch || '0'),
         w = req.params.width | 0,
         h = req.params.height | 0,
         scale = getScale(req.params.scale),
