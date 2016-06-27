@@ -229,7 +229,7 @@ module.exports = function(options, repo, params, id) {
       return res.status(400).send('Invalid center');
     }
     if (Math.min(width, height) <= 0 ||
-        Math.max(width, height) * scale > 6000) {
+        Math.max(width, height) * scale > 2048) {
       return res.status(400).send('Invalid size');
     }
     if (format == 'png' || format == 'webp') {
