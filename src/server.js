@@ -225,8 +225,8 @@ module.exports = function(opts, callback) {
         }
 
         var query = req.query.key ? ('?key=' + req.query.key) : '';
-        data_.wmts_link = 'https://wmts.maptiler.com/' +
-          new Buffer(req.protocol + '://' + req.headers.host +
+        data_.wmts_link = 'http://wmts.maptiler.com/' +
+          new Buffer('http://' + req.headers.host +
             '/data/' + id + '.json' + query).toString('base64') + '/wmts';
       }
       if (data_.filesize) {
