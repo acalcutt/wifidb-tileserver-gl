@@ -45,7 +45,7 @@ module.exports = function(opts, callback) {
 
   var config;
   try {
-    config = require(configPath);
+    config = clone(require(configPath));
   } catch (e) {
     console.log('ERROR: Config file not found or invalid!');
     console.log('       See README.md for instructions and sample data.');

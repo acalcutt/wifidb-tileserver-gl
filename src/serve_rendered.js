@@ -137,7 +137,7 @@ module.exports = function(options, repo, params, id) {
     });
   };
 
-  styleJSON = require(path.join(options.paths.styles, styleFile));
+  styleJSON = clone(require(path.join(options.paths.styles, styleFile)));
   styleJSON.sprite = 'sprites://' + path.basename(styleFile, '.json');
   styleJSON.glyphs = 'fonts://{fontstack}/{range}.pbf';
 
