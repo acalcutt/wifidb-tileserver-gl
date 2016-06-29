@@ -103,12 +103,18 @@
   var propertyList = document.getElementById('propertyList');
   map.on('mousemove', function(e) {
     propertyList.innerHTML = '';
-    map.featuresAt(e.point, {radius: 3}, function(err, features) {
-      if (err) throw err;
-      if (features[0]) {
-        propertyList.innerHTML = JSON.stringify(features[0].properties, null, 2);
-      }
-    });
+    var width = 3, height = 3;
+    var features = map.queryRenderedFeatures([
+                     [e.point.x - width / 2, e.point.y - height / 2],
+                     [e.point.x + width / 2, e.point.y + height / 2]
+                   ]);
+    if (features) {
+      var html = '';
+      features.forEach(function(feature) {
+        html += JSON.stringify(feature.properties, null, 2) + '\n';
+      });
+      propertyList.innerHTML = html;
+    }
   });
   </script>
   {{/is_vector}}
