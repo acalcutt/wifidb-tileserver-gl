@@ -202,7 +202,7 @@ module.exports = function(opts, callback) {
         var query = req.query.key ? ('?key=' + req.query.key) : '';
         style.wmts_link = 'https://wmts.maptiler.com/' +
           new Buffer(req.protocol + '://' + req.headers.host +
-            '/styles/' + id + 'rendered.json' + query).toString('base64') +
+            '/styles/' + id + '/rendered.json' + query).toString('base64') +
             '/wmts';
       }
     });
