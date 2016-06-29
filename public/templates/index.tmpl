@@ -21,6 +21,9 @@
         <p>Id: {{@key}}
           {{#if serving_rendered}}
             | <a href="/styles/{{@key}}/rendered.json{{&../access_key_query}}">TileJSON</a>
+            {{#if wmts_link}}
+              | <a href="{{wmts_link}}">WMTS Service</a>
+            {{/if}}
           {{/if}}
         </p>
         {{#if serving_data}}
@@ -47,7 +50,12 @@
           <div class="sample-img"></div>
         {{/if}}
         <h3>{{name}}</h3>
-        <p>Id: {{@key}} |{{#if formatted_filesize}} {{formatted_filesize}} |{{/if}} {{#is_vector}}Vector{{/is_vector}}{{^is_vector}}Raster{{/is_vector}} data | <a href="/data/{{@key}}.json{{&../access_key_query}}">TileJSON</a></p>
+        <p>Id: {{@key}} |{{#if formatted_filesize}} {{formatted_filesize}} |{{/if}} {{#is_vector}}Vector{{/is_vector}}{{^is_vector}}Raster{{/is_vector}} data
+          | <a href="/data/{{@key}}.json{{&../access_key_query}}">TileJSON</a>
+          {{#if wmts_link}}
+            | <a href="{{wmts_link}}">WMTS Service</a>
+          {{/if}}
+        </p>
         {{#is_vector}}
         <a class="btn" href="/data/{{@key}}/{{&../access_key_query}}{{viewer_hash}}">X-Ray view</a>
         {{/is_vector}}

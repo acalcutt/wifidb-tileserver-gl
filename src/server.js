@@ -167,7 +167,7 @@ module.exports = function(opts, callback) {
       app.use(path, function(req, res, next) {
         var data = {};
         if (dataGetter) {
-          data = dataGetter(req.params);
+          data = dataGetter(req);
           if (!data) {
             return res.status(404).send('Not found');
           }
@@ -179,7 +179,7 @@ module.exports = function(opts, callback) {
     });
   };
 
-  serveTemplate('/$', 'index', function() {
+  serveTemplate('/$', 'index', function(req) {
     var styles = clone(config.styles || {});
     Object.keys(styles).forEach(function(id) {
       var style = styles[id];
@@ -198,6 +198,12 @@ module.exports = function(opts, callback) {
               Math.floor(centerPx[0] / 256) + '/' +
               Math.floor(centerPx[1] / 256) + '.png';
         }
+
+        var query = req.query.key ? ('?key=' + req.query.key) : '';
+        style.wmts_link = 'https://wmts.maptiler.com/' +
+          new Buffer(req.protocol + '://' + req.headers.host +
+            '/styles/' + id + 'rendered.json' + query).toString('base64') +
+            '/wmts';
       }
     });
     var data = clone(serving.data || {});
@@ -217,6 +223,11 @@ module.exports = function(opts, callback) {
               Math.floor(centerPx[0] / 256) + '/' +
               Math.floor(centerPx[1] / 256) + '.' + data_.format;
         }
+
+        var query = req.query.key ? ('?key=' + req.query.key) : '';
+        data_.wmts_link = 'https://wmts.maptiler.com/' +
+          new Buffer(req.protocol + '://' + req.headers.host +
+            '/data/' + id + '.json' + query).toString('base64') + '/wmts';
       }
       if (data_.filesize) {
         var suffix = 'kB';
@@ -238,8 +249,8 @@ module.exports = function(opts, callback) {
     };
   });
 
-  serveTemplate('/styles/:id/$', 'viewer', function(params) {
-    var id = params.id;
+  serveTemplate('/styles/:id/$', 'viewer', function(req) {
+    var id = req.params.id;
     var style = clone((config.styles || {})[id]);
     if (!style) {
       return null;
@@ -257,8 +268,8 @@ module.exports = function(opts, callback) {
   });
   */
 
-  serveTemplate('/data/:id/$', 'data', function(params) {
-    var id = params.id;
+  serveTemplate('/data/:id/$', 'data', function(req) {
+    var id = req.params.id;
     var data = clone(serving.data[id]);
     if (!data) {
       return null;
