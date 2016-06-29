@@ -17,10 +17,11 @@
   <h1 style="display:none;">{{name}}</h1>
   <div id='map'></div>
   <script>
-    var preference = (location.search || '').substr(1);
-    if (preference != 'vector' && preference != 'raster') {
-      preference = mapboxgl.supported() ? 'vector' : 'raster';
-    }
+    var q = (location.search || '').substr(1).split('&');
+    var preference =
+      q.indexOf('vector') >= 0 ? 'vector' :
+        (q.indexOf('raster') >= 0 ? 'raster' :
+          (mapboxgl.supported() ? 'vector' : 'raster'));
     if (preference == 'vector') {
       var map = new mapboxgl.Map({
         container: 'map',
