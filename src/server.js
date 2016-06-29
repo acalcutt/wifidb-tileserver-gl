@@ -118,13 +118,15 @@ module.exports = function(opts, callback) {
 
   app.get('/styles.json', function(req, res, next) {
     var result = [];
+    var query = req.query.key ? ('?key=' + req.query.key) : '';
     Object.keys(serving.styles).forEach(function(id) {
       var styleJSON = serving.styles[id];
       result.push({
         version: styleJSON.version,
         name: styleJSON.name,
         id: id,
-        url: req.protocol + '://' + req.headers.host + '/styles/' + id + '.json'
+        url: req.protocol + '://' + req.headers.host +
+             '/styles/' + id + '.json' + query
       });
     });
     res.send(result);
@@ -170,6 +172,8 @@ module.exports = function(opts, callback) {
             return res.status(404).send('Not found');
           }
         }
+        data['access_key'] = req.query.key;
+        data['access_key_query'] = req.query.key ? '?key=' + req.query.key : '';
         return res.status(200).send(compiled(data));
       });
     });

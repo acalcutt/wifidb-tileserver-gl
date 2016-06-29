@@ -46,9 +46,13 @@ module.exports = function(options, repo, params, id, reportTiles, reportFont) {
   repo[id] = styleJSON;
 
   app.get('/' + id + '.json', function(req, res, next) {
-    var fixUrl = function(url) {
+    var fixUrl = function(url, opt_nokey) {
+      var query = '';
+      if (!opt_nokey && req.query.key) {
+        query = '?key=' + req.query.key;
+      }
       return url.replace(
-          'local://', req.protocol + '://' + req.headers.host + '/');
+          'local://', req.protocol + '://' + req.headers.host + '/') + query;
     };
 
     var styleJSON_ = clone(styleJSON);
@@ -56,7 +60,8 @@ module.exports = function(options, repo, params, id, reportTiles, reportFont) {
       var source = styleJSON_.sources[name];
       source.url = fixUrl(source.url);
     });
-    styleJSON_.sprite = fixUrl(styleJSON_.sprite);
+    // mapbox-gl-js viewer cannot handle sprite urls with query
+    styleJSON_.sprite = fixUrl(styleJSON_.sprite, true);
     styleJSON_.glyphs = fixUrl(styleJSON_.glyphs);
     return res.send(styleJSON_);
   });
