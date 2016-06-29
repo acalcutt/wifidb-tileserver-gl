@@ -172,8 +172,9 @@ module.exports = function(opts, callback) {
             return res.status(404).send('Not found');
           }
         }
-        data['access_key'] = req.query.key;
-        data['access_key_query'] = req.query.key ? '?key=' + req.query.key : '';
+        data['key_query_part'] =
+            req.query.key ? 'key=' + req.query.key + '&amp;' : '';
+        data['key_query'] = req.query.key ? '?key=' + req.query.key : '';
         return res.status(200).send(compiled(data));
       });
     });

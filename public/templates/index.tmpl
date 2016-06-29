@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>TileServerGL</title>
-  <link rel="stylesheet" type="text/css" href="/index.css{{&access_key_query}}" />
+  <link rel="stylesheet" type="text/css" href="/index.css{{&key_query}}" />
 </head>
 <body>
   <section>
@@ -13,28 +13,28 @@
     {{#each styles}}
       <div class="item">
         {{#if thumbnail}}
-          <img src="/styles/{{@key}}/rendered/{{thumbnail}}{{&../access_key_query}}" alt="{{name}} preview" />
+          <img src="/styles/{{@key}}/rendered/{{thumbnail}}{{&../key_query}}" alt="{{name}} preview" />
         {{else}}
           <div class="sample-img"></div>
         {{/if}}
         <h3>{{name}}</h3>
         <p>Id: {{@key}}
           {{#if serving_rendered}}
-            | <a href="/styles/{{@key}}/rendered.json{{&../access_key_query}}">TileJSON</a>
+            | <a href="/styles/{{@key}}/rendered.json{{&../key_query}}">TileJSON</a>
             {{#if wmts_link}}
               | <a href="{{&wmts_link}}">WMTS Service</a>
             {{/if}}
           {{/if}}
         </p>
         {{#if serving_data}}
-          <a class="btn" href="/styles/{{@key}}/?key={{&../access_key}}&amp;vector{{viewer_hash}}">Vector view</a>
+          <a class="btn" href="/styles/{{@key}}/?{{&../key_query_part}}vector{{viewer_hash}}">Vector view</a>
         {{/if}}
         {{#if serving_rendered}}
-          <a class="btn" href="/styles/{{@key}}/?key={{&../access_key}}&amp;raster{{viewer_hash}}">Raster view</a>
+          <a class="btn" href="/styles/{{@key}}/?{{&../key_query_part}}raster{{viewer_hash}}">Raster view</a>
         {{/if}}
         {{#if serving_data}}
           {{#if serving_rendered}}
-            <a class="btn" href="/styles/{{@key}}/{{&../access_key_query}}{{viewer_hash}}">Auto view</a>
+            <a class="btn" href="/styles/{{@key}}/{{&../key_query}}{{viewer_hash}}">Auto view</a>
           {{/if}}
         {{/if}}
       </div>
@@ -45,22 +45,22 @@
     {{#each data}}
       <div class="item">
         {{#if thumbnail}}
-          <img src="/data/{{@key}}/{{thumbnail}}{{&../access_key_query}}" alt="{{name}} preview" />
+          <img src="/data/{{@key}}/{{thumbnail}}{{&../key_query}}" alt="{{name}} preview" />
         {{else}}
           <div class="sample-img"></div>
         {{/if}}
         <h3>{{name}}</h3>
         <p>Id: {{@key}} |{{#if formatted_filesize}} {{formatted_filesize}} |{{/if}} {{#is_vector}}Vector{{/is_vector}}{{^is_vector}}Raster{{/is_vector}} data
-          | <a href="/data/{{@key}}.json{{&../access_key_query}}">TileJSON</a>
+          | <a href="/data/{{@key}}.json{{&../key_query}}">TileJSON</a>
           {{#if wmts_link}}
             | <a href="{{&wmts_link}}">WMTS Service</a>
           {{/if}}
         </p>
         {{#is_vector}}
-        <a class="btn" href="/data/{{@key}}/{{&../access_key_query}}{{viewer_hash}}">X-Ray view</a>
+        <a class="btn" href="/data/{{@key}}/{{&../key_query}}{{viewer_hash}}">X-Ray view</a>
         {{/is_vector}}
         {{^is_vector}}
-        <a class="btn" href="/data/{{@key}}/{{&../access_key_query}}{{viewer_hash}}">Raster view</a>
+        <a class="btn" href="/data/{{@key}}/{{&../key_query}}{{viewer_hash}}">Raster view</a>
         {{/is_vector}}
       </div>
     {{/each}}
