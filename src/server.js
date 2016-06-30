@@ -7,7 +7,8 @@ process.env.UV_THREADPOOL_SIZE =
 var fs = require('fs'),
     path = require('path');
 
-var clone = require('clone'),
+var base64url = require('base64url'),
+    clone = require('clone'),
     cors = require('cors'),
     express = require('express'),
     handlebars = require('handlebars'),
@@ -201,10 +202,9 @@ module.exports = function(opts, callback) {
         }
 
         var query = req.query.key ? ('?key=' + req.query.key) : '';
-        style.wmts_link = 'https://wmts.maptiler.com/' +
-          new Buffer(req.protocol + '://' + req.headers.host +
-            '/styles/' + id + '/rendered.json' + query).toString('base64') +
-            '/wmts';
+        style.wmts_link = 'http://wmts.maptiler.com/' +
+          base64url('http://' + req.headers.host +
+            '/styles/' + id + '/rendered.json' + query) + '/wmts';
       }
     });
     var data = clone(serving.data || {});
@@ -227,8 +227,8 @@ module.exports = function(opts, callback) {
 
         var query = req.query.key ? ('?key=' + req.query.key) : '';
         data_.wmts_link = 'http://wmts.maptiler.com/' +
-          new Buffer('http://' + req.headers.host +
-            '/data/' + id + '.json' + query).toString('base64') + '/wmts';
+          base64url('http://' + req.headers.host +
+            '/data/' + id + '.json' + query) + '/wmts';
       }
       if (data_.filesize) {
         var suffix = 'kB';
