@@ -4,6 +4,7 @@ MAINTAINER Petr Sloup <petr.sloup@klokantech.com>
 RUN apt-get -qq update \
 && DEBIAN_FRONTEND=noninteractive apt-get -y install \
     curl \
+    unzip \
     build-essential \
     python \
     libcairo2-dev \
