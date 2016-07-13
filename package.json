@@ -3,6 +3,7 @@
   "version": "0.7.0",
   "description": "Map tile server for JSON GL styles - serverside generated raster tiles",
   "main": "src/main.js",
+  "bin": "src/main.js",
   "authors": [
     "Petr Sloup <petr.sloup@klokantech.com>"
   ],
