@@ -2,7 +2,6 @@
 
 var async = require('async'),
     advancedPool = require('advanced-pool'),
-    crypto = require('crypto'),
     fs = require('fs'),
     path = require('path'),
     util = require('util'),
@@ -77,9 +76,6 @@ module.exports = function(options, repo, params, id) {
 
                 if (headers['Last-Modified']) {
                   response.modified = new Date(headers['Last-Modified']);
-                }
-                if (headers['ETag']) {
-                  response.etag = headers['ETag'];
                 }
 
                 if (format == 'pbf') {
@@ -292,10 +288,8 @@ module.exports = function(options, repo, params, id) {
             return res.status(404).send('Not found');
           }
 
-          var md5 = crypto.createHash('md5').update(buffer).digest('base64');
           res.set({
-            'content-md5': md5,
-            'content-type': 'image/' + format
+            'Content-Type': 'image/' + format
           });
           return res.status(200).send(buffer);
         });

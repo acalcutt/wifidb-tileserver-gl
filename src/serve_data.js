@@ -1,7 +1,6 @@
 'use strict';
 
-var crypto = require('crypto'),
-    fs = require('fs'),
+var fs = require('fs'),
     path = require('path');
 
 var clone = require('clone'),
@@ -59,12 +58,11 @@ module.exports = function(options, repo, params, id) {
           return res.status(500).send(err.message);
         }
       } else {
-        var md5 = crypto.createHash('md5').update(data).digest('base64');
-        headers['content-md5'] = md5;
         if (tileJSON['format'] == 'pbf') {
-          headers['content-type'] = 'application/x-protobuf';
-          headers['content-encoding'] = 'gzip';
+          headers['Content-Type'] = 'application/x-protobuf';
+          headers['Content-Encoding'] = 'gzip';
         }
+        delete headers['ETag']; // do not trust the tile ETag -- regenerate
         res.set(headers);
 
         if (data == null) {
