@@ -28,8 +28,8 @@
     "mbtiles": "0.9.0",
     "morgan": "1.7.0",
     "nomnom": "1.8.1",
-    "request": "2.72.0",
-    "sharp": "0.15.0",
+    "request": "2.73.0",
+    "sharp": "0.15.1",
     "sphericalmercator": "1.0.5"
   },
   "devDependencies": {
