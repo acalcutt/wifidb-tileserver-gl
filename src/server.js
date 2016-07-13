@@ -15,13 +15,16 @@ var base64url = require('base64url'),
     mercator = new (require('sphericalmercator'))(),
     morgan = require('morgan');
 
-var serve_font = require('./serve_font'),
+var packageJson = require('../package'),
+    serve_font = require('./serve_font'),
     serve_rendered = require('./serve_rendered'),
     serve_style = require('./serve_style'),
     serve_data = require('./serve_data'),
     utils = require('./utils');
 
 module.exports = function(opts, callback) {
+  console.log('Starting TileServer-GL v' + packageJson.version);
+
   var app = express().disable('x-powered-by'),
       serving = {
         styles: {},
@@ -173,6 +176,7 @@ module.exports = function(opts, callback) {
             return res.status(404).send('Not found');
           }
         }
+        data['server_version'] = packageJson.version;
         data['key_query_part'] =
             req.query.key ? 'key=' + req.query.key + '&amp;' : '';
         data['key_query'] = req.query.key ? '?key=' + req.query.key : '';
