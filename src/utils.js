@@ -1,5 +1,11 @@
 'use strict';
 
+var async = require('async'),
+    path = require('path'),
+    fs = require('fs');
+
+var glyphCompose = require('glyph-pbf-composite');
+
 module.exports.getTileUrls = function(req, domains, path, format) {
 
   if (domains) {
@@ -36,4 +42,37 @@ module.exports.fixTileJSONCenter = function(tileJSON) {
       )
     ];
   }
+};
+
+module.exports.getFontsPbf = function(allowedFonts, fontPath, names, range, callback) {
+  var getFontPbf = function(name, range, callback) {
+    if (!allowedFonts || allowedFonts[name]) {
+      var filename = path.join(fontPath, name, range + '.pbf');
+      return fs.readFile(filename, function(err, data) {
+        if (err) {
+          return callback(new Error('Font load error: ' + name));
+        } else {
+          return callback(null, data);
+        }
+      });
+    } else {
+      return callback(new Error('Font not allowed: ' + name));
+    }
+  };
+
+  var fonts = names.split(',');
+  var queue = [];
+  fonts.forEach(function(font) {
+    queue.push(function(callback) {
+      getFontPbf(font, range, callback);
+    });
+  });
+
+  return async.parallel(queue, function(err, results) {
+    if (err) {
+      callback(err, new Buffer([]));
+    } else {
+      callback(err, glyphCompose.combine(results));
+    }
+  });
 };

@@ -56,11 +56,19 @@ module.exports = function(options, repo, params, id) {
         request: function(req, callback) {
           var protocol = req.url.split(':')[0];
           //console.log('Handling request:', req);
-          if (protocol == 'sprites' || protocol == 'fonts') {
+          if (protocol == 'sprites') {
             var dir = options.paths[protocol];
             var file = unescape(req.url).substring(protocol.length + 3);
             fs.readFile(path.join(dir, file), function(err, data) {
               callback(err, { data: data });
+            });
+          } else if (protocol == 'fonts') {
+            var parts = req.url.split('/');
+            var fontstack = unescape(parts[2]);
+            var range = parts[3].split('.')[0];
+            utils.getFontsPbf(null, options.paths[protocol], fontstack, range,
+                function(err, concated) {
+              callback(err, {data: concated});
             });
           } else if (protocol == 'mbtiles') {
             var parts = req.url.split('/');
