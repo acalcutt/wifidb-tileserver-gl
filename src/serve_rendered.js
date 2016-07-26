@@ -38,6 +38,8 @@ mbgl.on('message', function(e) {
 module.exports = function(options, repo, params, id) {
   var app = express().disable('x-powered-by');
 
+  var lastModified = new Date().toUTCString();
+
   var rootPath = options.paths.root;
 
   var styleFile = params.style;
@@ -289,6 +291,7 @@ module.exports = function(options, repo, params, id) {
           }
 
           res.set({
+            'Last-Modified': lastModified,
             'Content-Type': 'image/' + format
           });
           return res.status(200).send(buffer);

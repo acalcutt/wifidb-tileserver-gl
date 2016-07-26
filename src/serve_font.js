@@ -11,6 +11,8 @@ var clone = require('clone'),
 module.exports = function(options, allowedFonts) {
   var app = express().disable('x-powered-by');
 
+  var lastModified = new Date().toUTCString();
+
   var fontPath = options.paths.fonts;
 
   var getFontPbf = function(name, range, callback) {
@@ -51,6 +53,7 @@ module.exports = function(options, allowedFonts) {
         return res.status(400).send('');
       } else {
         res.header('Content-type', 'application/x-protobuf');
+        res.header('Last-Modified', lastModified);
         return res.send(concated);
       }
     });
