@@ -64,6 +64,6 @@ describe('Metadata', function() {
     });
   });
 
-  testTileJSON('/styles/test/rendered.json', 'test');
+  testTileJSON('/styles/bright/rendered.json', 'bright');
   testTileJSON('/data/zurich-vector.json', 'zurich-vector');
 });

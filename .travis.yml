@@ -15,7 +15,7 @@ before_install:
   - sudo apt-get install -qq xvfb
 install:
   - npm install
-  - wget -O test_data.zip https://github.com/klokantech/tileserver-gl-data/archive/v0.0.3.zip
+  - wget -O test_data.zip https://github.com/klokantech/tileserver-gl-data/archive/v0.8.zip
   - unzip -q test_data.zip -d tmp_test_data
   - mkdir test_data
   - mv tmp_test_data/tileserver-gl-data-*/* -t test_data

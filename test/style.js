@@ -8,13 +8,15 @@ var testIs = function(url, type, status) {
   });
 };
 
+var prefix = 'bright';
+
 describe('Styles', function() {
-  describe('/styles/test.json is valid style', function() {
-    testIs('/styles/test.json', /application\/json/);
+  describe('/styles/' + prefix + '.json is valid style', function() {
+    testIs('/styles/' + prefix + '.json', /application\/json/);
 
     it('contains expected properties', function(done) {
       supertest(app)
-        .get('/styles/test.json')
+        .get('/styles/' + prefix + '.json')
         .expect(function(res) {
           res.body.version.should.equal(8);
           res.body.name.should.be.String();
@@ -29,17 +31,17 @@ describe('Styles', function() {
     testIs('/styles/streets.json', /./, 404);
   });
 
-  describe('/styles/test/sprite[@2x].{format}', function() {
-    testIs('/styles/test/sprite.json', /application\/json/);
-    testIs('/styles/test/sprite@2x.json', /application\/json/);
-    testIs('/styles/test/sprite.png', /image\/png/);
-    testIs('/styles/test/sprite@2x.png', /image\/png/);
+  describe('/styles/' + prefix + '/sprite[@2x].{format}', function() {
+    testIs('/styles/' + prefix + '/sprite.json', /application\/json/);
+    testIs('/styles/' + prefix + '/sprite@2x.json', /application\/json/);
+    testIs('/styles/' + prefix + '/sprite.png', /image\/png/);
+    testIs('/styles/' + prefix + '/sprite@2x.png', /image\/png/);
   });
 });
 
 describe('Fonts', function() {
   testIs('/fonts/Open Sans Bold/0-255.pbf', /application\/x-protobuf/);
-  testIs('/fonts/Open Sans Regular/65280-65533.pbf', /application\/x-protobuf/);
+  testIs('/fonts/Open Sans Regular/65280-65535.pbf', /application\/x-protobuf/);
   testIs('/fonts/Open Sans Bold,Open Sans Regular/0-255.pbf',
          /application\/x-protobuf/);
   testIs('/fonts/Nonsense,Open Sans Bold/0-255.pbf', /./, 400);

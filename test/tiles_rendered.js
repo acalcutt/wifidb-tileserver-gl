@@ -9,35 +9,37 @@ var testTile = function(prefix, z, x, y, format, status, scale, type) {
   });
 };
 
+var prefix = 'bright';
+
 describe('Raster tiles', function() {
   describe('valid requests', function() {
     describe('various formats', function() {
-      testTile('test', 0, 0, 0, 'png', 200, undefined, /image\/png/);
-      testTile('test', 0, 0, 0, 'jpg', 200, undefined, /image\/jpeg/);
-      testTile('test', 0, 0, 0, 'jpeg', 200, undefined, /image\/jpeg/);
-      testTile('test', 0, 0, 0, 'webp', 200, undefined, /image\/webp/);
+      testTile(prefix, 0, 0, 0, 'png', 200, undefined, /image\/png/);
+      testTile(prefix, 0, 0, 0, 'jpg', 200, undefined, /image\/jpeg/);
+      testTile(prefix, 0, 0, 0, 'jpeg', 200, undefined, /image\/jpeg/);
+      testTile(prefix, 0, 0, 0, 'webp', 200, undefined, /image\/webp/);
     });
 
     describe('different coordinates and scales', function() {
-      testTile('test', 1, 1, 1, 'png', 200);
+      testTile(prefix, 1, 1, 1, 'png', 200);
 
-      testTile('test', 0, 0, 0, 'png', 200, 2);
-      testTile('test', 0, 0, 0, 'png', 200, 3);
-      testTile('test', 2, 1, 1, 'png', 200, 3);
+      testTile(prefix, 0, 0, 0, 'png', 200, 2);
+      testTile(prefix, 0, 0, 0, 'png', 200, 3);
+      testTile(prefix, 2, 1, 1, 'png', 200, 3);
     });
   });
 
   describe('invalid requests return 4xx', function() {
     testTile('non_existent', 0, 0, 0, 'png', 404);
-    testTile('test', -1, 0, 0, 'png', 404);
-    testTile('test', 25, 0, 0, 'png', 404);
-    testTile('test', 0, 1, 0, 'png', 404);
-    testTile('test', 0, 0, 1, 'png', 404);
-    testTile('test', 0, 0, 0, 'gif', 400);
-    testTile('test', 0, 0, 0, 'pbf', 400);
+    testTile(prefix, -1, 0, 0, 'png', 404);
+    testTile(prefix, 25, 0, 0, 'png', 404);
+    testTile(prefix, 0, 1, 0, 'png', 404);
+    testTile(prefix, 0, 0, 1, 'png', 404);
+    testTile(prefix, 0, 0, 0, 'gif', 400);
+    testTile(prefix, 0, 0, 0, 'pbf', 400);
 
-    testTile('test', 0, 0, 0, 'png', 404, 1);
-    testTile('test', 0, 0, 0, 'png', 404, 4);
+    testTile(prefix, 0, 0, 0, 'png', 404, 1);
+    testTile(prefix, 0, 0, 0, 'png', 404, 4);
 
     //testTile('hybrid', 0, 0, 0, 'png', 404); //TODO: test this
   });
