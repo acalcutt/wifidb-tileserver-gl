@@ -309,6 +309,13 @@ module.exports = function(options, repo, params, id) {
   };
 
   app.get(tilePattern, function(req, res, next) {
+    var modifiedSince = req.get('if-modified-since'), cc = req.get('cache-control');
+    if (modifiedSince && (!cc || cc.indexOf('no-cache') == -1)) {
+      if (new Date(lastModified) <= new Date(modifiedSince)) {
+        return res.sendStatus(304);
+      }
+    }
+
     var z = req.params.z | 0,
         x = req.params.x | 0,
         y = req.params.y | 0,
