@@ -79,6 +79,7 @@ section{
 }
 .details {
   float:left;
+  width: 50%;
 }
 .details h3 {
   font-size:18px;
@@ -151,5 +152,41 @@ body {
 @media only screen and (min-width: 1601px) {
   body {
     background-image: url(/images/header-map-2560px.png);
+  }
+}
+
+/* Responsive */
+@media (max-width: 950px) {
+  section{
+    margin: 0;
+    width: 96%;
+    padding: 2%;
+  }
+}
+@media (max-width: 550px) {
+  .title{
+    margin: 25px 0 0 0;
+  }
+  .title img{
+    width: 200px;
+  }
+  .subtitle{
+    font-size: 20px;
+    margin: 0 0 35px 0;
+  }
+  .item{
+    height: 245px;
+    padding: 205px 30px 30px 30px;
+  }
+  .item img{
+    width: 192px;
+    height: 192px;
+    margin: -185px 0 0 0;
+  }
+  .details,.viewers{
+    width: 100%;
+  }
+  .viewers a{
+    width: 120px;
   }
 }
