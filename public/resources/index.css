@@ -62,8 +62,7 @@ section{
 }
 .item{
   background:#fff;
-  height: 148px;
-  padding: 20px 30px 20px 188px;
+  height: 191px;
   border: 1px solid #ededed;
   border-top:none;
 }
@@ -72,14 +71,16 @@ section{
 }
 .item img{
   position: absolute;
-  margin: 10px 10px 15px -158px;
+  margin: 30px;
   width: 128px;
   height: 128px;
   border: 1px solid #ccc;
 }
 .details {
   float:left;
-  width: 50%;
+  width:180px;
+  height: 128px;
+  padding: 20px 30px 20px 188px;
 }
 .details h3 {
   font-size:18px;
@@ -92,16 +93,18 @@ section{
 .viewers {
   float:right;
   text-align:center;
-  width:120px;
-  margin-top:25px;
+  width: 120px;
+  margin-top: 25px;
+  padding-right: 30px;
 }
 .btn {
   display:block;
-  margin:5px;
+  margin: 0;
+  line-height: 36px;
 }
 .btn:first-child {
   position: relative;
-  padding: 10px 0;
+  padding: 0;
   overflow: hidden;
   border-radius:4px;
   background-color: #499DCE;
@@ -163,7 +166,7 @@ body {
     padding: 2%;
   }
 }
-@media (max-width: 550px) {
+@media (max-width: 600px) {
   .title{
     margin: 25px 0 0 0;
   }
@@ -176,17 +179,22 @@ body {
   }
   .item{
     height: 245px;
-    padding: 205px 30px 30px 30px;
   }
-  .item img{
-    width: 192px;
-    height: 192px;
-    margin: -185px 0 0 0;
-  }
-  .details,.viewers{
+  .viewers{
+    float: left;
+    text-align: left;
     width: 100%;
+    margin-left: 30px;
+    margin-top: 15px;
   }
   .viewers a{
-    width: 120px;
+    display: inline-block;
+    vertical-align: middle;
+  }
+  .btn{
+    margin: 0 20px 0 0;
+  }
+  .btn:first-child{
+    padding: 0 20px;
   }
 }
