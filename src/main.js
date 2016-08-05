@@ -8,6 +8,11 @@ var opts = require('nomnom')
     default: 'config.json',
     help: 'Configuration file'
   })
+  .option('bind', {
+    abbr: 'b',
+    default: "::",
+    help: 'Bind address'
+  })
   .option('port', {
     abbr: 'p',
     default: 8080,
@@ -24,5 +29,6 @@ var opts = require('nomnom')
 
 return require('./server')({
   config: opts.config,
+  bind: opts.bind,
   port: opts.port
 });
