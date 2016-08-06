@@ -28,7 +28,7 @@ if (packageJson.name.slice(-6) !== '-light') {
 }
 
 module.exports = function(opts, callback) {
-  console.log('Starting TileServer-GL v' + packageJson.version);
+  console.log('Starting ' + packageJson.name + ' v' + packageJson.version);
 
   var app = express().disable('x-powered-by'),
       serving = {
@@ -185,7 +185,7 @@ module.exports = function(opts, callback) {
             return res.status(404).send('Not found');
           }
         }
-        data['server_version'] = packageJson.version;
+        data['server_version'] = packageJson.name + ' v' + packageJson.version;
         data['key_query_part'] =
             req.query.key ? 'key=' + req.query.key + '&amp;' : '';
         data['key_query'] = req.query.key ? '?key=' + req.query.key : '';
