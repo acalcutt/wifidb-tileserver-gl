@@ -17,10 +17,15 @@ var base64url = require('base64url'),
 
 var packageJson = require('../package'),
     serve_font = require('./serve_font'),
-    serve_rendered = require('./serve_rendered'),
+    serve_rendered = null,
     serve_style = require('./serve_style'),
     serve_data = require('./serve_data'),
     utils = require('./utils');
+
+if (packageJson.name.slice(-6) !== '-light') {
+  // do not require `serve_rendered` in the light package
+  serve_rendered = require('./serve_rendered');
+}
 
 module.exports = function(opts, callback) {
   console.log('Starting TileServer-GL v' + packageJson.version);
@@ -100,8 +105,12 @@ module.exports = function(opts, callback) {
         }));
     }
     if (item.serve_rendered !== false) {
-      app.use('/styles/' + id + '/',
-              serve_rendered(options, serving.rendered, item, id));
+      if (serve_rendered) {
+        app.use('/styles/' + id + '/',
+                serve_rendered(options, serving.rendered, item, id));
+      } else {
+        item.serve_rendered = false;
+      }
     }
   });
 
