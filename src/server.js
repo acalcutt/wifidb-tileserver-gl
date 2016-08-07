@@ -293,7 +293,7 @@ module.exports = function(opts, callback) {
     return data;
   });
 
-  var server = app.listen(process.env.PORT || opts.port, function() {
+  var server = app.listen(process.env.PORT || opts.port, process.env.BIND || opts.bind, function() {
     console.log('Listening at http://%s:%d/',
                 this.address().address, this.address().port);
 
