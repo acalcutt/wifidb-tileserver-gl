@@ -10,7 +10,7 @@ var opts = require('nomnom')
   })
   .option('bind', {
     abbr: 'b',
-    default: "::",
+    default: undefined,
     help: 'Bind address'
   })
   .option('port', {
