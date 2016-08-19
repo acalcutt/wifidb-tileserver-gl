@@ -173,8 +173,12 @@ module.exports = function(options, repo, params, id) {
 
       queue.push(function(callback) {
         var mbtilesFile = url.substring('mbtiles://'.length);
-        map.sources[name] = new mbtiles(
-          path.join(options.paths.mbtiles, mbtilesFile), function(err) {
+        mbtilesFile = path.join(options.paths.mbtiles, mbtilesFile);
+        var mbtilesFileStats = fs.statSync(mbtilesFile);
+        if (!mbtilesFileStats.isFile() || mbtilesFileStats.size == 0) {
+          throw Error('Not valid MBTiles file: ' + mbtilesFile);
+        }
+        map.sources[name] = new mbtiles(mbtilesFile, function(err) {
           map.sources[name].getInfo(function(err, info) {
             var type = source.type;
             Object.assign(source, info);

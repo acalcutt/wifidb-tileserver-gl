@@ -19,6 +19,10 @@ module.exports = function(options, repo, params, id) {
 
   repo[id] = tileJSON;
 
+  var mbtilesFileStats = fs.statSync(mbtilesFile);
+  if (!mbtilesFileStats.isFile() || mbtilesFileStats.size == 0) {
+    throw Error('Not valid MBTiles file: ' + mbtilesFile);
+  }
   var source = new mbtiles(mbtilesFile, function(err) {
     source.getInfo(function(err, info) {
       tileJSON['name'] = id;
@@ -28,7 +32,7 @@ module.exports = function(options, repo, params, id) {
 
       tileJSON['tilejson'] = '2.0.0';
       tileJSON['basename'] = id;
-      tileJSON['filesize'] = fs.statSync(mbtilesFile)['size'];
+      tileJSON['filesize'] = mbtilesFileStats['size'];
       delete tileJSON['scheme'];
 
       Object.assign(tileJSON, params.tilejson || {});
