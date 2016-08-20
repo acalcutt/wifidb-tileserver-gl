@@ -5,6 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>TileServerGL</title>
   <link rel="stylesheet" type="text/css" href="/index.css{{&key_query}}" />
+  <script>
+    function toggle_xyz(id) {
+      var el = document.getElementById(id);
+      var s = el.style;
+      s.display = s.display == 'none' ? 'inline-block' : 'none';
+      el.setSelectionRange(0, el.value.length);
+      return false;
+    }
+  </script>
 </head>
 <body>
   <section>
@@ -25,9 +34,13 @@
           <p class="services">
             {{#if serving_rendered}}
               services: <a href="/styles/{{@key}}/rendered.json{{&../key_query}}">TileJSON</a>
-              {{#if wmts_link}}
-                | <a href="{{&wmts_link}}">WMTS</a>
-              {{/if}}
+            {{/if}}
+            {{#if wmts_link}}
+              | <a href="{{&wmts_link}}">WMTS</a>
+            {{/if}}
+            {{#if xyz_link}}
+              | <a href="#" onclick="return toggle_xyz('xyz_style_{{@key}}');">XYZ</a>
+                <input id="xyz_style_{{@key}}" type="text" value="{{&xyz_link}}" style="display:none;" />
             {{/if}}
           </p>
         </div>
@@ -63,6 +76,10 @@
             services: <a href="/data/{{@key}}.json{{&../key_query}}">TileJSON</a>
             {{#if wmts_link}}
               | <a href="{{&wmts_link}}">WMTS</a>
+            {{/if}}
+            {{#if xyz_link}}
+              | <a href="#" onclick="return toggle_xyz('xyz_data_{{@key}}');">XYZ</a>
+                <input id="xyz_data_{{@key}}" type="text" value="{{&xyz_link}}" style="display:none;" />
             {{/if}}
           </p>
         </div>
