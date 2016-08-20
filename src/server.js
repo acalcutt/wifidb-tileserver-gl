@@ -28,7 +28,7 @@ if (packageJson.name.slice(-6) !== '-light') {
 }
 
 module.exports = function(opts, callback) {
-  console.log('Starting ' + packageJson.name + ' v' + packageJson.version);
+  console.log('Starting server');
 
   var app = express().disable('x-powered-by'),
       serving = {
@@ -50,21 +50,29 @@ module.exports = function(opts, callback) {
     app.use(morgan('dev'));
   }
 
-  var configPath = path.resolve(opts.config);
-
-  var config;
-  try {
-    config = clone(require(configPath));
-  } catch (e) {
-    console.log('ERROR: Config file not found or invalid!');
-    console.log('       See README.md for instructions and sample data.');
+  var config = opts.config || null;
+  var configPath = null;
+  if (opts.configPath) {
+    configPath = path.resolve(opts.configPath);
+    try {
+      config = clone(require(configPath));
+    } catch (e) {
+      console.log('ERROR: Config file not found or invalid!');
+      console.log('       See README.md for instructions and sample data.');
+      process.exit(1);
+    }
+  }
+  if (!config) {
+    console.log('ERROR: No config file not specified!');
     process.exit(1);
   }
 
   var options = config.options || {};
   var paths = options.paths || {};
   options.paths = paths;
-  paths.root = path.resolve(process.cwd(), paths.root || '');
+  paths.root = path.resolve(
+    configPath ? path.dirname(configPath) : process.cwd(),
+    paths.root || '');
   paths.styles = path.resolve(paths.root, paths.styles || '');
   paths.fonts = path.resolve(paths.root, paths.fonts || '');
   paths.sprites = path.resolve(paths.root, paths.sprites || '');
@@ -83,11 +91,17 @@ module.exports = function(opts, callback) {
 
     if (item.serve_data !== false) {
       app.use('/styles/', serve_style(options, serving.styles, item, id,
-        function(mbtiles) {
+        function(mbtiles, fromData) {
           var dataItemId;
           Object.keys(data).forEach(function(id) {
-            if (data[id].mbtiles == mbtiles) {
-              dataItemId = id;
+            if (fromData) {
+              if (id == mbtiles) {
+                dataItemId = id;
+              }
+            } else {
+              if (data[id].mbtiles == mbtiles) {
+                dataItemId = id;
+              }
             }
           });
           if (dataItemId) { // mbtiles exist in the data config
@@ -107,7 +121,16 @@ module.exports = function(opts, callback) {
     if (item.serve_rendered !== false) {
       if (serve_rendered) {
         app.use('/styles/' + id + '/',
-                serve_rendered(options, serving.rendered, item, id));
+                serve_rendered(options, serving.rendered, item, id,
+        function(mbtiles) {
+          var mbtilesFile;
+          Object.keys(data).forEach(function(id) {
+            if (id == mbtiles) {
+              mbtilesFile = data[id].mbtiles;
+            }
+          });
+          return mbtilesFile;
+        }));
       } else {
         item.serve_rendered = false;
       }

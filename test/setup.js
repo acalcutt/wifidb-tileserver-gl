@@ -7,7 +7,7 @@ before(function() {
   console.log('global setup');
   process.chdir('test_data');
   var running = require('../src/server')({
-    config: 'config.json',
+    configPath: 'config.json',
     port: 8888
   });
   global.app = running.app;

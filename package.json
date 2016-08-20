@@ -32,7 +32,8 @@
     "nomnom": "1.8.1",
     "request": "2.74.0",
     "sharp": "0.15.1",
-    "sphericalmercator": "1.0.5"
+    "sphericalmercator": "1.0.5",
+    "tileserver-gl-styles": "0.1.0"
   },
   "devDependencies": {
     "should": "^10.0.0",

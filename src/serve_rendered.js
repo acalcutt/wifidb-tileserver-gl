@@ -178,7 +178,6 @@ module.exports = function(options, repo, params, id, dataResolver) {
       if (fromData) {
         mbtilesFile = dataResolver(mbtilesFile);
       }
-      console.log(mbtilesFile);
 
       queue.push(function(callback) {
         mbtilesFile = path.resolve(options.paths.mbtiles, mbtilesFile);
