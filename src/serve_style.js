@@ -16,9 +16,11 @@ module.exports = function(options, repo, params, id, reportTiles, reportFont) {
   Object.keys(styleJSON.sources).forEach(function(name) {
     var source = styleJSON.sources[name];
     var url = source.url;
-    if (url.lastIndexOf('mbtiles:', 0) === 0) {
-      var mbtiles = url.substring('mbtiles://'.length);
-      var identifier = reportTiles(mbtiles);
+    if (url.lastIndexOf('mbtiles', 0) === 0) {
+      var fromData = url.lastIndexOf('mbtiles_data:', 0) === 0;
+      var mbtiles = url.substring(
+        (fromData ? 'mbtiles_data://' : 'mbtiles://').length);
+      var identifier = reportTiles(mbtiles, fromData);
       source.url = 'local://data/' + identifier + '.json';
     }
   });

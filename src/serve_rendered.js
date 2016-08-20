@@ -35,7 +35,7 @@ mbgl.on('message', function(e) {
   }
 });
 
-module.exports = function(options, repo, params, id) {
+module.exports = function(options, repo, params, id, dataResolver) {
   var app = express().disable('x-powered-by');
 
   var lastModified = new Date().toUTCString();
@@ -167,13 +167,21 @@ module.exports = function(options, repo, params, id) {
   Object.keys(styleJSON.sources).forEach(function(name) {
     var source = styleJSON.sources[name];
     var url = source.url;
-    if (url.lastIndexOf('mbtiles:', 0) === 0) {
+
+    if (url.lastIndexOf('mbtiles', 0) === 0) {
       // found mbtiles source, replace with info from local file
       delete source.url;
 
+      var fromData = url.lastIndexOf('mbtiles_data:', 0) === 0;
+      var mbtilesFile = url.substring(
+        (fromData ? 'mbtiles_data://' : 'mbtiles://').length);
+      if (fromData) {
+        mbtilesFile = dataResolver(mbtilesFile);
+      }
+      console.log(mbtilesFile);
+
       queue.push(function(callback) {
-        var mbtilesFile = url.substring('mbtiles://'.length);
-        mbtilesFile = path.join(options.paths.mbtiles, mbtilesFile);
+        mbtilesFile = path.resolve(options.paths.mbtiles, mbtilesFile);
         var mbtilesFileStats = fs.statSync(mbtilesFile);
         if (!mbtilesFileStats.isFile() || mbtilesFileStats.size == 0) {
           throw Error('Not valid MBTiles file: ' + mbtilesFile);

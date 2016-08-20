@@ -12,7 +12,7 @@ var utils = require('./utils');
 module.exports = function(options, repo, params, id) {
   var app = express().disable('x-powered-by');
 
-  var mbtilesFile = path.join(options.paths.mbtiles, params.mbtiles);
+  var mbtilesFile = path.resolve(options.paths.mbtiles, params.mbtiles);
   var tileJSON = {
     'tiles': params.domains || options.domains
   };
