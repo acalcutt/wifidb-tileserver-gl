@@ -242,10 +242,10 @@ module.exports = function(opts, callback) {
           base64url('http://' + req.headers.host +
             '/styles/' + id + '/rendered.json' + query) + '/wmts';
 
-        style.serving_rendered.tiles = utils.getTileUrls(
+        var tiles = utils.getTileUrls(
             req, style.serving_rendered.tiles,
             'styles/' + id, style.serving_rendered.format);
-        style.xyz_link = style.serving_rendered.tiles[0];
+        style.xyz_link = tiles[0];
       }
     });
     var data = clone(serving.data || {});
@@ -271,9 +271,9 @@ module.exports = function(opts, callback) {
           base64url('http://' + req.headers.host +
             '/data/' + id + '.json' + query) + '/wmts';
 
-        data_.tiles = utils.getTileUrls(
+        var tiles = utils.getTileUrls(
             req, data_.tiles, 'data/' + id, data_.format);
-        data_.xyz_link = data_.tiles[0];
+        data_.xyz_link = tiles[0];
       }
       if (data_.filesize) {
         var suffix = 'kB';
