@@ -106,6 +106,9 @@ module.exports = function(opts, callback) {
           });
           if (dataItemId) { // mbtiles exist in the data config
             return dataItemId;
+          } else if (fromData) {
+            console.log('ERROR: data "' + mbtiles + '" not found!');
+            process.exit(1);
           } else {
             var id = mbtiles.substr(0, mbtiles.lastIndexOf('.')) || mbtiles;
             while (data[id]) id += '_';

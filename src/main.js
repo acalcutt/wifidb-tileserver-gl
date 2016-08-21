@@ -90,7 +90,7 @@ var startWithMBTiles = function(mbtilesFile) {
         },
         "styles": {},
         "data": {
-          "data": {
+          "osm2vectortiles": {
             "mbtiles": path.basename(mbtilesFile)
           }
         }

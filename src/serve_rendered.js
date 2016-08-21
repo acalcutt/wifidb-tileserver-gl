@@ -169,15 +169,21 @@ module.exports = function(options, repo, params, id, dataResolver) {
     var source = styleJSON.sources[name];
     var url = source.url;
 
-    if (url.lastIndexOf('mbtiles', 0) === 0) {
+    if (url.lastIndexOf('mbtiles:', 0) === 0) {
       // found mbtiles source, replace with info from local file
       delete source.url;
 
-      var fromData = url.lastIndexOf('mbtiles_data:', 0) === 0;
-      var mbtilesFile = url.substring(
-        (fromData ? 'mbtiles_data://' : 'mbtiles://').length);
+      var mbtilesFile = url.substring('mbtiles://'.length);
+      var fromData = mbtilesFile[0] == '{' &&
+                     mbtilesFile[mbtilesFile.length - 1] == '}';
+
       if (fromData) {
-        mbtilesFile = dataResolver(mbtilesFile);
+        mbtilesFile = dataResolver(
+          mbtilesFile.substr(1, mbtilesFile.length - 2));
+        if (!mbtilesFile) {
+          console.log('ERROR: data "' + mbtilesFile + '" not found!');
+          process.exit(1);
+        }
       }
 
       queue.push(function(callback) {
