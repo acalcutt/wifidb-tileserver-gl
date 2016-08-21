@@ -18,6 +18,7 @@ var Canvas = require('canvas'),
     mercator = new (require('sphericalmercator'))(),
     mbgl = require('mapbox-gl-native'),
     mbtiles = require('mbtiles'),
+    pngquant = require('node-pngquant-native'),
     request = require('request');
 
 var utils = require('./utils');
@@ -294,19 +295,24 @@ module.exports = function(options, repo, params, id, dataResolver) {
 
         image.toFormat(format);
 
-        var formatEncoding = (params.formatEncoding || {})[format] ||
-                             (options.formatEncoding || {})[format];
+        var formatQuality = (params.formatQuality || {})[format] ||
+                            (options.formatQuality || {})[format];
         if (format == 'png') {
-          image.compressionLevel(formatEncoding || 6)
-               .withoutAdaptiveFiltering();
+          image.withoutAdaptiveFiltering();
         } else if (format == 'jpeg') {
-          image.quality(formatEncoding || 80);
+          image.quality(formatQuality || 80);
         } else if (format == 'webp') {
-          image.quality(formatEncoding || 90);
+          image.quality(formatQuality || 90);
         }
         image.toBuffer(function(err, buffer, info) {
           if (!buffer) {
             return res.status(404).send('Not found');
+          }
+
+          if (format == 'png') {
+            buffer = pngquant.compress(buffer, {
+              quality: [0, formatQuality || 90]
+            });
           }
 
           res.set({

@@ -29,6 +29,7 @@
     "mapbox-gl-native": "3.3.2",
     "mbtiles": "0.9.0",
     "morgan": "1.7.0",
+    "node-pngquant-native": "1.0.4",
     "nomnom": "1.8.1",
     "request": "2.74.0",
     "sharp": "0.15.1",

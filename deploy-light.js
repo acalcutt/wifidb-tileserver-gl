@@ -14,6 +14,7 @@ var packageJson = require('./package');
 packageJson.name += '-light';
 delete packageJson.dependencies['canvas'];
 delete packageJson.dependencies['mapbox-gl-native'];
+delete packageJson.dependencies['node-pngquant-native'];
 delete packageJson.dependencies['sharp'];
 
 delete packageJson.devDependencies;
