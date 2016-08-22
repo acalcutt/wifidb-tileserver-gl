@@ -11,6 +11,12 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
+   installation
+   usage
+   config
+   deployment
+   endpoints
+
 
 
 Indices and tables
