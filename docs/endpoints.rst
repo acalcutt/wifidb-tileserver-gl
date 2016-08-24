@@ -19,6 +19,8 @@ Rendered tiles
   * Available formats: ``png``, ``jpg`` (``jpeg``), ``webp``
   * TileJSON at ``/styles/{id}/rendered.json``
 
+* The rendered tiles are not available in the ``tileserver-gl-light`` version.
+
 Static images
 =============
 * Several endpoints:
@@ -40,6 +42,8 @@ Static images
   * ``padding`` - "percetange" padding for fitted endpoints (area-based and path autofit)
 
     * value of ``0.1`` means "add 10% size to each side to make sure the area of interest is nicely visible"
+
+* The static images are not available in the ``tileserver-gl-light`` version.
 
 Source data
 ===========
