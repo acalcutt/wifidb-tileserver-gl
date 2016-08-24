@@ -2,6 +2,14 @@
 
 'use strict';
 
+/*
+ * This script creates `tileserver-gl-light` version
+ * (without native dependencies) and publishes
+ * `tileserver-gl` and `tileserver-gl-light` to npm.
+ */
+
+/* CREATE tileserver-gl-light */
+
 // SYNC THE `light` FOLDER
 require('child_process').execSync('rsync -av --exclude="light" --exclude=".git" --exclude="node_modules" --delete . light', {
   stdio: 'inherit'
@@ -22,7 +30,14 @@ delete packageJson.devDependencies;
 var str = JSON.stringify(packageJson, undefined, 2);
 fs.writeFileSync('light/package.json', str);
 
-// PUBLISH
+/* PUBLISH */
+
+// tileserver-gl
+require('child_process').execSync('npm publish .', {
+  stdio: 'inherit'
+});
+
+// tileserver-gl-light
 require('child_process').execSync('npm publish light', {
   stdio: 'inherit'
 });
