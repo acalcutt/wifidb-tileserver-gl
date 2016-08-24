@@ -102,7 +102,9 @@ var startWithMBTiles = function(mbtilesFile) {
         if (styleFilename.endsWith('.json')) {
           var styleObject = {
             "style": path.basename(styleFilename),
-            "bounds": bounds
+            "tilejson": {
+              "bounds": bounds
+            }
           };
           config['styles'][path.basename(styleFilename, '.json')] =
               styleObject;
