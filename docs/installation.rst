@@ -9,10 +9,15 @@ When running docker image, no special installation is needed -- the docker will 
 
 Just run ``docker run -it -v $(pwd):/data -p 8080:80 klokantech/tileserver-gl``.
 
-NPM
+npm
 ===
 
 Just run ``npm install -g tileserver-gl``.
+
+``tileserver-gl-light`` on npm
+==============================
+
+Alternatively, you can use ``tileserver-gl-light`` package instead, which is pure javascript (does not have any native dependencies) and can run anywhere, but does not contain rasterization features.
 
 
 From source
