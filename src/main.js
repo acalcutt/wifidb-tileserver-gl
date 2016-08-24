@@ -147,7 +147,7 @@ fs.stat(path.resolve(opts.config), function(err, stats) {
         var stream = fs.createWriteStream(filename);
         console.log('Downloading sample data (' + filename + ') from ' + url);
         stream.on('finish', function() {
-          return startWithMBTiles(mbtiles);
+          return startWithMBTiles(filename);
         });
         return request.get(url).pipe(stream);
       }
