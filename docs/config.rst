@@ -23,7 +23,8 @@ Example::
         "png": 90,
         "jpeg": 80,
         "webp": 90
-      }
+      },
+      "maxSize": 2048
     },
     "styles": {
       "basic": {
@@ -68,6 +69,11 @@ You can use this to optionally specify on what domains the rendered tiles are ac
 -----------------
 
 Quality of the compression of individual image formats. [0-100]
+
+``maxSize``
+-----------
+
+Maximum image side length to be allowed to be rendered (including scale factor). Default is ``2048``.
 
 ``styles``
 ==========
