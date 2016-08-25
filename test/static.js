@@ -28,6 +28,8 @@ describe('Static endpoints', function() {
         testStatic(prefix, '0,0,0/300x300', 'png', 200, 2);
         testStatic(prefix, '0,0,0/300x300', 'png', 200, 3);
 
+        testStatic(prefix, '0,0,1.5/256x256', 'png', 200);
+
         testStatic(prefix, '80,40,20/600x300', 'png', 200, 3);
         testStatic(prefix, '8.5,40.5,20/300x150', 'png', 200, 3);
         testStatic(prefix, '-8.5,-40.5,20/300x150', 'png', 200, 3);
@@ -48,7 +50,6 @@ describe('Static endpoints', function() {
       testStatic(prefix, '0,0,0/256x256', 'png', 404, 1);
 
       testStatic(prefix, '0,0,-1/256x256', 'png', 404);
-      testStatic(prefix, '0,0,1.5/256x256', 'png', 404);
       testStatic(prefix, '0,0,0/256.5x256.5', 'png', 404);
 
       testStatic(prefix, '0,0,0,/256x256', 'png', 404);

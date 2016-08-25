@@ -26,6 +26,7 @@ describe('Raster tiles', function() {
       testTile(prefix, 0, 0, 0, 'png', 200, 2);
       testTile(prefix, 0, 0, 0, 'png', 200, 3);
       testTile(prefix, 2, 1, 1, 'png', 200, 3);
+      testTile(prefix, 0, 0, 0, 'png', 200, 4);
     });
   });
 
@@ -39,7 +40,7 @@ describe('Raster tiles', function() {
     testTile(prefix, 0, 0, 0, 'pbf', 400);
 
     testTile(prefix, 0, 0, 0, 'png', 404, 1);
-    testTile(prefix, 0, 0, 0, 'png', 404, 4);
+    testTile(prefix, 0, 0, 0, 'png', 404, 5);
 
     //testTile('hybrid', 0, 0, 0, 'png', 404); //TODO: test this
   });
