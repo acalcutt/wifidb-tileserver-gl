@@ -426,14 +426,13 @@ module.exports = function(options, repo, params, id, dataResolver) {
 
     var minCorner = mercator.px([bbox[0], bbox[3]], z),
         maxCorner = mercator.px([bbox[2], bbox[1]], z);
-    while ((((maxCorner[0] - minCorner[0]) * (1 + 2 * padding) > w) ||
-            ((maxCorner[1] - minCorner[1]) * (1 + 2 * padding) > h)) && z > 0) {
-      z--;
-      minCorner[0] /= 2;
-      minCorner[1] /= 2;
-      maxCorner[0] /= 2;
-      maxCorner[1] /= 2;
-    }
+    w /= (1 + 2 * padding);
+    h /= (1 + 2 * padding);
+
+    z -= Math.max(
+      Math.log((maxCorner[0] - minCorner[0]) / w),
+      Math.log((maxCorner[1] - minCorner[1]) / h)
+    ) / Math.LN2;
 
     return z;
   };
@@ -443,11 +442,12 @@ module.exports = function(options, repo, params, id, dataResolver) {
       ':scale(' + SCALE_PATTERN + ')?\.:format([\\w]+)';
 
   var centerPattern =
-      util.format(':lon(%s),:lat(%s),:z(\\d+)(@:bearing(%s)(,:pitch(%s))?)?',
-                  FLOAT_PATTERN, FLOAT_PATTERN, FLOAT_PATTERN, FLOAT_PATTERN);
+      util.format(':lon(%s),:lat(%s),:z(%s)(@:bearing(%s)(,:pitch(%s))?)?',
+                  FLOAT_PATTERN, FLOAT_PATTERN, FLOAT_PATTERN,
+                  FLOAT_PATTERN, FLOAT_PATTERN);
 
   app.get(util.format(staticPattern, centerPattern), function(req, res, next) {
-    var z = req.params.z | 0,
+    var z = +req.params.z,
         x = +req.params.lon,
         y = +req.params.lat,
         bearing = +(req.params.bearing || '0'),
