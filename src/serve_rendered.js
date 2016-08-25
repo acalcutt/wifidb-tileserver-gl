@@ -462,6 +462,10 @@ module.exports = function(options, repo, params, id, dataResolver) {
         scale = getScale(req.params.scale),
         format = req.params.format;
 
+    if (z < 0) {
+      return res.status(404).send('Invalid zoom');
+    }
+
     var path = extractPathFromQuery(req.query);
     var overlay = renderOverlay(z, x, y, bearing, pitch, w, h, scale,
                                 path, req.query);
