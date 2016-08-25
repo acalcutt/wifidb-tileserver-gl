@@ -20,9 +20,10 @@ Example::
         "127.0.0.1:8080"
       ],
       "formatQuality": {
-        "png": 90,
         "jpeg": 80,
-        "webp": 90
+        "webp": 90,
+        "pngQuantization": false,
+        "png": 90
       },
       "maxSize": 2048
     },
@@ -69,6 +70,8 @@ You can use this to optionally specify on what domains the rendered tiles are ac
 -----------------
 
 Quality of the compression of individual image formats. [0-100]
+
+The value for ``png`` is only used when ``pngQuantization`` is ``true``.
 
 ``maxSize``
 -----------

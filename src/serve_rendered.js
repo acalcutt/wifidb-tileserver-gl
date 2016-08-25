@@ -317,9 +317,13 @@ module.exports = function(options, repo, params, id, dataResolver) {
           }
 
           if (format == 'png') {
-            buffer = pngquant.compress(buffer, {
-              quality: [0, formatQuality || 90]
-            });
+            var usePngQuant =
+                (options.formatQuality || {}).pngQuantization === true;
+            if (usePngQuant) {
+              buffer = pngquant.compress(buffer, {
+                quality: [0, formatQuality || 90]
+              });
+            }
           }
 
           res.set({
