@@ -20,6 +20,7 @@ var fs = require('fs');
 var packageJson = require('./package');
 
 packageJson.name += '-light';
+packageJson.description = 'Map tile server for JSON GL styles - serving vector tiles';
 delete packageJson.dependencies['canvas'];
 delete packageJson.dependencies['mapbox-gl-native'];
 delete packageJson.dependencies['node-pngquant-native'];
@@ -29,6 +30,7 @@ delete packageJson.devDependencies;
 
 var str = JSON.stringify(packageJson, undefined, 2);
 fs.writeFileSync('light/package.json', str);
+fs.renameSync('light/README_light.md', 'light/README.md');
 
 /* PUBLISH */
 

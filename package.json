@@ -1,7 +1,7 @@
 {
   "name": "tileserver-gl",
   "version": "1.1.0",
-  "description": "Map tile server for JSON GL styles - serverside generated raster tiles",
+  "description": "Map tile server for JSON GL styles - vector and server side generated raster tiles",
   "main": "src/main.js",
   "bin": "src/main.js",
   "authors": [
