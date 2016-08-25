@@ -22,7 +22,8 @@ var packageJson = require('../package'),
     serve_data = require('./serve_data'),
     utils = require('./utils');
 
-if (packageJson.name.slice(-6) !== '-light') {
+var isLight = packageJson.name.slice(-6) == '-light';
+if (!isLight) {
   // do not require `serve_rendered` in the light package
   serve_rendered = require('./serve_rendered');
 }
@@ -212,6 +213,7 @@ module.exports = function(opts, callback) {
           }
         }
         data['server_version'] = packageJson.name + ' v' + packageJson.version;
+        data['is_light'] = isLight;
         data['key_query_part'] =
             req.query.key ? 'key=' + req.query.key + '&amp;' : '';
         data['key_query'] = req.query.key ? '?key=' + req.query.key : '';

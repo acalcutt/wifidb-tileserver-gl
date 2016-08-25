@@ -17,8 +17,8 @@
 </head>
 <body>
   <section>
-    <h1 class="title"><img src="/images/logo.png" alt="TileServer GL" /></h1>
-    <h2 class="subtitle">Vector and raster maps with GL styles</h2>
+    <h1 class="title {{#if is_light}}light{{/if}}"><img src="/images/logo.png" alt="TileServer GL" /></h1>
+    <h2 class="subtitle">Vector {{#if is_light}}<s>and raster</s>{{else}}and raster{{/if}} maps with GL styles</h2>
     <h2 class="box-header">Styles</h2>
     <div class="box">
     {{#each styles}}

@@ -36,6 +36,16 @@ a:hover{
   font-size: 32px;
   text-align:center;
   margin:90px 0 0 0;
+  position:relative;
+}
+.title.light:after {
+  content: "light";
+  display: block;
+  position: absolute;
+  left: 50%;
+  bottom: -5px;
+  color: #499DCE;
+  font-size:.8em;
 }
 section{
   margin: 15px auto;
@@ -168,6 +178,9 @@ body {
 @media (max-width: 600px) {
   .title{
     margin: 25px 0 0 0;
+  }
+  .title.light:after {
+    font-size:.6em;
   }
   .title img{
     width: 200px;
