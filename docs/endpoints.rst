@@ -15,7 +15,7 @@ Rendered tiles
 ==============
 * Rendered tiles are served at ``/styles/{id}/rendered/{z}/{x}/{y}[@2x].{format}``
 
-  * The optional ``@2x`` (or ``@3x``) part can be used to render HiDPI (retina) tiles
+  * The optional ``@2x`` (or ``@3x``, ``@4x``) part can be used to render HiDPI (retina) tiles
   * Available formats: ``png``, ``jpg`` (``jpeg``), ``webp``
   * TileJSON at ``/styles/{id}/rendered.json``
 
