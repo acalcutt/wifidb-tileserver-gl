@@ -27,3 +27,11 @@ Make sure you have Node v4 or higher (nvm install 4) and run::
 
   npm install
   node .
+
+
+On OSX
+======
+
+Make sure to have ``pkg-config`` and ``cairo`` installed::
+
+  brew install pkg-config cairo
