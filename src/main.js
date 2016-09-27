@@ -70,10 +70,6 @@ var startWithMBTiles = function(mbtilesFile) {
   }
   var instance = new mbtiles(mbtilesFile, function(err) {
     instance.getInfo(function(err, info) {
-      if (info.format != 'pbf') {
-        console.log('ERROR: MBTiles format is not "pbf".');
-        process.exit(1);
-      }
       var bounds = info.bounds;
 
       var styleDir = path.resolve(__dirname, "../node_modules/tileserver-gl-styles/");
@@ -89,26 +85,35 @@ var startWithMBTiles = function(mbtilesFile) {
           }
         },
         "styles": {},
-        "data": {
-          "osm2vectortiles": {
-            "mbtiles": path.basename(mbtilesFile)
-          }
-        }
+        "data": {}
       };
 
-      var styles = fs.readdirSync(path.resolve(styleDir, 'styles'));
-      for (var i=0; i < styles.length; i++) {
-        var styleFilename = styles[i];
-        if (styleFilename.endsWith('.json')) {
-          var styleObject = {
-            "style": path.basename(styleFilename),
-            "tilejson": {
-              "bounds": bounds
-            }
-          };
-          config['styles'][path.basename(styleFilename, '.json')] =
-              styleObject;
+      if (info.format == 'pbf' &&
+          info.name.toLowerCase().indexOf('osm2vectortiles') > -1) {
+        config['data']['osm2vectortiles'] = {
+          "mbtiles": path.basename(mbtilesFile)
+        };
+
+        var styles = fs.readdirSync(path.resolve(styleDir, 'styles'));
+        for (var i = 0; i < styles.length; i++) {
+          var styleFilename = styles[i];
+          if (styleFilename.endsWith('.json')) {
+            var styleObject = {
+              "style": path.basename(styleFilename),
+              "tilejson": {
+                "bounds": bounds
+              }
+            };
+            config['styles'][path.basename(styleFilename, '.json')] =
+                styleObject;
+          }
         }
+      } else {
+        console.log('WARN: MBTiles not in "osm2vectortiles" format. ' +
+                    'Serving raw data only...');
+        config['data'][info.id || 'mbtiles'] = {
+          "mbtiles": path.basename(mbtilesFile)
+        };
       }
 
       if (opts.verbose) {
