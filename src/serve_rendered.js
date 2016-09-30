@@ -202,6 +202,7 @@ module.exports = function(options, repo, params, id, dataResolver) {
               // meta url which will be detected when requested
               'mbtiles://' + name + '/{z}/{x}/{y}.' + (info.format || 'pbf')
             ];
+            delete source.scheme;
             if (source.format == 'pbf') {
               map.sources[name].emptyTile = new Buffer(0);
             } else {
