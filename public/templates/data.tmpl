@@ -124,6 +124,10 @@
   <div id='map'></div>
   <script>
     var map = L.mapbox.map('map', '/data/{{id}}.json{{&key_query}}', { zoomControl: false });
+    map.eachLayer(function(layer) {
+      // do not add scale prefix even if retina display is detected
+      layer.scalePrefix = '.';
+    });
     new L.Control.Zoom({ position: 'topright' }).addTo(map);
     setTimeout(function() {
       new L.Hash(map);
