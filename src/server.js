@@ -249,7 +249,7 @@ module.exports = function(opts, callback) {
 
         var tiles = utils.getTileUrls(
             req, style.serving_rendered.tiles,
-            'styles/' + id, style.serving_rendered.format);
+            'styles/' + id + '/rendered', style.serving_rendered.format);
         style.xyz_link = tiles[0];
       }
     });
