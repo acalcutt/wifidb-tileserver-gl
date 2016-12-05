@@ -446,7 +446,7 @@ module.exports = function(options, repo, params, id, dataResolver) {
   };
 
   var staticPattern =
-      '/static/:raw([\\w]+)?/%s/:width(\\d+)x:height(\\d+)' +
+      '/static/:raw(raw)?/%s/:width(\\d+)x:height(\\d+)' +
       ':scale(' + SCALE_PATTERN + ')?\.:format([\\w]+)';
 
   var centerPattern =
