@@ -446,18 +446,19 @@ module.exports = function(options, repo, params, id, dataResolver) {
   };
 
   var staticPattern =
-      '/static/%s/:width(\\d+)x:height(\\d+)' +
+      '/static/:raw([\\w]+)?/%s/:width(\\d+)x:height(\\d+)' +
       ':scale(' + SCALE_PATTERN + ')?\.:format([\\w]+)';
 
   var centerPattern =
-      util.format(':lon(%s),:lat(%s),:z(%s)(@:bearing(%s)(,:pitch(%s))?)?',
+      util.format(':x(%s),:y(%s),:z(%s)(@:bearing(%s)(,:pitch(%s))?)?',
                   FLOAT_PATTERN, FLOAT_PATTERN, FLOAT_PATTERN,
                   FLOAT_PATTERN, FLOAT_PATTERN);
 
   app.get(util.format(staticPattern, centerPattern), function(req, res, next) {
+    var raw = req.params.raw;
     var z = +req.params.z,
-        x = +req.params.lon,
-        y = +req.params.lat,
+        x = +req.params.x,
+        y = +req.params.y,
         bearing = +(req.params.bearing || '0'),
         pitch = +(req.params.pitch || '0'),
         w = req.params.width | 0,
@@ -467,6 +468,12 @@ module.exports = function(options, repo, params, id, dataResolver) {
 
     if (z < 0) {
       return res.status(404).send('Invalid zoom');
+    }
+
+    if (raw) {
+      var ll = mercator.inverse([x, y]);
+      x = ll[0];
+      y = ll[1];
     }
 
     var path = extractPathFromQuery(req.query);
@@ -482,8 +489,19 @@ module.exports = function(options, repo, params, id, dataResolver) {
                   FLOAT_PATTERN, FLOAT_PATTERN, FLOAT_PATTERN, FLOAT_PATTERN);
 
   app.get(util.format(staticPattern, boundsPattern), function(req, res, next) {
+    var raw = req.params.raw;
     var bbox = [+req.params.minx, +req.params.miny,
                 +req.params.maxx, +req.params.maxy];
+
+    if (raw) {
+      var minCorner = mercator.inverse(bbox.slice(0, 2));
+      var maxCorner = mercator.inverse(bbox.slice(2));
+      bbox[0] = minCorner[0];
+      bbox[1] = minCorner[1];
+      bbox[2] = maxCorner[0];
+      bbox[3] = maxCorner[1];
+    }
+
     var w = req.params.width | 0,
         h = req.params.height | 0,
         scale = getScale(req.params.scale),
@@ -510,6 +528,7 @@ module.exports = function(options, repo, params, id, dataResolver) {
       return res.status(400).send('Invalid path');
     }
 
+    var raw = req.params.raw;
     var w = req.params.width | 0,
         h = req.params.height | 0,
         bearing = 0,
@@ -528,6 +547,12 @@ module.exports = function(options, repo, params, id, dataResolver) {
     var z = calcZForBBox(bbox, w, h, req.query),
         x = (bbox[0] + bbox[2]) / 2,
         y = (bbox[1] + bbox[3]) / 2;
+
+    if (raw) {
+      var ll = mercator.inverse([x, y]);
+      x = ll[0];
+      y = ll[1];
+    }
 
     var overlay = renderOverlay(z, x, y, bearing, pitch, w, h, scale,
                                 path, req.query);
