@@ -49,6 +49,10 @@ Source data
 ===========
 * Source data are served at ``/data/{mbtiles}/{z}/{x}/{y}.{format}``
 
+  * Format depends on the source file (usually ``png`` or ``pbf``)
+
+    * ``geojson`` is also available (useful for inspecting the tiles) in case the original format is ``pbf``
+
   * TileJSON at ``/data/{mbtiles}.json``
 
 TileJSON arrays

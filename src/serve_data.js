@@ -1,11 +1,14 @@
 'use strict';
 
 var fs = require('fs'),
-    path = require('path');
+    path = require('path'),
+    zlib = require('zlib');
 
 var clone = require('clone'),
     express = require('express'),
-    mbtiles = require('mbtiles');
+    mbtiles = require('mbtiles'),
+    pbf = require('pbf'),
+    VectorTile = require('vector-tile').VectorTile;
 
 var tileshrinkGl;
 try {
@@ -53,7 +56,8 @@ module.exports = function(options, repo, params, id, styles) {
     var z = req.params.z | 0,
         x = req.params.x | 0,
         y = req.params.y | 0;
-    if (req.params.format != tileJSON.format) {
+    if (req.params.format != tileJSON.format &&
+        !(req.params.format == 'geojson' && tileJSON.format == 'pbf')) {
       return res.status(404).send('Invalid format');
     }
     if (z < tileJSON.minzoom || 0 || x < 0 || y < 0 ||
@@ -73,9 +77,6 @@ module.exports = function(options, repo, params, id, styles) {
           return res.status(404).send('Not found');
         } else {
           if (tileJSON['format'] == 'pbf') {
-            headers['Content-Type'] = 'application/x-protobuf';
-            headers['Content-Encoding'] = 'gzip';
-
             var style = req.query.style;
             if (style && tileshrinkGl) {
               if (!shrinkers[style]) {
@@ -94,15 +95,37 @@ module.exports = function(options, repo, params, id, styles) {
                 }
               }
               if (shrinkers[style]) {
-                data = shrinkers[style](data, z, tileJSON.maxzoom);
+                data = shrinkers[style](zlib.unzipSync(data), z, tileJSON.maxzoom);
                 //console.log(shrinkers[style].getStats());
               }
             }
           }
+          if (req.params.format == 'pbf') {
+            headers['Content-Type'] = 'application/x-protobuf';
+          } else if (req.params.format == 'geojson') {
+            headers['Content-Type'] = 'application/json';
+
+            var tile = new VectorTile(new pbf(zlib.unzipSync(data)));
+            var geojson = {
+              "type": "FeatureCollection",
+              "features": []
+            };
+            for (var layerName in tile.layers) {
+              var layer = tile.layers[layerName];
+              for (var i = 0; i < layer.length; i++) {
+                var feature = layer.feature(i);
+                var featureGeoJSON = feature.toGeoJSON(x, y, z);
+                featureGeoJSON.properties.layer = layerName;
+                geojson.features.push(featureGeoJSON);
+              }
+            }
+            data = JSON.stringify(geojson);
+          }
           delete headers['ETag']; // do not trust the tile ETag -- regenerate
+          headers['Content-Encoding'] = 'gzip';
           res.set(headers);
 
-          return res.status(200).send(data);
+          return res.status(200).send(zlib.gzipSync(data));
         }
       }
     });
