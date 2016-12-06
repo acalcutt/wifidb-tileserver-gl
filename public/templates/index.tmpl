@@ -32,8 +32,12 @@
           <h3>{{name}}</h3>
           <p class="identifier">identifier: {{@key}}</p>
           <p class="services">
+            services:
+            {{#if serving_data}}
+              <a href="/styles/{{@key}}.json{{&../key_query}}">GL Style</a>
+            {{/if}}
             {{#if serving_rendered}}
-              services: <a href="/styles/{{@key}}/rendered.json{{&../key_query}}">TileJSON</a>
+              {{#if serving_data}}| {{/if}}<a href="/styles/{{@key}}/rendered.json{{&../key_query}}">TileJSON</a>
             {{/if}}
             {{#if wmts_link}}
               | <a href="{{&wmts_link}}">WMTS</a>
