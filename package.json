@@ -36,6 +36,9 @@
     "sphericalmercator": "1.0.5",
     "tileserver-gl-styles": "0.3.0"
   },
+  "optionalDependencies": {
+    "tileshrink-gl": "./plugins/tileshrink-gl"
+  },
   "devDependencies": {
     "should": "^10.0.0",
     "mocha": "^2.5.0",

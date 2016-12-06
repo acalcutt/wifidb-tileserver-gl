@@ -153,7 +153,7 @@ module.exports = function(opts, callback) {
       return;
     }
 
-    app.use('/data/', serve_data(options, serving.data, item, id));
+    app.use('/data/', serve_data(options, serving.data, item, id, serving.styles));
   });
 
   app.get('/styles.json', function(req, res, next) {

@@ -53,10 +53,11 @@ module.exports = function(options, repo, params, id, reportTiles, reportFont) {
 
   app.get('/' + id + '.json', function(req, res, next) {
     var fixUrl = function(url, opt_nokey) {
-      var query = '';
+      var queryParams = ['style=' + id];
       if (!opt_nokey && req.query.key) {
-        query = '?key=' + req.query.key;
+        queryParams.unshift('key=' + req.query.key);
       }
+      var query = '?' + queryParams.join('&');
       return url.replace(
           'local://', req.protocol + '://' + req.headers.host + '/') + query;
     };

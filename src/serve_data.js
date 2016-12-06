@@ -7,15 +7,22 @@ var clone = require('clone'),
     express = require('express'),
     mbtiles = require('mbtiles');
 
+var tileshrinkGl;
+try {
+  tileshrinkGl = require('tileshrink-gl');
+} catch (e) {}
+
 var utils = require('./utils');
 
-module.exports = function(options, repo, params, id) {
+module.exports = function(options, repo, params, id, styles) {
   var app = express().disable('x-powered-by');
 
   var mbtilesFile = path.resolve(options.paths.mbtiles, params.mbtiles);
   var tileJSON = {
     'tiles': params.domains || options.domains
   };
+
+  var shrinkers = {};
 
   repo[id] = tileJSON;
 
@@ -62,16 +69,39 @@ module.exports = function(options, repo, params, id) {
           return res.status(500).send(err.message);
         }
       } else {
-        if (tileJSON['format'] == 'pbf') {
-          headers['Content-Type'] = 'application/x-protobuf';
-          headers['Content-Encoding'] = 'gzip';
-        }
-        delete headers['ETag']; // do not trust the tile ETag -- regenerate
-        res.set(headers);
-
         if (data == null) {
           return res.status(404).send('Not found');
         } else {
+          if (tileJSON['format'] == 'pbf') {
+            headers['Content-Type'] = 'application/x-protobuf';
+            headers['Content-Encoding'] = 'gzip';
+
+            var style = req.query.style;
+            if (style && tileshrinkGl) {
+              if (!shrinkers[style]) {
+                var styleJSON = styles[style];
+                if (styleJSON) {
+                  var sourceName = null;
+                  for (var sourceName_ in styleJSON.sources) {
+                    var source = styleJSON.sources[sourceName_];
+                    if (source &&
+                        source.type == 'vector' &&
+                        source.url.endsWith('/' + id + '.json')) {
+                      sourceName = sourceName_;
+                    }
+                  }
+                  shrinkers[style] = tileshrinkGl.createPBFShrinker(styleJSON, sourceName);
+                }
+              }
+              if (shrinkers[style]) {
+                data = shrinkers[style](data, z, tileJSON.maxzoom);
+                //console.log(shrinkers[style].getStats());
+              }
+            }
+          }
+          delete headers['ETag']; // do not trust the tile ETag -- regenerate
+          res.set(headers);
+
           return res.status(200).send(data);
         }
       }

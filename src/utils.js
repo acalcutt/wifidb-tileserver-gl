@@ -18,7 +18,14 @@ module.exports.getTileUrls = function(req, domains, path, format) {
   }
 
   var key = req.query.key;
-  var query = (key && key.length > 0) ? ('?key=' + key) : '';
+  var queryParams = [];
+  if (req.query.key) {
+    queryParams.push('key=' + req.query.key);
+  }
+  if (req.query.style) {
+    queryParams.push('style=' + req.query.style);
+  }
+  var query = queryParams.length > 0 ? ('?' + queryParams.join('&')) : '';
 
   var uris = [];
   domains.forEach(function(domain) {
