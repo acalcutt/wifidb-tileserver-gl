@@ -77,6 +77,7 @@ module.exports = function(options, repo, params, id, styles) {
           return res.status(404).send('Not found');
         } else {
           if (tileJSON['format'] == 'pbf') {
+            data = zlib.unzipSync(data);
             var style = req.query.style;
             if (style && tileshrinkGl) {
               if (!shrinkers[style]) {
@@ -95,7 +96,7 @@ module.exports = function(options, repo, params, id, styles) {
                 }
               }
               if (shrinkers[style]) {
-                data = shrinkers[style](zlib.unzipSync(data), z, tileJSON.maxzoom);
+                data = shrinkers[style](data, z, tileJSON.maxzoom);
                 //console.log(shrinkers[style].getStats());
               }
             }
