@@ -77,7 +77,8 @@ module.exports = function(options, repo, params, id, styles) {
           return res.status(404).send('Not found');
         } else {
           if (tileJSON['format'] == 'pbf') {
-            data = zlib.unzipSync(data);
+            var isGzipped = data.slice(0,2).indexOf(
+                new Buffer([0x1f, 0x8b])) === 0;
             var style = req.query.style;
             if (style && tileshrinkGl) {
               if (!shrinkers[style]) {
@@ -96,6 +97,10 @@ module.exports = function(options, repo, params, id, styles) {
                 }
               }
               if (shrinkers[style]) {
+                if (isGzipped) {
+                  data = zlib.unzipSync(data);
+                  isGzipped = false;
+                }
                 data = shrinkers[style](data, z, tileJSON.maxzoom);
                 //console.log(shrinkers[style].getStats());
               }
@@ -106,7 +111,12 @@ module.exports = function(options, repo, params, id, styles) {
           } else if (req.params.format == 'geojson') {
             headers['Content-Type'] = 'application/json';
 
-            var tile = new VectorTile(new pbf(zlib.unzipSync(data)));
+            if (isGzipped) {
+              data = zlib.unzipSync(data);
+              isGzipped = false;
+            }
+
+            var tile = new VectorTile(new pbf(data));
             var geojson = {
               "type": "FeatureCollection",
               "features": []
@@ -126,7 +136,12 @@ module.exports = function(options, repo, params, id, styles) {
           headers['Content-Encoding'] = 'gzip';
           res.set(headers);
 
-          return res.status(200).send(zlib.gzipSync(data));
+          if (!isGzipped) {
+            data = zlib.gzipSync(data);
+            isGzipped = true;
+          }
+
+          return res.status(200).send(data);
         }
       }
     });
