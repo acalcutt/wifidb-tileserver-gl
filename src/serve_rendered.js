@@ -144,9 +144,19 @@ module.exports = function(options, repo, params, id, dataResolver) {
     });
   };
 
-  styleJSON = clone(require(path.join(options.paths.styles, styleFile)));
-  styleJSON.sprite = 'sprites://' + path.basename(styleFile, '.json');
-  styleJSON.glyphs = 'fonts://{fontstack}/{range}.pbf';
+  var styleJSONPath = path.join(options.paths.styles, styleFile);
+  styleJSON = clone(require(styleJSONPath));
+
+  var httpTester = /^(http(s)?:)?\/\//;
+  if (!httpTester.test(styleJSON.sprite)) {
+    styleJSON.sprite = 'sprites://' +
+        styleJSON.sprite
+            .replace('{style}', path.basename(styleFile, '.json'))
+            .replace('{styleJsonFolder}', path.relative(options.paths.sprites, path.dirname(styleJSONPath)));
+  }
+  if (!httpTester.test(styleJSON.glyphs)) {
+    styleJSON.glyphs = 'fonts://' + styleJSON.glyphs;
+  }
 
   var tileJSON = {
     'tilejson': '2.0.0',

@@ -43,11 +43,20 @@ module.exports = function(options, repo, params, id, reportTiles, reportFont) {
   };
   styleJSON.layers.forEach(findFontReferences);
 
-  var spritePath = path.join(options.paths.sprites,
-                             path.basename(styleFile, '.json'));
+  var spritePath;
 
-  styleJSON.sprite = 'local://styles/' + id + '/sprite';
-  styleJSON.glyphs = 'local://fonts/{fontstack}/{range}.pbf';
+  var httpTester = /^(http(s)?:)?\/\//;
+  if (!httpTester.test(styleJSON.sprite)) {
+    spritePath = path.join(options.paths.sprites,
+        styleJSON.sprite
+            .replace('{style}', path.basename(styleFile, '.json'))
+            .replace('{styleJsonFolder}', path.relative(options.paths.sprites, path.dirname(styleFile)))
+            );
+    styleJSON.sprite = 'local://styles/' + id + '/sprite';
+  }
+  if (!httpTester.test(styleJSON.glyphs)) {
+    styleJSON.glyphs = 'local://fonts/{fontstack}/{range}.pbf';
+  }
 
   repo[id] = styleJSON;
 
@@ -57,7 +66,10 @@ module.exports = function(options, repo, params, id, reportTiles, reportFont) {
       if (!opt_nokey && req.query.key) {
         queryParams.unshift('key=' + req.query.key);
       }
-      var query = '?' + queryParams.join('&');
+      var query = '';
+      if (!opt_nokey) {
+        query = '?' + queryParams.join('&');
+      }
       return url.replace(
           'local://', req.protocol + '://' + req.headers.host + '/') + query;
     };
@@ -75,6 +87,9 @@ module.exports = function(options, repo, params, id, reportTiles, reportFont) {
 
   app.get('/' + id + '/sprite:scale(@[23]x)?\.:format([\\w]+)',
       function(req, res, next) {
+    if (!spritePath) {
+      return res.status(404).send('File not found');
+    }
     var scale = req.params.scale,
         format = req.params.format;
     var filename = spritePath + (scale || '') + '.' + format;
