@@ -111,7 +111,10 @@ var startWithMBTiles = function(mbtilesFile) {
       } else {
         console.log('WARN: MBTiles not in "osm2vectortiles" format. ' +
                     'Serving raw data only...');
-        config['data'][info.id || 'mbtiles'] = {
+        config['data'][(info.id || 'mbtiles')
+                           .replace(/\//g, '_')
+                           .replace(/\:/g, '_')
+                           .replace(/\?/g, '_')] = {
           "mbtiles": path.basename(mbtilesFile)
         };
       }
