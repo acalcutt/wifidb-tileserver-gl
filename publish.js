@@ -31,6 +31,7 @@ delete packageJson.devDependencies;
 var str = JSON.stringify(packageJson, undefined, 2);
 fs.writeFileSync('light/package.json', str);
 fs.renameSync('light/README_light.md', 'light/README.md');
+fs.renameSync('light/Dockerfile_light', 'light/Dockerfile');
 
 /* PUBLISH */
 
