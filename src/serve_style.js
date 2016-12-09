@@ -46,7 +46,7 @@ module.exports = function(options, repo, params, id, reportTiles, reportFont) {
   var spritePath;
 
   var httpTester = /^(http(s)?:)?\/\//;
-  if (!httpTester.test(styleJSON.sprite)) {
+  if (styleJSON.sprite && !httpTester.test(styleJSON.sprite)) {
     spritePath = path.join(options.paths.sprites,
         styleJSON.sprite
             .replace('{style}', path.basename(styleFile, '.json'))
@@ -54,20 +54,23 @@ module.exports = function(options, repo, params, id, reportTiles, reportFont) {
             );
     styleJSON.sprite = 'local://styles/' + id + '/sprite';
   }
-  if (!httpTester.test(styleJSON.glyphs)) {
+  if (styleJSON.glyphs && !httpTester.test(styleJSON.glyphs)) {
     styleJSON.glyphs = 'local://fonts/{fontstack}/{range}.pbf';
   }
 
   repo[id] = styleJSON;
 
   app.get('/' + id + '.json', function(req, res, next) {
-    var fixUrl = function(url, opt_nokey) {
-      var queryParams = ['style=' + id];
+    var fixUrl = function(url, opt_nokey, opt_nostyle) {
+      var queryParams = [];
+      if (!opt_nostyle) {
+        queryParams.push('style=' + id);
+      }
       if (!opt_nokey && req.query.key) {
         queryParams.unshift('key=' + req.query.key);
       }
       var query = '';
-      if (!opt_nokey) {
+      if (queryParams.length) {
         query = '?' + queryParams.join('&');
       }
       return url.replace(
@@ -80,8 +83,12 @@ module.exports = function(options, repo, params, id, reportTiles, reportFont) {
       source.url = fixUrl(source.url);
     });
     // mapbox-gl-js viewer cannot handle sprite urls with query
-    styleJSON_.sprite = fixUrl(styleJSON_.sprite, true);
-    styleJSON_.glyphs = fixUrl(styleJSON_.glyphs);
+    if (styleJSON_.sprite) {
+      styleJSON_.sprite = fixUrl(styleJSON_.sprite, true, true);
+    }
+    if (styleJSON_.glyphs) {
+      styleJSON_.glyphs = fixUrl(styleJSON_.glyphs, false, true);
+    }
     return res.send(styleJSON_);
   });
 

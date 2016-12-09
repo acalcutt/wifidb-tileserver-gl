@@ -49,6 +49,19 @@ module.exports = function(options, repo, params, id, dataResolver) {
     sources: {}
   };
 
+  var existingFonts = {};
+  fs.readdir(options.paths.fonts, function(err, files) {
+    files.forEach(function(file) {
+      fs.stat(path.join(options.paths.fonts, file), function(err, stats) {
+        if (!err) {
+          if (stats.isDirectory()) {
+            existingFonts[path.basename(file)] = true;
+          }
+        }
+      });
+    });
+  });
+
   var styleJSON;
   var createPool = function(ratio, min, max) {
     var createRenderer = function(ratio, createCallback) {
@@ -67,7 +80,7 @@ module.exports = function(options, repo, params, id, dataResolver) {
             var parts = req.url.split('/');
             var fontstack = unescape(parts[2]);
             var range = parts[3].split('.')[0];
-            utils.getFontsPbf(null, options.paths[protocol], fontstack, range,
+            utils.getFontsPbf(null, options.paths[protocol], fontstack, range, existingFonts,
                 function(err, concated) {
               callback(err, {data: concated});
             });
@@ -148,13 +161,13 @@ module.exports = function(options, repo, params, id, dataResolver) {
   styleJSON = clone(require(styleJSONPath));
 
   var httpTester = /^(http(s)?:)?\/\//;
-  if (!httpTester.test(styleJSON.sprite)) {
+  if (styleJSON.sprite && !httpTester.test(styleJSON.sprite)) {
     styleJSON.sprite = 'sprites://' +
         styleJSON.sprite
             .replace('{style}', path.basename(styleFile, '.json'))
             .replace('{styleJsonFolder}', path.relative(options.paths.sprites, path.dirname(styleJSONPath)));
   }
-  if (!httpTester.test(styleJSON.glyphs)) {
+  if (styleJSON.glyphs && !httpTester.test(styleJSON.glyphs)) {
     styleJSON.glyphs = 'fonts://' + styleJSON.glyphs;
   }
 
@@ -204,6 +217,9 @@ module.exports = function(options, repo, params, id, dataResolver) {
         }
         map.sources[name] = new mbtiles(mbtilesFile, function(err) {
           map.sources[name].getInfo(function(err, info) {
+            if (err) {
+              console.error(err);
+            }
             var type = source.type;
             Object.assign(source, info);
             source.type = type;

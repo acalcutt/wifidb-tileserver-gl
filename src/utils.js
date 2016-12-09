@@ -4,7 +4,8 @@ var async = require('async'),
     path = require('path'),
     fs = require('fs');
 
-var glyphCompose = require('glyph-pbf-composite');
+var clone = require('clone'),
+    glyphCompose = require('glyph-pbf-composite');
 
 module.exports.getTileUrls = function(req, domains, path, format) {
 
@@ -51,13 +52,25 @@ module.exports.fixTileJSONCenter = function(tileJSON) {
   }
 };
 
-module.exports.getFontsPbf = function(allowedFonts, fontPath, names, range, callback) {
-  var getFontPbf = function(name, range, callback) {
-    if (!allowedFonts || allowedFonts[name]) {
+module.exports.getFontsPbf = function(allowedFonts, fontPath, names, range, fallbacks, callback) {
+  var getFontPbf = function(allowedFonts, name, range, callback, fallbacks) {
+    if (!allowedFonts || (allowedFonts[name] && fallbacks)) {
       var filename = path.join(fontPath, name, range + '.pbf');
+      if (!fallbacks) {
+        fallbacks = clone(allowedFonts || {});
+      }
+      delete fallbacks[name];
       return fs.readFile(filename, function(err, data) {
         if (err) {
-          return callback(new Error('Font load error: ' + name));
+          console.error('ERROR: Font not found:', name);
+          if (fallbacks && Object.keys(fallbacks).length) {
+            var fallbackName = Object.keys(fallbacks)[0];
+            console.error('ERROR: Trying to use', fallbackName, 'as a fallback');
+            delete fallbacks[fallbackName];
+            return getFontPbf(null, fallbackName, range, callback, fallbacks);
+          } else {
+            return callback(new Error('Font load error: ' + name));
+          }
         } else {
           return callback(null, data);
         }
@@ -71,7 +84,7 @@ module.exports.getFontsPbf = function(allowedFonts, fontPath, names, range, call
   var queue = [];
   fonts.forEach(function(font) {
     queue.push(function(callback) {
-      getFontPbf(font, range, callback);
+      getFontPbf(allowedFonts, font, range, callback, clone(allowedFonts || fallbacks));
     });
   });
 
