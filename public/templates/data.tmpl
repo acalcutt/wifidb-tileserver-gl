@@ -122,7 +122,9 @@
     if (features) {
       var html = '';
       features.forEach(function(feature) {
-        html += JSON.stringify(feature.properties, null, 2) + '\n';
+        html +=
+            '[Layer: ' + feature.layer['source-layer'] + ']\n' +
+            JSON.stringify(feature.properties, null, 2) + '\n\n';
       });
       propertyList.innerHTML = html;
     }
