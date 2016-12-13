@@ -29,7 +29,7 @@
         style: '/styles/{{id}}.json{{&key_query}}',
         hash: true
       });
-      map.addControl(new mapboxgl.Navigation());
+      map.addControl(new mapboxgl.NavigationControl());
     } else {
       var map = L.mapbox.map('map', '/styles/{{id}}/rendered.json{{&key_query}}', { zoomControl: false });
       new L.Control.Zoom({ position: 'topright' }).addTo(map);
