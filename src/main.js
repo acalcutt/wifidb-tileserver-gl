@@ -78,8 +78,7 @@ var startWithMBTiles = function(mbtilesFile) {
         "options": {
           "paths": {
             "root": styleDir,
-            "fonts": "glyphs",
-            "sprites": "sprites",
+            "fonts": "fonts",
             "styles": "styles",
             "mbtiles": path.dirname(mbtilesFile)
           }
@@ -89,27 +88,53 @@ var startWithMBTiles = function(mbtilesFile) {
       };
 
       if (info.format == 'pbf' &&
-          info.name.toLowerCase().indexOf('osm2vectortiles') > -1) {
-        config['data']['osm2vectortiles'] = {
+          info.name.toLowerCase().indexOf('openmaptiles') > -1) {
+        config['data']['openmaptiles'] = {
           "mbtiles": path.basename(mbtilesFile)
         };
 
+        var omtV = (info.version || '').split('.');
+
         var styles = fs.readdirSync(path.resolve(styleDir, 'styles'));
         for (var i = 0; i < styles.length; i++) {
-          var styleFilename = styles[i];
-          if (styleFilename.endsWith('.json')) {
-            var styleObject = {
-              "style": path.basename(styleFilename),
-              "tilejson": {
-                "bounds": bounds
-              }
-            };
-            config['styles'][path.basename(styleFilename, '.json')] =
-                styleObject;
+          var styleName = styles[i];
+          var styleFileRel = styleName + '/style.json';
+          var styleFile = path.resolve(styleDir, 'styles', styleFileRel);
+          if (fs.existsSync(styleFile)) {
+            var styleJSON = require(styleFile);
+            var omtVersionCompatibility =
+              ((styleJSON || {}).metadata || {})['openmaptiles:version'] || 'x';
+            var m = omtVersionCompatibility.toLowerCase().split('.');
+
+            var isCompatible = !(
+              m[0] != 'x' && (
+                m[0] != omtV[0] || (
+                  (m[1] || 'x') != 'x' && (
+                    m[1] != omtV[1] || (
+                      (m[2] || 'x') != 'x' &&
+                      m[2] != omtV[2]
+                    )
+                  )
+                )
+              )
+            );
+
+            if (isCompatible) {
+              var styleObject = {
+                "style": styleFileRel,
+                "tilejson": {
+                  "bounds": bounds
+                }
+              };
+              config['styles'][styleName] = styleObject;
+            } else {
+              console.log('Style', styleName, 'requires OpenMapTiles version',
+              omtVersionCompatibility, 'but mbtiles is version', info.version);
+            }
           }
         }
       } else {
-        console.log('WARN: MBTiles not in "osm2vectortiles" format. ' +
+        console.log('WARN: MBTiles not in "openmaptiles" format. ' +
                     'Serving raw data only...');
         config['data'][(info.id || 'mbtiles')
                            .replace(/\//g, '_')
