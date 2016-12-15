@@ -8,7 +8,7 @@ var testIs = function(url, type, status) {
   });
 };
 
-var prefix = 'bright';
+var prefix = 'test-style';
 
 describe('Styles', function() {
   describe('/styles/' + prefix + '.json is valid style', function() {

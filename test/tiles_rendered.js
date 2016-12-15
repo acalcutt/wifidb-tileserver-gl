@@ -9,7 +9,7 @@ var testTile = function(prefix, z, x, y, format, status, scale, type) {
   });
 };
 
-var prefix = 'bright';
+var prefix = 'test-style';
 
 describe('Raster tiles', function() {
   describe('valid requests', function() {

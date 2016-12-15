@@ -12,7 +12,7 @@ var testStatic = function(prefix, q, format, status, scale, type, query) {
   });
 };
 
-var prefix = 'bright';
+var prefix = 'test-style';
 
 describe('Static endpoints', function() {
   describe('center-based', function() {

@@ -8,7 +8,7 @@ var testTile = function(prefix, z, x, y, status) {
   });
 };
 
-var prefix = 'zurich-vector';
+var prefix = 'openmaptiles';
 
 describe('Vector tiles', function() {
   describe('existing tiles', function() {

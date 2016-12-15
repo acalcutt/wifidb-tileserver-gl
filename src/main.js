@@ -175,7 +175,7 @@ fs.stat(path.resolve(opts.config), function(err, stats) {
         console.log('No MBTiles specified, using ' + mbtiles);
         return startWithMBTiles(mbtiles);
       } else {
-        var url = 'https://github.com/klokantech/tileserver-gl-styles/releases/download/v0.3.0/zurich_switzerland.mbtiles';
+        var url = 'https://github.com/klokantech/tileserver-gl/releases/download/v1.3.0/zurich_switzerland.mbtiles';
         var filename = 'zurich_switzerland.mbtiles';
         var stream = fs.createWriteStream(filename);
         console.log('Downloading sample data (' + filename + ') from ' + url);
