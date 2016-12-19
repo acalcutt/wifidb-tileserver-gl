@@ -12,6 +12,10 @@
     "url": "https://github.com/klokantech/tileserver-gl.git"
   },
   "license": "BSD-2-Clause",
+  "engines": {
+    "node": ">=4.2.1 <5"
+  },
+  "engineStrict": true,
   "scripts": {
     "test": "mocha test/**.js"
   },
