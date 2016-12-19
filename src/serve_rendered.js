@@ -169,7 +169,7 @@ module.exports = function(options, repo, params, id, dataResolver) {
     var source = styleJSON.sources[name];
     var url = source.url;
 
-    if (url.lastIndexOf('mbtiles:', 0) === 0) {
+    if (url && url.lastIndexOf('mbtiles:', 0) === 0) {
       // found mbtiles source, replace with info from local file
       delete source.url;
 
