@@ -14,6 +14,19 @@ npm
 
 Just run ``npm install -g tileserver-gl``.
 
+
+Native dependencies
+-------------------
+
+There are some native dependencies that you need to make sure are installed if you plan to run the TileServer GL natively without docker.
+The precise package names you need to install may differ on various platforms.
+
+These are required on Debian 9:
+  * ``build-essential``
+  * ``libcairo2-dev``
+  * ``libprotobuf-dev``
+
+
 ``tileserver-gl-light`` on npm
 ==============================
 
