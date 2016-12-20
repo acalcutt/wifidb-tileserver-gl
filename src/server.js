@@ -175,8 +175,13 @@ module.exports = function(opts, callback) {
   var addTileJSONs = function(arr, req, type) {
     Object.keys(serving[type]).forEach(function(id) {
       var info = clone(serving[type][id]);
-      info.tiles = utils.getTileUrls(req, info.tiles,
-                                     type + '/' + id, info.format);
+      var path = '';
+      if (type == 'rendered') {
+        path = 'styles/' + id + '/rendered';
+      } else {
+        path = type + '/' + id;
+      }
+      info.tiles = utils.getTileUrls(req, info.tiles, path, info.format);
       arr.push(info);
     });
     return arr;
