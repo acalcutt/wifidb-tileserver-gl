@@ -10,7 +10,7 @@ Example::
     "options": {
       "paths": {
         "root": "",
-        "fonts": "glyphs",
+        "fonts": "fonts",
         "sprites": "sprites",
         "styles": "styles",
         "mbtiles": ""
@@ -99,10 +99,13 @@ Each item specifies one data source which should be made accessible by the serve
 
 The mbtiles file does not need to be specified here unless you explicitly want to serve the raw data.
 
-Referencing local mbtiles from style
-====================================
+Referencing local files from style JSON
+=======================================
 
 You can link various data sources from the style JSON (for example even remote TileJSONs).
+
+MBTiles
+-------
 
 To specify that you want to use local mbtiles, use to following syntax: ``mbtiles://switzerland.mbtiles``.
 The TileServer-GL will try to find the file ``switzerland.mbtiles`` in ``root`` + ``mbtiles`` path.
@@ -119,3 +122,32 @@ For example::
 Alternatively, you can use ``mbtiles://{zurich-vector}`` to reference existing data object from the config.
 In this case, the server will look into the ``config.json`` to determine what mbtiles file to use.
 For the config above, this is equivalent to ``mbtiles://zurich.mbtiles``.
+
+Sprites
+-------
+
+If your style requires any sprites, make sure the style JSON contains proper path in the ``sprite`` property.
+
+It can be a local path (e.g. ``my-style/sprite``) or remove http(s) location (e.g. ``https://mycdn.com/my-style/sprite``). Several possible extension are added to this path, so the following files should be present:
+
+* ``sprite.json``
+* ``sprite.png``
+* ``sprite@2x.json``
+* ``sprite@2x.png``
+
+You can also use the following placeholders in the sprite path for easier use:
+
+* ``{style}`` -- gets replaced with the name of the style file (``xxx.json``)
+* ``{styleJsonFolder}`` -- gets replaced with the path to the style file
+
+Fonts (glyphs)
+--------------
+
+Similarly to the sprites, the style JSON also needs to contain proper paths to the font glyphs (in the ``glyphs`` property) and can be both local and remote.
+
+It should contain the following placeholders:
+
+* ``{fontstack}`` -- name of the font and variant
+* ``{range}`` -- range of the glyphs
+
+For example ``"glyphs": "{fontstack}/{range}.pbf"`` will instruct TileServer-GL to look for the files such as ``fonts/Open Sans/0-255.pbf`` (``fonts`` come from the ``paths`` property of the ``config.json`` example above).

@@ -43,6 +43,8 @@ Static images
 
     * value of ``0.1`` means "add 10% size to each side to make sure the area of interest is nicely visible"
 
+* You can also use (experimental) ``/styles/{id}/static/raw/...`` endpoints with raw spherical mercator coordinates (EPSG:3857) instead of WGS84.
+
 * The static images are not available in the ``tileserver-gl-light`` version.
 
 Source data
