@@ -175,7 +175,6 @@ module.exports = function(options, repo, params, id, dataResolver) {
     'tilejson': '2.0.0',
     'name': styleJSON.name,
     'attribution': '',
-    'basename': id,
     'minzoom': 0,
     'maxzoom': 20,
     'bounds': [-180, -85.0511, 180, 85.0511],
@@ -223,7 +222,6 @@ module.exports = function(options, repo, params, id, dataResolver) {
             var type = source.type;
             Object.assign(source, info);
             source.type = type;
-            source.basename = name;
             source.tiles = [
               // meta url which will be detected when requested
               'mbtiles://' + name + '/{z}/{x}/{y}.' + (info.format || 'pbf')

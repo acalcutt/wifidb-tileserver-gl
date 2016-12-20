@@ -41,8 +41,8 @@ module.exports = function(options, repo, params, id, styles) {
       Object.assign(tileJSON, info);
 
       tileJSON['tilejson'] = '2.0.0';
-      tileJSON['basename'] = id;
-      tileJSON['filesize'] = mbtilesFileStats['size'];
+      delete tileJSON['filesize'];
+      delete tileJSON['mtime'];
       delete tileJSON['scheme'];
 
       Object.assign(tileJSON, params.tilejson || {});
