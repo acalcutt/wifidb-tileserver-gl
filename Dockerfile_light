@@ -9,4 +9,4 @@ VOLUME /data
 WORKDIR /data
 
 EXPOSE 80
-CMD ["node", "/usr/src/app/", "-p", "80"]
+ENTRYPOINT ["node", "/usr/src/app/", "-p", "80"]

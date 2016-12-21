@@ -27,4 +27,4 @@ VOLUME /data
 WORKDIR /data
 
 EXPOSE 80
-CMD ["/usr/src/app/run.sh"]
+ENTRYPOINT ["/usr/src/app/run.sh"]
