@@ -342,6 +342,10 @@ module.exports = function(opts, callback) {
     return callback();
   });
 
+  process.on('SIGINT', function() {
+      process.exit();
+  });
+
   setTimeout(callback, 1000);
   return {
     app: app,
