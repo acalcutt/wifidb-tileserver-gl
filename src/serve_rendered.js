@@ -230,16 +230,18 @@ module.exports = function(options, repo, params, id, dataResolver) {
             if (source.format == 'pbf') {
               map.sources[name].emptyTile = new Buffer(0);
             } else {
-              var color = new Color(source.color || '#fff');
+              var color = new Color(source.color || 'rgba(255,255,255,0)');
               var format = source.format;
               if (format == 'jpg') {
                 format = 'jpeg';
               }
-              sharp(new Buffer(color.rgbArray()), {
+              var array = color.array();
+              var channels = array.length == 4 && format != 'jpeg' ? 4 : 3;
+              sharp(new Buffer(array), {
                 raw: {
                   width: 1,
                   height: 1,
-                  channels: 3
+                  channels: channels
                 }
               }).toFormat(format).toBuffer(function(err, buffer, info) {
                 map.sources[name].emptyTile = buffer;
