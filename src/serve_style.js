@@ -29,19 +29,17 @@ module.exports = function(options, repo, params, id, reportTiles, reportFont) {
     }
   });
 
-  var findFontReferences = function(obj) {
-    Object.keys(obj).forEach(function(key) {
-      var value = obj[key];
-      if (key == 'text-font') {
-        if (value && value.length > 0) {
-          value.forEach(reportFont);
-        }
-      } else if (value && typeof value == 'object') {
-        findFontReferences(value);
+  styleJSON.layers.forEach(function(obj) {
+    if (obj['type'] == 'symbol') {
+      var fonts = (obj['layout'] || {})['text-font'];
+      if (fonts && fonts.length) {
+        fonts.forEach(reportFont);
+      } else {
+        reportFont('Open Sans Regular');
+        reportFont('Arial Unicode MS Regular');
       }
-    });
-  };
-  styleJSON.layers.forEach(findFontReferences);
+    }
+  });
 
   var spritePath;
 

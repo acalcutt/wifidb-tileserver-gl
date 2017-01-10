@@ -25,7 +25,8 @@ Example::
         "pngQuantization": false,
         "png": 90
       },
-      "maxSize": 2048
+      "maxSize": 2048,
+      "serveAllFonts": false
     },
     "styles": {
       "basic": {

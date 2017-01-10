@@ -19,7 +19,8 @@ module.exports = function(options, allowedFonts) {
     files.forEach(function(file) {
       fs.stat(path.join(fontPath, file), function(err, stats) {
         if (!err) {
-          if (stats.isDirectory()) {
+          if (stats.isDirectory() &&
+              fs.existsSync(path.join(fontPath, file, '0-255.pbf'))) {
             existingFonts[path.basename(file)] = true;
           }
         }
@@ -27,12 +28,13 @@ module.exports = function(options, allowedFonts) {
     });
   });
 
-  app.get('/:fontstack/:range([\\d]+-[\\d]+).pbf',
+  app.get('/fonts/:fontstack/:range([\\d]+-[\\d]+).pbf',
       function(req, res, next) {
     var fontstack = decodeURI(req.params.fontstack);
     var range = req.params.range;
 
-    return utils.getFontsPbf(allowedFonts, fontPath, fontstack, range, existingFonts,
+    return utils.getFontsPbf(options.serveAllFonts ? null : allowedFonts,
+      fontPath, fontstack, range, existingFonts,
         function(err, concated) {
       if (err || concated.length === 0) {
         console.log(err);
@@ -44,6 +46,13 @@ module.exports = function(options, allowedFonts) {
         return res.send(concated);
       }
     });
+  });
+
+  app.get('/fontstacks.json', function(req, res, next) {
+    res.header('Content-type', 'application/json');
+    return res.send(
+      Object.keys(options.serveAllFonts ? existingFonts : allowedFonts).sort()
+    );
   });
 
   return app;

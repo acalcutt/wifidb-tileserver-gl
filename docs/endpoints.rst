@@ -60,3 +60,7 @@ Source data
 TileJSON arrays
 ===============
 Array of all TileJSONs is at ``/index.json`` (``/rendered.json``; ``/data.json``)
+
+List of available fonts
+=======================
+Array of names of the available fonts is at ``/fontstacks.json``

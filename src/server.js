@@ -36,10 +36,7 @@ module.exports = function(opts, callback) {
         styles: {},
         rendered: {},
         data: {},
-        fonts: { // default fonts, always expose these (if they exist)
-          'Open Sans Regular': true,
-          'Arial Unicode MS Regular': true
-        }
+        fonts: {}
       };
 
   app.enable('trust proxy');
@@ -143,7 +140,7 @@ module.exports = function(opts, callback) {
 
   if (Object.keys(serving.styles).length > 0) {
     // serve fonts only if serving some styles
-    app.use('/fonts/', serve_font(options, serving.fonts));
+    app.use('/', serve_font(options, serving.fonts));
   }
 
   Object.keys(data).forEach(function(id) {
