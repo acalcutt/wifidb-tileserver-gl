@@ -89,10 +89,10 @@
         </div>
         <div class="viewers">
           {{#is_vector}}
-          <a class="btn" href="/data/{{@key}}/{{&../key_query}}{{viewer_hash}}">X-Ray view</a>
+          <a class="btn" href="/data/{{@key}}/{{&../key_query}}{{viewer_hash}}">Inspect</a>
           {{/is_vector}}
           {{^is_vector}}
-          <a class="btn" href="/data/{{@key}}/{{&../key_query}}{{viewer_hash}}">Raster view</a>
+          <a class="btn" href="/data/{{@key}}/{{&../key_query}}{{viewer_hash}}">View</a>
           {{/is_vector}}
         </div>
       </div>
