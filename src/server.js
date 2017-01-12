@@ -138,10 +138,7 @@ module.exports = function(opts, callback) {
     }
   });
 
-  if (Object.keys(serving.styles).length > 0) {
-    // serve fonts only if serving some styles
-    app.use('/', serve_font(options, serving.fonts));
-  }
+  app.use('/', serve_font(options, serving.fonts));
 
   Object.keys(data).forEach(function(id) {
     var item = data[id];
