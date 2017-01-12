@@ -15,7 +15,6 @@
   "engines": {
     "node": ">=4.2.1 <5"
   },
-  "engineStrict": true,
   "scripts": {
     "test": "mocha test/**.js"
   },
