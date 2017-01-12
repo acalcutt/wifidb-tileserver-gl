@@ -41,7 +41,7 @@ Alternatively, you can use ``tileserver-gl-light`` package instead, which is pur
 From source
 ===========
 
-Make sure you have Node v4 or higher (nvm install 4) and run::
+Make sure you have Node v4 (nvm install 4) and run::
 
   npm install
   node .
@@ -50,6 +50,9 @@ Make sure you have Node v4 or higher (nvm install 4) and run::
 On OSX
 ======
 
-Make sure to have ``pkg-config`` and ``cairo`` installed::
+Make sure to have dependencies of canvas_ package installed::
 
-  brew install pkg-config cairo
+  brew install pkg-config cairo libpng jpeg giflib
+
+
+.. _canvas: https://www.npmjs.com/package/canvas
