@@ -12,7 +12,7 @@ var base64url = require('base64url'),
     cors = require('cors'),
     express = require('express'),
     handlebars = require('handlebars'),
-    mercator = new (require('sphericalmercator'))(),
+    mercator = new (require('@mapbox/sphericalmercator'))(),
     morgan = require('morgan');
 
 var packageJson = require('../package'),
