@@ -89,11 +89,12 @@ var startWithMBTiles = function(mbtilesFile) {
 
       if (info.format == 'pbf' &&
           info.name.toLowerCase().indexOf('openmaptiles') > -1) {
-        config['data']['openmaptiles'] = {
+        var omtV = (info.version || '').split('.');
+
+        config['data']['v' + omtV[0]] = {
           "mbtiles": path.basename(mbtilesFile)
         };
 
-        var omtV = (info.version || '').split('.');
 
         var styles = fs.readdirSync(path.resolve(styleDir, 'styles'));
         for (var i = 0; i < styles.length; i++) {
