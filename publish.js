@@ -26,6 +26,7 @@ delete packageJson.dependencies['mapbox-gl-native'];
 delete packageJson.dependencies['node-pngquant-native'];
 delete packageJson.dependencies['sharp'];
 
+delete packageJson.optionalDependencies;
 delete packageJson.devDependencies;
 
 var str = JSON.stringify(packageJson, undefined, 2);
