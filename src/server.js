@@ -76,6 +76,17 @@ module.exports = function(opts, callback) {
   paths.sprites = path.resolve(paths.root, paths.sprites || '');
   paths.mbtiles = path.resolve(paths.root, paths.mbtiles || '');
 
+  var checkPath = function(type) {
+    if (!fs.existsSync(paths[type])) {
+      console.error('The specified path for "' + type + '" does not exist (' + paths[type] + ').');
+      process.exit(1);
+    }
+  };
+  checkPath('styles');
+  checkPath('fonts');
+  checkPath('sprites');
+  checkPath('mbtiles');
+
   var data = clone(config.data || {});
 
   app.use(cors());
