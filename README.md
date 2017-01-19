@@ -15,10 +15,10 @@ Install `tileserver-gl` with server-side raster rendering of vector tiles with n
 npm install -g tileserver-gl
 ```
 
-Now download vector tiles from [OSM2VectorTiles](http://osm2vectortiles.org/downloads/).
+Now download vector tiles from [OpenMapTiles](https://openmaptiles.org/downloads/).
 
 ```bash
-curl -o zurich_switzerland.mbtiles https://osm2vectortiles-downloads.os.zhdk.cloud.switch.ch/v2.0/extracts/zurich_switzerland.mbtiles
+curl -o zurich_switzerland.mbtiles https://openmaptiles.os.zhdk.cloud.switch.ch/v3.3/extracts/zurich_switzerland.mbtiles
 ```
 
 Start `tileserver-gl` with the downloaded vector tiles.
