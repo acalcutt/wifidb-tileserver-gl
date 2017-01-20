@@ -327,16 +327,15 @@ module.exports = function(options, repo, params, id, dataResolver) {
           image.overlayWith(opt_overlay);
         }
 
-        image.toFormat(format);
-
         var formatQuality = (params.formatQuality || {})[format] ||
                             (options.formatQuality || {})[format];
+
         if (format == 'png') {
-          image.withoutAdaptiveFiltering();
+          image.png({adaptiveFiltering: false});
         } else if (format == 'jpeg') {
-          image.quality(formatQuality || 80);
+          image.jpeg({quality: formatQuality || 80});
         } else if (format == 'webp') {
-          image.quality(formatQuality || 90);
+          image.webp({quality: formatQuality || 90});
         }
         image.toBuffer(function(err, buffer, info) {
           if (!buffer) {
