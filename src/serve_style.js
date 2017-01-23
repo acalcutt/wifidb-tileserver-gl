@@ -60,6 +60,9 @@ module.exports = function(options, repo, params, id, reportTiles, reportFont) {
 
   app.get('/' + id + '.json', function(req, res, next) {
     var fixUrl = function(url, opt_nokey, opt_nostyle) {
+      if (!url || (typeof url !== 'string') || url.indexOf('local://' !== 0)) {
+        return url;
+      }
       var queryParams = [];
       if (!opt_nostyle) {
         queryParams.push('style=' + id);
