@@ -26,6 +26,7 @@ Example::
         "png": 90
       },
       "maxSize": 2048,
+      "pbfAlias": "pbf",
       "serveAllFonts": false
     },
     "styles": {

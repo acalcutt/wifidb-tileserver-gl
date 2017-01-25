@@ -186,7 +186,9 @@ module.exports = function(opts, callback) {
       } else {
         path = type + '/' + id;
       }
-      info.tiles = utils.getTileUrls(req, info.tiles, path, info.format);
+      info.tiles = utils.getTileUrls(req, info.tiles, path, info.format, {
+        'pbf': options.pbfAlias
+      });
       arr.push(info);
     });
     return arr;
@@ -287,7 +289,9 @@ module.exports = function(opts, callback) {
             '/data/' + id + '.json' + query) + '/wmts';
 
         var tiles = utils.getTileUrls(
-            req, data_.tiles, 'data/' + id, data_.format);
+            req, data_.tiles, 'data/' + id, data_.format, {
+              'pbf': options.pbfAlias
+            });
         data_.xyz_link = tiles[0];
       }
       if (data_.filesize) {

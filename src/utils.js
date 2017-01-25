@@ -7,7 +7,7 @@ var async = require('async'),
 var clone = require('clone'),
     glyphCompose = require('glyph-pbf-composite');
 
-module.exports.getTileUrls = function(req, domains, path, format) {
+module.exports.getTileUrls = function(req, domains, path, format, aliases) {
 
   if (domains) {
     if (domains.constructor === String && domains.length > 0) {
@@ -27,6 +27,10 @@ module.exports.getTileUrls = function(req, domains, path, format) {
     queryParams.push('style=' + req.query.style);
   }
   var query = queryParams.length > 0 ? ('?' + queryParams.join('&')) : '';
+
+  if (aliases && aliases[format]) {
+    format = aliases[format];
+  }
 
   var uris = [];
   domains.forEach(function(domain) {

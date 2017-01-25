@@ -50,14 +50,18 @@ module.exports = function(options, repo, params, id, styles) {
     });
   });
 
-  var tilePattern = '/' + id + '/:z(\\d+)/:x(\\d+)/:y(\\d+).:format([\\w]+)';
+  var tilePattern = '/' + id + '/:z(\\d+)/:x(\\d+)/:y(\\d+).:format([\\w.]+)';
 
   app.get(tilePattern, function(req, res, next) {
     var z = req.params.z | 0,
         x = req.params.x | 0,
         y = req.params.y | 0;
-    if (req.params.format != tileJSON.format &&
-        !(req.params.format == 'geojson' && tileJSON.format == 'pbf')) {
+    var format = req.params.format;
+    if (format == options.pbfAlias) {
+      format = 'pbf';
+    }
+    if (format != tileJSON.format &&
+        !(format == 'geojson' && tileJSON.format == 'pbf')) {
       return res.status(404).send('Invalid format');
     }
     if (z < tileJSON.minzoom || 0 || x < 0 || y < 0 ||
@@ -106,9 +110,9 @@ module.exports = function(options, repo, params, id, styles) {
               }
             }
           }
-          if (req.params.format == 'pbf') {
+          if (format == 'pbf') {
             headers['Content-Type'] = 'application/x-protobuf';
-          } else if (req.params.format == 'geojson') {
+          } else if (format == 'geojson') {
             headers['Content-Type'] = 'application/json';
 
             if (isGzipped) {
@@ -150,7 +154,9 @@ module.exports = function(options, repo, params, id, styles) {
   app.get('/' + id + '.json', function(req, res, next) {
     var info = clone(tileJSON);
     info.tiles = utils.getTileUrls(req, info.tiles,
-                                   'data/' + id, info.format);
+                                   'data/' + id, info.format, {
+                                     'pbf': options.pbfAlias
+                                   });
     return res.send(info);
   });
 
