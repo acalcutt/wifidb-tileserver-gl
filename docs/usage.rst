@@ -24,5 +24,5 @@ Getting started
 Default styles and configuration
 ======
 
-- If no configuration file is specified, the default styles (compatible with osm2vectortiles) are used.
-- If no mbtiles file is specified (and is not found in the current working directory), an extract is downloaded directly from osm2vectortiles.
+- If no configuration file is specified, the default styles (compatible with openmaptiles) are used.
+- If no mbtiles file is specified (and is not found in the current working directory), an extract is downloaded directly from https://openmaptiles.org/
