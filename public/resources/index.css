@@ -137,6 +137,9 @@ footer img{
   width: 118px;
   height: 32px;
 }
+footer .t {
+  display:none;
+}
 footer p {
   margin-top:0;
 }
