@@ -48,7 +48,7 @@ module.exports = function(options, allowedFonts) {
     });
   });
 
-  app.get('/fontstacks.json', function(req, res, next) {
+  app.get('/fonts.json', function(req, res, next) {
     res.header('Content-type', 'application/json');
     return res.send(
       Object.keys(options.serveAllFonts ? existingFonts : allowedFonts).sort()
