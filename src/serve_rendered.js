@@ -200,8 +200,12 @@ module.exports = function(options, repo, params, id, dataResolver) {
                      mbtilesFile[mbtilesFile.length - 1] == '}';
 
       if (fromData) {
-        mbtilesFile = dataResolver(
-          mbtilesFile.substr(1, mbtilesFile.length - 2));
+        mbtilesFile = mbtilesFile.substr(1, mbtilesFile.length - 2);
+        var mapsTo = (params.mapping || {})[mbtilesFile];
+        if (mapsTo) {
+          mbtilesFile = mapsTo;
+        }
+        mbtilesFile = dataResolver(mbtilesFile);
         if (!mbtilesFile) {
           console.log('ERROR: data "' + mbtilesFile + '" not found!');
           process.exit(1);
