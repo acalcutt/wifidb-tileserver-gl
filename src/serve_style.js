@@ -23,6 +23,10 @@ module.exports = function(options, repo, params, id, reportTiles, reportFont) {
 
       if (fromData) {
         mbtilesFile = mbtilesFile.substr(1, mbtilesFile.length - 2);
+        var mapsTo = (params.mapping || {})[mbtilesFile];
+        if (mapsTo) {
+          mbtilesFile = mapsTo;
+        }
       }
       var identifier = reportTiles(mbtilesFile, fromData);
       source.url = 'local://data/' + identifier + '.json';
