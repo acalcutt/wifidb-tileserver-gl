@@ -24,6 +24,7 @@
         (q.indexOf('raster') >= 0 ? 'raster' :
           (mapboxgl.supported() ? 'vector' : 'raster'));
     if (preference == 'vector') {
+      mapboxgl.setRTLTextPlugin('/mapbox-gl-rtl-text.js{{&key_query}}');
       var map = new mapboxgl.Map({
         container: 'map',
         style: '/styles/{{id}}.json{{&key_query}}',
