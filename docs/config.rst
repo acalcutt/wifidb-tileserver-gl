@@ -27,7 +27,8 @@ Example::
       },
       "maxSize": 2048,
       "pbfAlias": "pbf",
-      "serveAllFonts": false
+      "serveAllFonts": false,
+      "serveStaticMaps": true
     },
     "styles": {
       "basic": {
