@@ -13,6 +13,23 @@ module.exports.getTileUrls = function(req, domains, path, format, aliases) {
     if (domains.constructor === String && domains.length > 0) {
       domains = domains.split(',');
     }
+    var host = req.headers.host;
+    var hostParts = host.split('.');
+    var relativeSubdomainsUsable = hostParts.length > 1 &&
+        !/^([0-9]{1,3}\.){3}[0-9]{1,3}(\:[0-9]+)?$/.test(host);
+    var newDomains = [];
+    domains.forEach(function(domain) {
+      if (domain.indexOf('*') !== -1) {
+        if (relativeSubdomainsUsable) {
+          var newParts = hostParts.slice(1);
+          newParts.unshift(domain.replace('*', hostParts[0]));
+          newDomains.push(newParts.join('.'));
+        }
+      } else {
+        newDomains.push(domain);
+      }
+    });
+    domains = newDomains;
   }
   if (!domains || domains.length == 0) {
     domains = [req.headers.host];
