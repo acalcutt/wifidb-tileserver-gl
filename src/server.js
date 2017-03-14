@@ -309,8 +309,8 @@ module.exports = function(opts, callback) {
       }
     });
     return {
-      styles: styles,
-      data: data
+      styles: Object.keys(styles).length ? styles : null,
+      data: Object.keys(data).length ? data : null
     };
   });
 
