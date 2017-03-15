@@ -68,7 +68,7 @@ module.exports = function(options, repo, params, id, reportTiles, reportFont) {
         return url;
       }
       var queryParams = [];
-      if (!opt_nostyle) {
+      if (!opt_nostyle && global.addStyleParam) {
         queryParams.push('style=' + id);
       }
       if (!opt_nokey && req.query.key) {

@@ -13,6 +13,7 @@ var clone = require('clone'),
 var tileshrinkGl;
 try {
   tileshrinkGl = require('tileshrink-gl');
+  global.addStyleParam = true;
 } catch (e) {}
 
 var utils = require('./utils');
