@@ -24,7 +24,6 @@ var Canvas = require('canvas'),
 var utils = require('./utils');
 
 var FLOAT_PATTERN = '[+-]?(?:\\d+|\\d+\.?\\d+)';
-var SCALE_PATTERN = '@[234]x';
 
 var getScale = function(scale) {
   return (scale || '@1x').slice(1, 2) | 0;
@@ -38,6 +37,13 @@ mbgl.on('message', function(e) {
 
 module.exports = function(options, repo, params, id, dataResolver) {
   var app = express().disable('x-powered-by');
+
+  var maxScaleFactor = Math.min(Math.floor(options.maxScaleFactor || 3), 9);
+  var scalePattern = '';
+  for (var i = 2; i <= maxScaleFactor; i++) {
+    scalePattern += i.toFixed();
+  }
+  scalePattern = '@[' + scalePattern + ']x';
 
   var lastModified = new Date().toUTCString();
 
@@ -267,16 +273,24 @@ module.exports = function(options, repo, params, id, dataResolver) {
 
   async.parallel(queue, function(err, results) {
     // TODO: make pool sizes configurable
-    map.renderers[1] = createPool(1, 4, 16);
-    map.renderers[2] = createPool(2, 2, 8);
-    map.renderers[3] = createPool(3, 2, 4);
-    map.renderers[4] = createPool(4, 2, 4);
+    for (var s = 1; s <= maxScaleFactor; s++) {
+      var minPoolSize = 2;
+
+      // standard and @2x tiles are much more usual -> create larger pools
+      if (s <= 2) {
+        minPoolSize *= 2;
+        if (s <= 1) {
+          minPoolSize *= 2;
+        }
+      }
+      map.renderers[s] = createPool(s, minPoolSize, 2 * minPoolSize);
+    }
   });
 
   repo[id] = tileJSON;
 
   var tilePattern = '/rendered/:z(\\d+)/:x(\\d+)/:y(\\d+)' +
-                    ':scale(' + SCALE_PATTERN + ')?\.:format([\\w]+)';
+                    ':scale(' + scalePattern + ')?\.:format([\\w]+)';
 
   var respondImage = function(z, lon, lat, bearing, pitch,
                               width, height, scale, format, res, next,
@@ -477,7 +491,7 @@ module.exports = function(options, repo, params, id, dataResolver) {
   if (options.serveStaticMaps !== false) {
     var staticPattern =
         '/static/:raw(raw)?/%s/:width(\\d+)x:height(\\d+)' +
-        ':scale(' + SCALE_PATTERN + ')?\.:format([\\w]+)';
+        ':scale(' + scalePattern + ')?\.:format([\\w]+)';
 
     var centerPattern =
         util.format(':x(%s),:y(%s),:z(%s)(@:bearing(%s)(,:pitch(%s))?)?',
