@@ -70,6 +70,14 @@ The value of ``root`` is used as prefix for all data types.
 
 You can use this to optionally specify on what domains the rendered tiles are accessible. This can be used for basic load-balancing or to bypass browser's limit for the number of connections per domain.
 
+``frontPage``
+-----------------
+
+Path to the html (relative to ``root`` path) to use as a front page.
+
+Use ``true`` (or nothing) to serve the default TileServer GL front page with list of styles and data.
+Use ``false`` to disable the front page altogether (404).
+
 ``formatQuality``
 -----------------
 

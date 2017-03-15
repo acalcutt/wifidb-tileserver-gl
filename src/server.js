@@ -209,14 +209,23 @@ module.exports = function(opts, callback) {
   app.use('/', express.static(path.join(__dirname, '../public/resources')));
 
   var templates = path.join(__dirname, '../public/templates');
-  var serveTemplate = function(path, template, dataGetter) {
-    fs.readFile(templates + '/' + template + '.tmpl', function(err, content) {
+  var serveTemplate = function(urlPath, template, dataGetter) {
+    var templateFile = templates + '/' + template + '.tmpl';
+    if (template == 'index') {
+      if (options.frontPage === false) {
+        return;
+      } else if (options.frontPage &&
+                 options.frontPage.constructor === String) {
+        templateFile = path.resolve(paths.root, options.frontPage);
+      }
+    }
+    fs.readFile(templateFile, function(err, content) {
       if (err) {
-        console.log('Template not found:', err);
+        console.error('Template not found:', err);
       }
       var compiled = handlebars.compile(content.toString());
 
-      app.use(path, function(req, res, next) {
+      app.use(urlPath, function(req, res, next) {
         var data = {};
         if (dataGetter) {
           data = dataGetter(req);
