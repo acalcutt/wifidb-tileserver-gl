@@ -50,6 +50,8 @@ module.exports = function(options, repo, params, id, dataResolver) {
 
   var rootPath = options.paths.root;
 
+  var watermark = params.watermark || options.watermark;
+
   var styleFile = params.style;
   var map = {
     renderers: [],
@@ -356,6 +358,19 @@ module.exports = function(options, repo, params, id, dataResolver) {
 
         if (opt_overlay) {
           image.overlayWith(opt_overlay);
+        }
+        if (watermark) {
+          var canvas = new Canvas(scale * width, scale * height);
+          var ctx = canvas.getContext('2d');
+          ctx.scale(scale, scale);
+          ctx.font = '10px sans-serif';
+          ctx.strokeWidth = '1px';
+          ctx.strokeStyle = 'rgba(255,255,255,.4)';
+          ctx.strokeText(watermark, 5, height - 5);
+          ctx.fillStyle = 'rgba(0,0,0,.4)';
+          ctx.fillText(watermark, 5, height - 5);
+
+          image.overlayWith(canvas.toBuffer());
         }
 
         var formatQuality = (params.formatQuality || {})[format] ||

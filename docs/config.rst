@@ -99,6 +99,13 @@ Maximum image side length to be allowed to be rendered (including scale factor).
 Be careful when changing this value since there are hardware limits that need to be considered.
 Default is ``2048``.
 
+``watermark``
+-----------
+
+Optional string to be rendered into the raster tiles (and static maps) as watermark (bottom-left corner).
+Can be used for hard-coding attributions etc. (can also be specified per-style).
+Not used by default.
+
 ``styles``
 ==========
 
