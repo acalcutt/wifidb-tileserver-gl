@@ -19,6 +19,7 @@ var Canvas = require('canvas'),
     mbgl = require('@mapbox/mapbox-gl-native'),
     mbtiles = require('mbtiles'),
     pngquant = require('node-pngquant-native'),
+    proj4 = require('proj4'),
     request = require('request');
 
 var utils = require('./utils');
@@ -192,6 +193,8 @@ module.exports = function(options, repo, params, id, dataResolver) {
   tileJSON.tiles = params.domains || options.domains;
   utils.fixTileJSONCenter(tileJSON);
 
+  var dataProjWGStoInternalWGS = null;
+
   var queue = [];
   Object.keys(styleJSON.sources).forEach(function(name) {
     var source = styleJSON.sources[name];
@@ -229,6 +232,16 @@ module.exports = function(options, repo, params, id, dataResolver) {
             if (err) {
               console.error(err);
             }
+
+            if (!dataProjWGStoInternalWGS && info.proj4) {
+              // how to do this for multiple sources with different proj4 defs?
+              var to3857 = proj4('EPSG:3857');
+              var toDataProj = proj4(info.proj4);
+              dataProjWGStoInternalWGS = function(xy) {
+                return to3857.inverse(toDataProj.forward(xy));
+              };
+            }
+
             var type = source.type;
             Object.assign(source, info);
             source.type = type;
@@ -406,17 +419,22 @@ module.exports = function(options, repo, params, id, dataResolver) {
                         tileSize, tileSize, scale, format, res, next);
   });
 
-  var extractPathFromQuery = function(query) {
+  var extractPathFromQuery = function(query, transformer) {
     var pathParts = (query.path || '').split('|');
     var path = [];
     pathParts.forEach(function(pair) {
       var pairParts = pair.split(',');
       if (pairParts.length == 2) {
+        var pair;
         if (query.latlng == '1' || query.latlng == 'true') {
-          path.push([+(pairParts[1]), +(pairParts[0])]);
+          pair = [+(pairParts[1]), +(pairParts[0])];
         } else {
-          path.push([+(pairParts[0]), +(pairParts[1])]);
+          pair = [+(pairParts[0]), +(pairParts[1])];
         }
+        if (transformer) {
+          pair = transformer(pair);
+        }
+        path.push(pair);
       }
     });
     return path;
@@ -514,13 +532,16 @@ module.exports = function(options, repo, params, id, dataResolver) {
         return res.status(404).send('Invalid zoom');
       }
 
-      if (raw) {
-        var ll = mercator.inverse([x, y]);
+      var transformer = raw ?
+        mercator.inverse.bind(mercator) : dataProjWGStoInternalWGS;
+
+      if (transformer) {
+        var ll = transformer([x, y]);
         x = ll[0];
         y = ll[1];
       }
 
-      var path = extractPathFromQuery(req.query);
+      var path = extractPathFromQuery(req.query, transformer);
       var overlay = renderOverlay(z, x, y, bearing, pitch, w, h, scale,
                                   path, req.query);
 
@@ -537,9 +558,12 @@ module.exports = function(options, repo, params, id, dataResolver) {
       var bbox = [+req.params.minx, +req.params.miny,
                   +req.params.maxx, +req.params.maxy];
 
-      if (raw) {
-        var minCorner = mercator.inverse(bbox.slice(0, 2));
-        var maxCorner = mercator.inverse(bbox.slice(2));
+      var transformer = raw ?
+        mercator.inverse.bind(mercator) : dataProjWGStoInternalWGS;
+
+      if (transformer) {
+        var minCorner = transformer(bbox.slice(0, 2));
+        var maxCorner = transformer(bbox.slice(2));
         bbox[0] = minCorner[0];
         bbox[1] = minCorner[1];
         bbox[2] = maxCorner[0];
@@ -557,7 +581,7 @@ module.exports = function(options, repo, params, id, dataResolver) {
           bearing = 0,
           pitch = 0;
 
-      var path = extractPathFromQuery(req.query);
+      var path = extractPathFromQuery(req.query, transformer);
       var overlay = renderOverlay(z, x, y, bearing, pitch, w, h, scale,
                                   path, req.query);
       return respondImage(z, x, y, bearing, pitch, w, h, scale, format,
@@ -567,11 +591,6 @@ module.exports = function(options, repo, params, id, dataResolver) {
     var autoPattern = 'auto';
 
     app.get(util.format(staticPattern, autoPattern), function(req, res, next) {
-      var path = extractPathFromQuery(req.query);
-      if (path.length < 2) {
-        return res.status(400).send('Invalid path');
-      }
-
       var raw = req.params.raw;
       var w = req.params.width | 0,
           h = req.params.height | 0,
@@ -579,6 +598,14 @@ module.exports = function(options, repo, params, id, dataResolver) {
           pitch = 0,
           scale = getScale(req.params.scale),
           format = req.params.format;
+
+      var transformer = raw ?
+        mercator.inverse.bind(mercator) : dataProjWGStoInternalWGS;
+
+      var path = extractPathFromQuery(req.query, transformer);
+      if (path.length < 2) {
+        return res.status(400).send('Invalid path');
+      }
 
       var bbox = [Infinity, Infinity, -Infinity, -Infinity];
       path.forEach(function(pair) {
@@ -591,12 +618,6 @@ module.exports = function(options, repo, params, id, dataResolver) {
       var z = calcZForBBox(bbox, w, h, req.query),
           x = (bbox[0] + bbox[2]) / 2,
           y = (bbox[1] + bbox[3]) / 2;
-
-      if (raw) {
-        var ll = mercator.inverse([x, y]);
-        x = ll[0];
-        y = ll[1];
-      }
 
       var overlay = renderOverlay(z, x, y, bearing, pitch, w, h, scale,
                                   path, req.query);
