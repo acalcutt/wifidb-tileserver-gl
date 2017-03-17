@@ -42,9 +42,6 @@
     "@mapbox/mapbox-gl-native": "3.4.4",
     "@mapbox/sphericalmercator": "1.0.5"
   },
-  "optionalDependencies": {
-    "tileshrink-gl": "./plugins/tileshrink-gl"
-  },
   "devDependencies": {
     "should": "^11.2.0",
     "mocha": "^3.2.0",
