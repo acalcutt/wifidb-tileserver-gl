@@ -19,13 +19,13 @@
     "test": "mocha test/**.js"
   },
   "dependencies": {
-    "async": "2.1.5",
+    "async": "2.2.0",
     "advanced-pool": "0.3.2",
     "base64url": "2.0.0",
-    "canvas": "1.6.4",
+    "canvas": "1.6.5",
     "clone": "2.1.1",
     "color": "1.0.3",
-    "cors": "2.8.1",
+    "cors": "2.8.2",
     "express": "4.15.2",
     "glyph-pbf-composite": "0.0.2",
     "handlebars": "4.0.6",
