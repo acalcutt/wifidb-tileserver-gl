@@ -564,14 +564,11 @@ module.exports = function(options, repo, params, id, dataResolver) {
                           res, next, overlay);
     });
 
-    var boundsPattern =
-        util.format(':minx(%s),:miny(%s),:maxx(%s),:maxy(%s)',
-                    FLOAT_PATTERN, FLOAT_PATTERN, FLOAT_PATTERN, FLOAT_PATTERN);
-
-    app.get(util.format(staticPattern, boundsPattern), function(req, res, next) {
+    var serveBounds = function(req, res, next) {
       var raw = req.params.raw;
       var bbox = [+req.params.minx, +req.params.miny,
                   +req.params.maxx, +req.params.maxy];
+      var center = [(bbox[0] + bbox[2]) / 2, (bbox[1] + bbox[3]) / 2];
 
       var transformer = raw ?
         mercator.inverse.bind(mercator) : dataProjWGStoInternalWGS;
@@ -583,6 +580,7 @@ module.exports = function(options, repo, params, id, dataResolver) {
         bbox[1] = minCorner[1];
         bbox[2] = maxCorner[0];
         bbox[3] = maxCorner[1];
+        center = transformer(center);
       }
 
       var w = req.params.width | 0,
@@ -591,8 +589,8 @@ module.exports = function(options, repo, params, id, dataResolver) {
           format = req.params.format;
 
       var z = calcZForBBox(bbox, w, h, req.query),
-          x = (bbox[0] + bbox[2]) / 2,
-          y = (bbox[1] + bbox[3]) / 2,
+          x = center[0],
+          y = center[1],
           bearing = 0,
           pitch = 0;
 
@@ -601,6 +599,29 @@ module.exports = function(options, repo, params, id, dataResolver) {
                                   path, req.query);
       return respondImage(z, x, y, bearing, pitch, w, h, scale, format,
                           res, next, overlay);
+    };
+
+    var boundsPattern =
+        util.format(':minx(%s),:miny(%s),:maxx(%s),:maxy(%s)',
+                    FLOAT_PATTERN, FLOAT_PATTERN, FLOAT_PATTERN, FLOAT_PATTERN);
+
+    app.get(util.format(staticPattern, boundsPattern), serveBounds);
+
+    app.get('/static/', function(req, res, next) {
+      for (var key in req.query) {
+        req.query[key.toLowerCase()] = req.query[key];
+      }
+      req.params.raw = true;
+      req.params.format = (req.query.format || 'image/png').split('/').pop();
+      var bbox = (req.query.bbox || '').split(',');
+      req.params.minx = bbox[0];
+      req.params.miny = bbox[1];
+      req.params.maxx = bbox[2];
+      req.params.maxy = bbox[3];
+      req.params.width = req.query.width || '256';
+      req.params.height = req.query.height || '256';
+
+      return serveBounds(req, res, next);
     });
 
     var autoPattern = 'auto';
