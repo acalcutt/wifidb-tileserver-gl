@@ -43,8 +43,9 @@ module.exports = function(opts, callback) {
 
   callback = callback || function() {};
 
-  if (process.env.NODE_ENV !== 'production' &&
-      process.env.NODE_ENV !== 'test') {
+  if (process.env.NODE_ENV == 'production') {
+    app.use(morgan('tiny'));
+  } else if (process.env.NODE_ENV !== 'test') {
     app.use(morgan('dev'));
   }
 
