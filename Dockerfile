@@ -26,5 +26,7 @@ RUN cd /usr/src/app && npm install --production
 VOLUME /data
 WORKDIR /data
 
+ENV NODE_ENV="production"
+
 EXPOSE 80
 ENTRYPOINT ["/usr/src/app/run.sh"]
