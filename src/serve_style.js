@@ -10,7 +10,7 @@ var clone = require('clone'),
 module.exports = function(options, repo, params, id, reportTiles, reportFont) {
   var app = express().disable('x-powered-by');
 
-  var styleFile = path.join(options.paths.styles, params.style);
+  var styleFile = path.resolve(options.paths.styles, params.style);
 
   var styleJSON = clone(require(styleFile));
   Object.keys(styleJSON.sources).forEach(function(name) {

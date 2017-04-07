@@ -166,7 +166,7 @@ module.exports = function(options, repo, params, id, dataResolver) {
     });
   };
 
-  var styleJSONPath = path.join(options.paths.styles, styleFile);
+  var styleJSONPath = path.resolve(options.paths.styles, styleFile);
   styleJSON = clone(require(styleJSONPath));
 
   var httpTester = /^(http(s)?:)?\/\//;
