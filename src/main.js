@@ -70,6 +70,12 @@ var startWithMBTiles = function(mbtilesFile) {
   }
   var instance = new mbtiles(mbtilesFile, function(err) {
     instance.getInfo(function(err, info) {
+      if (err || !info) {
+        console.log('ERROR: Metadata missing in the MBTiles.');
+        console.log('       Make sure ' + path.basename(mbtilesFile) +
+                    ' is valid MBTiles.');
+        process.exit(1);
+      }
       var bounds = info.bounds;
 
       var styleDir = path.resolve(__dirname, "../node_modules/tileserver-gl-styles/");
