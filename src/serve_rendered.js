@@ -620,6 +620,11 @@ module.exports = function(options, repo, params, id, dataResolver) {
       req.params.maxy = bbox[3];
       req.params.width = req.query.width || '256';
       req.params.height = req.query.height || '256';
+      if (req.query.scale) {
+        req.params.width /= req.query.scale;
+        req.params.height /= req.query.scale;
+        req.params.scale = '@' + req.query.scale;
+      }
 
       return serveBounds(req, res, next);
     });
