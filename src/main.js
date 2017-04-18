@@ -32,6 +32,10 @@ var opts = require('nomnom')
     default: 8080,
     help: 'Port'
   })
+  .option('cors', {
+    default: true,
+    help: 'Enable Cross-origin resource sharing headers'
+  })
   .option('verbose', {
     abbr: 'V',
     flag: true,
@@ -54,7 +58,8 @@ var startServer = function(configPath, config) {
     configPath: configPath,
     config: config,
     bind: opts.bind,
-    port: opts.port
+    port: opts.port,
+    cors: opts.cors
   });
 };
 

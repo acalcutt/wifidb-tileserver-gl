@@ -90,7 +90,9 @@ module.exports = function(opts, callback) {
 
   var data = clone(config.data || {});
 
-  app.use(cors());
+  if (opts.cors) {
+    app.use(cors());
+  }
 
   Object.keys(config.styles || {}).forEach(function(id) {
     var item = config.styles[id];
