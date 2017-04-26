@@ -28,7 +28,7 @@ if (!isLight) {
   serve_rendered = require('./serve_rendered');
 }
 
-module.exports = function(opts, callback) {
+module.exports = function(opts) {
   console.log('Starting server');
 
   var app = express().disable('x-powered-by'),
@@ -40,8 +40,6 @@ module.exports = function(opts, callback) {
       };
 
   app.enable('trust proxy');
-
-  callback = callback || function() {};
 
   if (process.env.NODE_ENV == 'production') {
     app.use(morgan('tiny'));
@@ -359,15 +357,12 @@ module.exports = function(opts, callback) {
   var server = app.listen(process.env.PORT || opts.port, process.env.BIND || opts.bind, function() {
     console.log('Listening at http://%s:%d/',
                 this.address().address, this.address().port);
-
-    return callback();
   });
 
   process.on('SIGINT', function() {
       process.exit();
   });
 
-  setTimeout(callback, 1000);
   return {
     app: app,
     server: server
