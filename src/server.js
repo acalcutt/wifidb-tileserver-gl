@@ -10,6 +10,7 @@ var fs = require('fs'),
 var base64url = require('base64url'),
     clone = require('clone'),
     cors = require('cors'),
+    enableShutdown = require('http-shutdown'),
     express = require('express'),
     handlebars = require('handlebars'),
     mercator = new (require('@mapbox/sphericalmercator'))(),
@@ -28,7 +29,7 @@ if (!isLight) {
   serve_rendered = require('./serve_rendered');
 }
 
-module.exports = function(opts) {
+function start(opts) {
   console.log('Starting server');
 
   var app = express().disable('x-powered-by'),
@@ -359,12 +360,35 @@ module.exports = function(opts) {
                 this.address().address, this.address().port);
   });
 
-  process.on('SIGINT', function() {
-      process.exit();
-  });
+  // add server.shutdown() to gracefully stop serving
+  enableShutdown(server);
 
   return {
     app: app,
     server: server
   };
+}
+
+module.exports = function(opts) {
+  var running = start(opts);
+
+  process.on('SIGINT', function() {
+    process.exit();
+  });
+
+  process.on('SIGHUP', function() {
+    console.log('Stopping server and reloading config');
+
+    running.server.shutdown(function() {
+      for (var key in require.cache) {
+        delete require.cache[key];
+      }
+
+      var restarted = start(opts);
+      running.server = restarted.server;
+      running.app = restarted.app;
+    });
+  });
+
+  return running;
 };
