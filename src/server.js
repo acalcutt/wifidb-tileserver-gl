@@ -355,8 +355,11 @@ module.exports = function(opts) {
   });
 
   var server = app.listen(process.env.PORT || opts.port, process.env.BIND || opts.bind, function() {
-    console.log('Listening at http://%s:%d/',
-                this.address().address, this.address().port);
+    var address = this.address().address;
+    if (address.indexOf('::') === 0) {
+      address = '[' + address + ']'; // literal IPv6 address
+    }
+    console.log('Listening at http://%s:%d/', address, this.address().port);
   });
 
   process.on('SIGINT', function() {
