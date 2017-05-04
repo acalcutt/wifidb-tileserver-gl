@@ -9,7 +9,9 @@ RUN apt-get -qq update \
     build-essential \
     python \
     libcairo2-dev \
+    libgles2-mesa-dev \
     libprotobuf-dev \
+    libxxf86vm-dev \
     xvfb \
 && echo "deb https://deb.nodesource.com/node_6.x jessie main" >> /etc/apt/sources.list.d/nodejs.list \
 && echo "deb-src https://deb.nodesource.com/node_6.x jessie main" >> /etc/apt/sources.list.d/nodejs.list \
