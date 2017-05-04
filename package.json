@@ -19,7 +19,7 @@
     "test": "mocha test/**.js"
   },
   "dependencies": {
-    "@mapbox/mapbox-gl-native": "3.5.0",
+    "@mapbox/mapbox-gl-native": "3.4.4",
     "@mapbox/sphericalmercator": "1.0.5",
     "advanced-pool": "0.3.2",
     "async": "2.4.0",
