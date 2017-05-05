@@ -310,11 +310,13 @@ module.exports = function(options, repo, params, id, dataResolver) {
   var respondImage = function(z, lon, lat, bearing, pitch,
                               width, height, scale, format, res, next,
                               opt_overlay) {
-    if (Math.abs(lon) > 180 || Math.abs(lat) > 85.06) {
+    if (Math.abs(lon) > 180 || Math.abs(lat) > 85.06 ||
+        lon != lon || lat != lat) {
       return res.status(400).send('Invalid center');
     }
     if (Math.min(width, height) <= 0 ||
-        Math.max(width, height) * scale > (options.maxSize || 2048)) {
+        Math.max(width, height) * scale > (options.maxSize || 2048) ||
+        width != width || height != height) {
       return res.status(400).send('Invalid size');
     }
     if (format == 'png' || format == 'webp') {
@@ -466,9 +468,19 @@ module.exports = function(options, repo, params, id, dataResolver) {
       return [px[0] * scale, px[1] * scale];
     };
 
+    var center = precisePx([x, y], z);
+
+    var mapHeight = 512 * (1 << z);
+    var maxEdge = center[1] + h / 2;
+    var minEdge = center[1] - h / 2;
+    if (maxEdge > mapHeight) {
+      center[1] -= (maxEdge - mapHeight);
+    } else if (minEdge < 0) {
+      center[1] -= minEdge;
+    }
+
     var canvas = new Canvas(scale * w, scale * h);
     var ctx = canvas.getContext('2d');
-    var center = precisePx([x, y], z);
     ctx.scale(scale, scale);
     if (bearing) {
       ctx.translate(w / 2, h / 2);
@@ -656,9 +668,14 @@ module.exports = function(options, repo, params, id, dataResolver) {
         bbox[3] = Math.max(bbox[3], pair[1]);
       });
 
+      var bbox_ = mercator.convert(bbox, '900913');
+      var center = mercator.inverse(
+        [(bbox_[0] + bbox_[2]) / 2, (bbox_[1] + bbox_[3]) / 2]
+      );
+
       var z = calcZForBBox(bbox, w, h, req.query),
-          x = (bbox[0] + bbox[2]) / 2,
-          y = (bbox[1] + bbox[3]) / 2;
+          x = center[0],
+          y = center[1];
 
       var overlay = renderOverlay(z, x, y, bearing, pitch, w, h, scale,
                                   path, req.query);
