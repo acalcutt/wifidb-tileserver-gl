@@ -1,7 +1,6 @@
 'use strict';
 
-var async = require('async'),
-    advancedPool = require('advanced-pool'),
+var advancedPool = require('advanced-pool'),
     fs = require('fs'),
     path = require('path'),
     util = require('util'),
@@ -59,15 +58,18 @@ module.exports = function(options, repo, params, id, dataResolver) {
   };
 
   var existingFonts = {};
-  fs.readdir(options.paths.fonts, function(err, files) {
-    files.forEach(function(file) {
-      fs.stat(path.join(options.paths.fonts, file), function(err, stats) {
-        if (!err) {
-          if (stats.isDirectory()) {
-            existingFonts[path.basename(file)] = true;
+  var fontListingPromise = new Promise(function(resolve, reject) {
+    fs.readdir(options.paths.fonts, function(err, files) {
+      files.forEach(function(file) {
+        fs.stat(path.join(options.paths.fonts, file), function(err, stats) {
+          if (!err) {
+            if (stats.isDirectory()) {
+              existingFonts[path.basename(file)] = true;
+            }
           }
-        }
+        });
       });
+      resolve();
     });
   });
 
@@ -223,7 +225,7 @@ module.exports = function(options, repo, params, id, dataResolver) {
         }
       }
 
-      queue.push(function(callback) {
+      queue.push(new Promise(function(resolve, reject) {
         mbtilesFile = path.resolve(options.paths.mbtiles, mbtilesFile);
         var mbtilesFileStats = fs.statSync(mbtilesFile);
         if (!mbtilesFileStats.isFile() || mbtilesFileStats.size == 0) {
@@ -279,14 +281,14 @@ module.exports = function(options, repo, params, id, dataResolver) {
               }
               tileJSON.attribution += source.attribution;
             }
-            callback(null);
+            resolve();
           });
         });
-      });
+      }));
     }
   });
 
-  async.parallel(queue, function(err, results) {
+  var renderersReadyPromise = Promise.all(queue).then(function() {
     // TODO: make pool sizes configurable
     for (var s = 1; s <= maxScaleFactor; s++) {
       var minPoolSize = 2;
@@ -692,5 +694,9 @@ module.exports = function(options, repo, params, id, dataResolver) {
     return res.send(info);
   });
 
-  return app;
+  return new Promise(function(resolve, reject) {
+    Promise.all([fontListingPromise, renderersReadyPromise]).then(function() {
+      resolve(app);
+    });
+  });
 };

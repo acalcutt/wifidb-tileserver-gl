@@ -76,6 +76,8 @@ function start(opts) {
   paths.sprites = path.resolve(paths.root, paths.sprites || '');
   paths.mbtiles = path.resolve(paths.root, paths.mbtiles || '');
 
+  var startupPromises = [];
+
   var checkPath = function(type) {
     if (!fs.existsSync(paths[type])) {
       console.error('The specified path for "' + type + '" does not exist (' + paths[type] + ').');
@@ -101,7 +103,7 @@ function start(opts) {
     }
 
     if (item.serve_data !== false) {
-      app.use('/styles/', serve_style(options, serving.styles, item, id,
+      startupPromises.push(serve_style(options, serving.styles, item, id,
         function(mbtiles, fromData) {
           var dataItemId;
           Object.keys(data).forEach(function(id) {
@@ -130,28 +132,38 @@ function start(opts) {
           }
         }, function(font) {
           serving.fonts[font] = true;
+        }).then(function(sub) {
+          app.use('/styles/', sub);
         }));
     }
     if (item.serve_rendered !== false) {
       if (serve_rendered) {
-        app.use('/styles/' + id + '/',
-                serve_rendered(options, serving.rendered, item, id,
-        function(mbtiles) {
-          var mbtilesFile;
-          Object.keys(data).forEach(function(id) {
-            if (id == mbtiles) {
-              mbtilesFile = data[id].mbtiles;
+        startupPromises.push(
+          serve_rendered(options, serving.rendered, item, id,
+            function(mbtiles) {
+              var mbtilesFile;
+              Object.keys(data).forEach(function(id) {
+                if (id == mbtiles) {
+                  mbtilesFile = data[id].mbtiles;
+                }
+              });
+              return mbtilesFile;
             }
-          });
-          return mbtilesFile;
-        }));
+          ).then(function(sub) {
+            app.use('/styles/' + id + '/', sub);
+          })
+        );
       } else {
         item.serve_rendered = false;
       }
     }
   });
 
-  app.use('/', serve_font(options, serving.fonts));
+  startupPromises.push(
+    serve_font(options, serving.fonts).then(function(sub) {
+      app.use('/', sub);
+    })
+  );
 
   Object.keys(data).forEach(function(id) {
     var item = data[id];
@@ -160,7 +172,11 @@ function start(opts) {
       return;
     }
 
-    app.use('/data/', serve_data(options, serving.data, item, id, serving.styles));
+    startupPromises.push(
+      serve_data(options, serving.data, item, id, serving.styles).then(function(sub) {
+        app.use('/data/', sub);
+      })
+    );
   });
 
   app.get('/styles.json', function(req, res, next) {
@@ -221,28 +237,32 @@ function start(opts) {
         templateFile = path.resolve(paths.root, options.frontPage);
       }
     }
-    fs.readFile(templateFile, function(err, content) {
-      if (err) {
-        console.error('Template not found:', err);
-      }
-      var compiled = handlebars.compile(content.toString());
-
-      app.use(urlPath, function(req, res, next) {
-        var data = {};
-        if (dataGetter) {
-          data = dataGetter(req);
-          if (!data) {
-            return res.status(404).send('Not found');
-          }
+    startupPromises.push(new Promise(function(resolve, reject) {
+      fs.readFile(templateFile, function(err, content) {
+        if (err) {
+          console.error('Template not found:', err);
+          reject(err);
         }
-        data['server_version'] = packageJson.name + ' v' + packageJson.version;
-        data['is_light'] = isLight;
-        data['key_query_part'] =
-            req.query.key ? 'key=' + req.query.key + '&amp;' : '';
-        data['key_query'] = req.query.key ? '?key=' + req.query.key : '';
-        return res.status(200).send(compiled(data));
+        var compiled = handlebars.compile(content.toString());
+
+        app.use(urlPath, function(req, res, next) {
+          var data = {};
+          if (dataGetter) {
+            data = dataGetter(req);
+            if (!data) {
+              return res.status(404).send('Not found');
+            }
+          }
+          data['server_version'] = packageJson.name + ' v' + packageJson.version;
+          data['is_light'] = isLight;
+          data['key_query_part'] =
+              req.query.key ? 'key=' + req.query.key + '&amp;' : '';
+          data['key_query'] = req.query.key ? '?key=' + req.query.key : '';
+          return res.status(200).send(compiled(data));
+        });
+        resolve();
       });
-    });
+    }));
   };
 
   serveTemplate('/$', 'index', function(req) {
@@ -355,6 +375,10 @@ function start(opts) {
     return data;
   });
 
+  var startupPromise = Promise.all(startupPromises).then(function() {
+    console.log('Startup complete');
+  });
+
   var server = app.listen(process.env.PORT || opts.port, process.env.BIND || opts.bind, function() {
     var address = this.address().address;
     if (address.indexOf('::') === 0) {
@@ -368,7 +392,8 @@ function start(opts) {
 
   return {
     app: app,
-    server: server
+    server: server,
+    startupPromise: startupPromise
   };
 }
 

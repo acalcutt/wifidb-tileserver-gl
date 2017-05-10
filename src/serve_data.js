@@ -34,20 +34,24 @@ module.exports = function(options, repo, params, id, styles) {
   if (!mbtilesFileStats.isFile() || mbtilesFileStats.size == 0) {
     throw Error('Not valid MBTiles file: ' + mbtilesFile);
   }
-  var source = new mbtiles(mbtilesFile, function(err) {
-    source.getInfo(function(err, info) {
-      tileJSON['name'] = id;
-      tileJSON['format'] = 'pbf';
+  var source;
+  var sourceInfoPromise = new Promise(function(resolve, reject) {
+    source = new mbtiles(mbtilesFile, function(err) {
+      source.getInfo(function(err, info) {
+        tileJSON['name'] = id;
+        tileJSON['format'] = 'pbf';
 
-      Object.assign(tileJSON, info);
+        Object.assign(tileJSON, info);
 
-      tileJSON['tilejson'] = '2.0.0';
-      delete tileJSON['filesize'];
-      delete tileJSON['mtime'];
-      delete tileJSON['scheme'];
+        tileJSON['tilejson'] = '2.0.0';
+        delete tileJSON['filesize'];
+        delete tileJSON['mtime'];
+        delete tileJSON['scheme'];
 
-      Object.assign(tileJSON, params.tilejson || {});
-      utils.fixTileJSONCenter(tileJSON);
+        Object.assign(tileJSON, params.tilejson || {});
+        utils.fixTileJSONCenter(tileJSON);
+        resolve();
+      });
     });
   });
 
@@ -161,5 +165,9 @@ module.exports = function(options, repo, params, id, styles) {
     return res.send(info);
   });
 
-  return app;
+  return new Promise(function(resolve, reject) {
+    sourceInfoPromise.then(function() {
+      resolve(app);
+    });
+  });
 };
