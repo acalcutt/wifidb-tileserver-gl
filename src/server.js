@@ -375,8 +375,17 @@ function start(opts) {
     return data;
   });
 
+  var startupComplete = false;
   var startupPromise = Promise.all(startupPromises).then(function() {
     console.log('Startup complete');
+    startupComplete = true;
+  });
+  app.get('/health', function(req, res, next) {
+    if (startupComplete) {
+      return res.status(200).send('OK');
+    } else {
+      return res.status(503).send('Starting');
+    }
   });
 
   var server = app.listen(process.env.PORT || opts.port, process.env.BIND || opts.bind, function() {

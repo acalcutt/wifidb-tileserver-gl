@@ -38,6 +38,14 @@ var testTileJSON = function(url) {
 };
 
 describe('Metadata', function() {
+  describe('/health', function() {
+    it('returns 200', function(done) {
+      supertest(app)
+        .get('/health')
+        .expect(200, done);
+    });
+  });
+
   testTileJSONArray('/index.json');
   testTileJSONArray('/rendered.json');
   testTileJSONArray('/data.json');

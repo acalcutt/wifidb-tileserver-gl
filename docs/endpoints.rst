@@ -64,3 +64,10 @@ Array of all TileJSONs is at ``/index.json`` (``/rendered.json``; ``/data.json``
 List of available fonts
 =======================
 Array of names of the available fonts is at ``/fonts.json``
+
+Health check
+============
+Endpoint reporting health status is at ``/health`` and currently returns:
+
+  * ``503`` Starting - for a short period before everything is initialized
+  * ``200`` OK - when the server is running
