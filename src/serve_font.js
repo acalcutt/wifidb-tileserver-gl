@@ -36,19 +36,15 @@ module.exports = function(options, allowedFonts) {
     var fontstack = decodeURI(req.params.fontstack);
     var range = req.params.range;
 
-    return utils.getFontsPbf(options.serveAllFonts ? null : allowedFonts,
-      fontPath, fontstack, range, existingFonts,
-        function(err, concated) {
-      if (err || concated.length === 0) {
-        console.log(err);
-        console.log(concated.length);
-        return res.status(400).send('');
-      } else {
+    utils.getFontsPbf(options.serveAllFonts ? null : allowedFonts,
+      fontPath, fontstack, range, existingFonts).then(function(concated) {
         res.header('Content-type', 'application/x-protobuf');
         res.header('Last-Modified', lastModified);
         return res.send(concated);
+      }, function(err) {
+        return res.status(400).send(err);
       }
-    });
+    );
   });
 
   app.get('/fonts.json', function(req, res, next) {

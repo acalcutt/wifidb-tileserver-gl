@@ -91,9 +91,12 @@ module.exports = function(options, repo, params, id, dataResolver) {
             var parts = req.url.split('/');
             var fontstack = unescape(parts[2]);
             var range = parts[3].split('.')[0];
-            utils.getFontsPbf(null, options.paths[protocol], fontstack, range, existingFonts,
-                function(err, concated) {
-              callback(err, {data: concated});
+            utils.getFontsPbf(
+              null, options.paths[protocol], fontstack, range, existingFonts
+            ).then(function(concated) {
+              callback(null, {data: concated});
+            }, function(err) {
+              callback(err, {data: null});
             });
           } else if (protocol == 'mbtiles') {
             var parts = req.url.split('/');

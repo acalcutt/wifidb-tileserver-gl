@@ -117,7 +117,5 @@ module.exports = function(options, repo, params, id, reportTiles, reportFont) {
     });
   });
 
-  return new Promise(function(resolve, reject) {
-    resolve(app);
-  });
+  return Promise.resolve(app);
 };
