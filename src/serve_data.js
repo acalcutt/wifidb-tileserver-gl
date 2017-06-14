@@ -6,9 +6,9 @@ var fs = require('fs'),
 
 var clone = require('clone'),
     express = require('express'),
-    mbtiles = require('mbtiles'),
+    mbtiles = require('@mapbox/mbtiles'),
     pbf = require('pbf'),
-    VectorTile = require('vector-tile').VectorTile;
+    VectorTile = require('@mapbox/vector-tile').VectorTile;
 
 var tileshrinkGl;
 try {

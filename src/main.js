@@ -6,7 +6,7 @@ var fs = require('fs'),
     path = require('path'),
     request = require('request');
 
-var mbtiles = require('mbtiles');
+var mbtiles = require('@mapbox/mbtiles');
 
 var packageJson = require('../package');
 
