@@ -11,8 +11,8 @@ RUN apt-get -qq update \
     libcairo2-dev \
     libprotobuf-dev \
     xvfb \
-&& echo "deb https://deb.nodesource.com/node_4.x jessie main" >> /etc/apt/sources.list.d/nodejs.list \
-&& echo "deb-src https://deb.nodesource.com/node_4.x jessie main" >> /etc/apt/sources.list.d/nodejs.list \
+&& echo "deb https://deb.nodesource.com/node_6.x jessie main" >> /etc/apt/sources.list.d/nodejs.list \
+&& echo "deb-src https://deb.nodesource.com/node_6.x jessie main" >> /etc/apt/sources.list.d/nodejs.list \
 && apt-get -qq update \
 && DEBIAN_FRONTEND=noninteractive apt-get -y --allow-unauthenticated install \
     nodejs \

@@ -1,4 +1,4 @@
-FROM node:4
+FROM node:6
 MAINTAINER Petr Sloup <petr.sloup@klokantech.com>
 
 RUN mkdir -p /usr/src/app
