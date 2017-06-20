@@ -223,7 +223,7 @@ module.exports = function(options, repo, params, id, dataResolver) {
         }
         mbtilesFile = dataResolver(mbtilesFile);
         if (!mbtilesFile) {
-          console.log('ERROR: data "' + mbtilesFile + '" not found!');
+          console.error('ERROR: data "' + mbtilesFile + '" not found!');
           process.exit(1);
         }
       }
@@ -238,6 +238,7 @@ module.exports = function(options, repo, params, id, dataResolver) {
           map.sources[name].getInfo(function(err, info) {
             if (err) {
               console.error(err);
+              return;
             }
 
             if (!dataProjWGStoInternalWGS && info.proj4) {
@@ -348,7 +349,10 @@ module.exports = function(options, repo, params, id, dataResolver) {
       }
       renderer.render(params, function(err, data) {
         pool.release(renderer);
-        if (err) console.log(err);
+        if (err) {
+          console.error(err);
+          return;
+        }
 
         var image = sharp(data, {
           raw: {
