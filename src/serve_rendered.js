@@ -310,7 +310,7 @@ module.exports = function(options, repo, params, id, dataResolver) {
 
   repo[id] = tileJSON;
 
-  var tilePattern = '/rendered/:z(\\d+)/:x(\\d+)/:y(\\d+)' +
+  var tilePattern = '/' + id + '/:z(\\d+)/:x(\\d+)/:y(\\d+)' +
                     ':scale(' + scalePattern + ')?\.:format([\\w]+)';
 
   var respondImage = function(z, lon, lat, bearing, pitch,
@@ -544,7 +544,7 @@ module.exports = function(options, repo, params, id, dataResolver) {
 
   if (options.serveStaticMaps !== false) {
     var staticPattern =
-        '/static/:raw(raw)?/%s/:width(\\d+)x:height(\\d+)' +
+        '/' + id + '/static/:raw(raw)?/%s/:width(\\d+)x:height(\\d+)' +
         ':scale(' + scalePattern + ')?\.:format([\\w]+)';
 
     var centerPattern =
@@ -628,7 +628,7 @@ module.exports = function(options, repo, params, id, dataResolver) {
 
     app.get(util.format(staticPattern, boundsPattern), serveBounds);
 
-    app.get('/static/', function(req, res, next) {
+    app.get('/' + id + '/static/', function(req, res, next) {
       for (var key in req.query) {
         req.query[key.toLowerCase()] = req.query[key];
       }
@@ -694,10 +694,10 @@ module.exports = function(options, repo, params, id, dataResolver) {
     });
   }
 
-  app.get('/rendered.json', function(req, res, next) {
+  app.get('/' + id + '.json', function(req, res, next) {
     var info = clone(tileJSON);
     info.tiles = utils.getTileUrls(req, info.tiles,
-                                   'styles/' + id + '/rendered', info.format);
+                                   'styles/' + id, info.format);
     return res.send(info);
   });
 

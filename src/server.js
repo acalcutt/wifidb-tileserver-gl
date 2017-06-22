@@ -150,7 +150,7 @@ function start(opts) {
               return mbtilesFile;
             }
           ).then(function(sub) {
-            app.use('/styles/' + id + '/', sub);
+            app.use('/styles/', sub);
           })
         );
       } else {
@@ -189,7 +189,7 @@ function start(opts) {
         name: styleJSON.name,
         id: id,
         url: req.protocol + '://' + req.headers.host +
-             '/styles/' + id + '.json' + query
+             '/styles/' + id + '/style.json' + query
       });
     });
     res.send(result);
@@ -200,7 +200,7 @@ function start(opts) {
       var info = clone(serving[type][id]);
       var path = '';
       if (type == 'rendered') {
-        path = 'styles/' + id + '/rendered';
+        path = 'styles/' + id;
       } else {
         path = type + '/' + id;
       }
@@ -288,11 +288,11 @@ function start(opts) {
         var query = req.query.key ? ('?key=' + req.query.key) : '';
         style.wmts_link = 'http://wmts.maptiler.com/' +
           base64url('http://' + req.headers.host +
-            '/styles/' + id + '/rendered.json' + query) + '/wmts';
+            '/styles/' + id + '.json' + query) + '/wmts';
 
         var tiles = utils.getTileUrls(
             req, style.serving_rendered.tiles,
-            'styles/' + id + '/rendered', style.serving_rendered.format);
+            'styles/' + id, style.serving_rendered.format);
         style.xyz_link = tiles[0];
       }
     });

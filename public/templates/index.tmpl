@@ -25,7 +25,7 @@
       {{#each styles}}
         <div class="item">
           {{#if thumbnail}}
-            <img src="/styles/{{@key}}/rendered/{{thumbnail}}{{&../key_query}}" alt="{{name}} preview" />
+            <img src="/styles/{{@key}}/{{thumbnail}}{{&../key_query}}" alt="{{name}} preview" />
           {{else}}
             <img src="/images/placeholder.png" alt="{{name}} preview" />
           {{/if}}
@@ -35,10 +35,10 @@
             <p class="services">
               services:
               {{#if serving_data}}
-                <a href="/styles/{{@key}}.json{{&../key_query}}">GL Style</a>
+                <a href="/styles/{{@key}}/style.json{{&../key_query}}">GL Style</a>
               {{/if}}
               {{#if serving_rendered}}
-                {{#if serving_data}}| {{/if}}<a href="/styles/{{@key}}/rendered.json{{&../key_query}}">TileJSON</a>
+                {{#if serving_data}}| {{/if}}<a href="/styles/{{@key}}.json{{&../key_query}}">TileJSON</a>
               {{/if}}
               {{#if wmts_link}}
                 | <a href="{{&wmts_link}}">WMTS</a>
