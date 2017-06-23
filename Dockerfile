@@ -10,6 +10,8 @@ RUN apt-get -qq update \
     python \
     libcairo2-dev \
     libgles2-mesa-dev \
+    libgbm-dev \
+    libllvm3.9 \
     libprotobuf-dev \
     libxxf86vm-dev \
     xvfb \
