@@ -41,7 +41,7 @@ Alternatively, you can use ``tileserver-gl-light`` package instead, which is pur
 From source
 ===========
 
-Make sure you have Node v4 (nvm install 4) and run::
+Make sure you have Node v6 (nvm install 6) and run::
 
   npm install
   node .
