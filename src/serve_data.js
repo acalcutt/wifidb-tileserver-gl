@@ -50,6 +50,10 @@ module.exports = function(options, repo, params, id, styles) {
 
         Object.assign(tileJSON, params.tilejson || {});
         utils.fixTileJSONCenter(tileJSON);
+
+        if (options.dataDecoratorFunc) {
+          tileJSON = options.dataDecoratorFunc(id, 'tilejson', tileJSON);
+        }
         resolve();
       });
     });
@@ -113,6 +117,13 @@ module.exports = function(options, repo, params, id, styles) {
                 data = shrinkers[style](data, z, tileJSON.maxzoom);
                 //console.log(shrinkers[style].getStats());
               }
+            }
+            if (options.dataDecoratorFunc) {
+              if (isGzipped) {
+                data = zlib.unzipSync(data);
+                isGzipped = false;
+              }
+              data = options.dataDecoratorFunc(id, 'data', data, z, x, y);
             }
           }
           if (format == 'pbf') {

@@ -100,7 +100,8 @@ module.exports = function(options, repo, params, id, dataResolver) {
             });
           } else if (protocol == 'mbtiles') {
             var parts = req.url.split('/');
-            var source = map.sources[parts[2]];
+            var sourceId = parts[2];
+            var source = map.sources[sourceId];
             var z = parts[3] | 0,
                 x = parts[4] | 0,
                 y = parts[5].split('.')[0] | 0,
@@ -118,6 +119,10 @@ module.exports = function(options, repo, params, id, dataResolver) {
 
                 if (format == 'pbf') {
                   response.data = zlib.unzipSync(data);
+                  if (options.dataDecoratorFunc) {
+                    response.data = options.dataDecoratorFunc(
+                      sourceId, 'data', response.data, z, x, y);
+                  }
                 } else {
                   response.data = data;
                 }
@@ -258,6 +263,11 @@ module.exports = function(options, repo, params, id, dataResolver) {
               'mbtiles://' + name + '/{z}/{x}/{y}.' + (info.format || 'pbf')
             ];
             delete source.scheme;
+
+            if (options.dataDecoratorFunc) {
+              source = options.dataDecoratorFunc(name, 'tilejson', source);
+            }
+
             if (source.format == 'pbf') {
               map.sources[name].emptyTile = new Buffer(0);
             } else {

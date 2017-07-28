@@ -89,6 +89,12 @@ function start(opts) {
   checkPath('sprites');
   checkPath('mbtiles');
 
+  if (options.dataDecorator) {
+    try {
+      options.dataDecoratorFunc = require(path.resolve(paths.root, options.dataDecorator));
+    } catch (e) {}
+  }
+
   var data = clone(config.data || {});
 
   if (opts.cors) {
