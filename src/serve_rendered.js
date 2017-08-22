@@ -3,6 +3,7 @@
 var advancedPool = require('advanced-pool'),
     fs = require('fs'),
     path = require('path'),
+    url = require('url'),
     util = require('util'),
     zlib = require('zlib');
 
@@ -34,6 +35,58 @@ mbgl.on('message', function(e) {
     console.log('mbgl:', e);
   }
 });
+
+/**
+ * Cache of response data by sharp output format.  The empty string represents
+ * an unknown or unsupported format.
+ */
+var cachedErrorResponses = {
+  '': new Buffer(0)
+};
+
+/**
+ * Lookup of sharp output formats by file extension.
+ */
+var extensionToFormat = {
+  '.jpg': 'jpeg',
+  '.jpeg': 'jpeg',
+  '.png': 'png',
+  '.webp': 'webp'
+};
+
+/**
+ * Create an appropriate mbgl response for http errors.
+ * @param {Object} req The mbgl req object.
+ * @param {http.IncomingMessage} res The incoming response.
+ * @param {Function} callback The mbgl callback.
+ */
+function createErrorResponse(req, res, callback) {
+  var parts = url.parse(req.url);
+  var extension = path.extname(parts.pathname).toLowerCase();
+  var format = extensionToFormat[extension] || '';
+  var data = cachedErrorResponses[format];
+  if (data) {
+    callback(null, {data: data});
+    return;
+  }
+
+  // create an "empty" response image
+  var color = new Color('rgba(255,255,255,0)');
+  var array = color.array();
+  var channels = array.length == 4 && format != 'jpeg' ? 4 : 3;
+  sharp(new Buffer(array), {
+    raw: {
+      width: 1,
+      height: 1,
+      channels: channels
+    }
+  }).toFormat(format).toBuffer(function(err, buffer, info) {
+    if (!err) {
+      cachedErrorResponses[format] = buffer;
+    }
+    callback(null, {data: buffer});
+  });
+}
 
 module.exports = function(options, repo, params, id, dataResolver) {
   var app = express().disable('x-powered-by');
@@ -137,8 +190,8 @@ module.exports = function(options, repo, params, id, dataResolver) {
                 gzip: true
             }, function(err, res, body) {
                 if (err) {
-                  //console.log('HTTP tile error', err);
-                  callback(null, { data: new Buffer(0) });
+                  // console.log('HTTP request error', err);
+                  createErrorResponse(req, res, callback);
                 } else if (res.statusCode == 200) {
                   var response = {};
 
@@ -156,8 +209,8 @@ module.exports = function(options, repo, params, id, dataResolver) {
 
                   callback(null, response);
                 } else {
-                  //console.log('HTTP error', JSON.parse(body).message);
-                  callback(null, { data: new Buffer(0) });
+                  // console.log('HTTP response error', req.url, res.statusCode);
+                  createErrorResponse(req, res, callback);
                 }
             });
           }
