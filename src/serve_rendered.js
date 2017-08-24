@@ -3,6 +3,7 @@
 var advancedPool = require('advanced-pool'),
     fs = require('fs'),
     path = require('path'),
+    url = require('url'),
     util = require('util'),
     zlib = require('zlib');
 
@@ -34,6 +35,68 @@ mbgl.on('message', function(e) {
     console.log('mbgl:', e);
   }
 });
+
+/**
+ * Lookup of sharp output formats by file extension.
+ */
+var extensionToFormat = {
+  '.jpg': 'jpeg',
+  '.jpeg': 'jpeg',
+  '.png': 'png',
+  '.webp': 'webp'
+};
+
+/**
+ * Cache of response data by sharp output format and color.  Entry for empty
+ * string is for unknown or unsupported formats.
+ */
+var cachedEmptyResponses = {
+  '': new Buffer(0)
+};
+
+/**
+ * Create an appropriate mbgl response for http errors.
+ * @param {string} format The format (a sharp format or 'pbf').
+ * @param {string} color The background color (or empty string for transparent).
+ * @param {Function} callback The mbgl callback.
+ */
+function createEmptyResponse(format, color, callback) {
+  if (!format || format === 'pbf') {
+    callback(null, {data: cachedEmptyResponses['']});
+    return;
+  }
+
+  if (format === 'jpg') {
+    format = 'jpeg';
+  }
+  if (!color) {
+    color = 'rgba(255,255,255,0)';
+  }
+
+  var cacheKey = format + ',' + color;
+  var data = cachedEmptyResponses[cacheKey];
+  if (data) {
+    callback(null, {data: data});
+    return;
+  }
+
+  // create an "empty" response image
+  var color = new Color(color);
+  var array = color.array();
+  var channels = array.length == 4 && format != 'jpeg' ? 4 : 3;
+  sharp(new Buffer(array), {
+    raw: {
+      width: 1,
+      height: 1,
+      channels: channels
+    }
+  }).toFormat(format).toBuffer(function(err, buffer, info) {
+    if (!err) {
+      cachedEmptyResponses[cacheKey] = buffer;
+    }
+    callback(null, {data: buffer});
+  });
+}
 
 module.exports = function(options, repo, params, id, dataResolver) {
   var app = express().disable('x-powered-by');
@@ -109,26 +172,26 @@ module.exports = function(options, repo, params, id, dataResolver) {
             source.getTile(z, x, y, function(err, data, headers) {
               if (err) {
                 //console.log('MBTiles error, serving empty', err);
-                callback(null, { data: source.emptyTile });
-              } else {
-                var response = {};
-
-                if (headers['Last-Modified']) {
-                  response.modified = new Date(headers['Last-Modified']);
-                }
-
-                if (format == 'pbf') {
-                  response.data = zlib.unzipSync(data);
-                  if (options.dataDecoratorFunc) {
-                    response.data = options.dataDecoratorFunc(
-                      sourceId, 'data', response.data, z, x, y);
-                  }
-                } else {
-                  response.data = data;
-                }
-
-                callback(null, response);
+                createEmptyResponse(source.format, source.color, callback);
+                return;
               }
+
+              var response = {};
+              if (headers['Last-Modified']) {
+                response.modified = new Date(headers['Last-Modified']);
+              }
+
+              if (format == 'pbf') {
+                response.data = zlib.unzipSync(data);
+                if (options.dataDecoratorFunc) {
+                  response.data = options.dataDecoratorFunc(
+                    sourceId, 'data', response.data, z, x, y);
+                }
+              } else {
+                response.data = data;
+              }
+
+              callback(null, response);
             });
           } else if (protocol == 'http' || protocol == 'https') {
             request({
@@ -136,29 +199,28 @@ module.exports = function(options, repo, params, id, dataResolver) {
                 encoding: null,
                 gzip: true
             }, function(err, res, body) {
-                if (err) {
-                  //console.log('HTTP tile error', err);
-                  callback(null, { data: new Buffer(0) });
-                } else if (res.statusCode == 200) {
-                  var response = {};
-
-                  if (res.headers.modified) {
-                    response.modified = new Date(res.headers.modified);
-                  }
-                  if (res.headers.expires) {
-                    response.expires = new Date(res.headers.expires);
-                  }
-                  if (res.headers.etag) {
-                    response.etag = res.headers.etag;
-                  }
-
-                  response.data = body;
-
-                  callback(null, response);
-                } else {
-                  //console.log('HTTP error', JSON.parse(body).message);
-                  callback(null, { data: new Buffer(0) });
+                var parts = url.parse(req.url);
+                var extension = path.extname(parts.pathname).toLowerCase();
+                var format = extensionToFormat[extension] || '';
+                if (err || res.statusCode < 200 || res.statusCode >= 300) {
+                  // console.log('HTTP error', err || res.statusCode);
+                  createEmptyResponse(format, '', callback);
+                  return;
                 }
+
+                var response = {};
+                if (res.headers.modified) {
+                  response.modified = new Date(res.headers.modified);
+                }
+                if (res.headers.expires) {
+                  response.expires = new Date(res.headers.expires);
+                }
+                if (res.headers.etag) {
+                  response.etag = res.headers.etag;
+                }
+
+                response.data = body;
+                callback(null, response);
             });
           }
         }
@@ -268,26 +330,6 @@ module.exports = function(options, repo, params, id, dataResolver) {
               source = options.dataDecoratorFunc(name, 'tilejson', source);
             }
 
-            if (source.format == 'pbf') {
-              map.sources[name].emptyTile = new Buffer(0);
-            } else {
-              var color = new Color(source.color || 'rgba(255,255,255,0)');
-              var format = source.format;
-              if (format == 'jpg') {
-                format = 'jpeg';
-              }
-              var array = color.array();
-              var channels = array.length == 4 && format != 'jpeg' ? 4 : 3;
-              sharp(new Buffer(array), {
-                raw: {
-                  width: 1,
-                  height: 1,
-                  channels: channels
-                }
-              }).toFormat(format).toBuffer(function(err, buffer, info) {
-                map.sources[name].emptyTile = buffer;
-              });
-            }
             if (!attributionOverride &&
                 source.attribution && source.attribution.length > 0) {
               if (tileJSON.attribution.length > 0) {
