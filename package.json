@@ -34,7 +34,6 @@
     "handlebars": "4.0.10",
     "http-shutdown": "^1.2.0",
     "morgan": "1.8.2",
-    "node-pngquant-native": "1.0.5",
     "nomnom": "1.8.1",
     "pbf": "3.0.5",
     "proj4": "2.4.4",

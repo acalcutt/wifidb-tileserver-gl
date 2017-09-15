@@ -21,9 +21,7 @@ Example::
       ],
       "formatQuality": {
         "jpeg": 80,
-        "webp": 90,
-        "pngQuantization": false,
-        "png": 90
+        "webp": 90
       },
       "maxScaleFactor": 3,
       "maxSize": 2048,
@@ -82,8 +80,6 @@ Use ``false`` to disable the front page altogether (404).
 -----------------
 
 Quality of the compression of individual image formats. [0-100]
-
-The value for ``png`` is only used when ``pngQuantization`` is ``true``.
 
 ``maxScaleFactor``
 -----------

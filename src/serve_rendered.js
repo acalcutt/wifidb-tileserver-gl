@@ -18,7 +18,6 @@ var Canvas = require('canvas'),
     mercator = new (require('@mapbox/sphericalmercator'))(),
     mbgl = require('@mapbox/mapbox-gl-native'),
     mbtiles = require('@mapbox/mbtiles'),
-    pngquant = require('node-pngquant-native'),
     proj4 = require('proj4'),
     request = require('request');
 
@@ -449,16 +448,6 @@ module.exports = function(options, repo, params, id, dataResolver) {
         image.toBuffer(function(err, buffer, info) {
           if (!buffer) {
             return res.status(404).send('Not found');
-          }
-
-          if (format == 'png') {
-            var usePngQuant =
-                (options.formatQuality || {}).pngQuantization === true;
-            if (usePngQuant) {
-              buffer = pngquant.compress(buffer, {
-                quality: [0, formatQuality || 90]
-              });
-            }
           }
 
           res.set({
