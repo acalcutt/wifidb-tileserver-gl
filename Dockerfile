@@ -1,4 +1,4 @@
-FROM debian:stretch
+FROM node:6-stretch
 MAINTAINER Petr Sloup <petr.sloup@klokantech.com>
 
 RUN apt-get -qq update \
@@ -15,12 +15,6 @@ RUN apt-get -qq update \
     libprotobuf-dev \
     libxxf86vm-dev \
     xvfb \
-&& echo "deb https://deb.nodesource.com/node_6.x stretch main" >> /etc/apt/sources.list.d/nodejs.list \
-&& echo "deb-src https://deb.nodesource.com/node_6.x stretch main" >> /etc/apt/sources.list.d/nodejs.list \
-&& apt-get -qq update \
-&& DEBIAN_FRONTEND=noninteractive apt-get -y --allow-unauthenticated install \
-    nodejs \
-&& rm /etc/apt/sources.list.d/nodejs.list \
 && apt-get clean
 
 RUN mkdir -p /usr/src/app
