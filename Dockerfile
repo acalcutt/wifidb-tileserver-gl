@@ -1,6 +1,12 @@
 FROM node:6-stretch
 MAINTAINER Petr Sloup <petr.sloup@klokantech.com>
 
+ENV NODE_ENV="production"
+VOLUME /data
+WORKDIR /data
+EXPOSE 80
+ENTRYPOINT ["/usr/src/app/run.sh"]
+
 RUN apt-get -qq update \
 && DEBIAN_FRONTEND=noninteractive apt-get -y install \
     apt-transport-https \
@@ -20,11 +26,3 @@ RUN apt-get -qq update \
 RUN mkdir -p /usr/src/app
 COPY / /usr/src/app
 RUN cd /usr/src/app && npm install --production
-
-VOLUME /data
-WORKDIR /data
-
-ENV NODE_ENV="production"
-
-EXPOSE 80
-ENTRYPOINT ["/usr/src/app/run.sh"]
