@@ -16,7 +16,7 @@
     "node": ">=6 <7"
   },
   "scripts": {
-    "test": "mocha test/**.js"
+    "test": "mocha test/**.js --timeout 10000"
   },
   "dependencies": {
     "@mapbox/mapbox-gl-native": "3.5.4",
