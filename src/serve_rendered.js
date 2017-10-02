@@ -344,18 +344,15 @@ module.exports = function(options, repo, params, id, dataResolver) {
   });
 
   var renderersReadyPromise = Promise.all(queue).then(function() {
-    // TODO: make pool sizes configurable
+    // standard and @2x tiles are much more usual -> default to larger pools
+    var minPoolSizes = options.minRendererPoolSizes || [8, 4, 2];
+    var maxPoolSizes = options.maxRendererPoolSizes || [16, 8, 4];
     for (var s = 1; s <= maxScaleFactor; s++) {
-      var minPoolSize = 2;
-
-      // standard and @2x tiles are much more usual -> create larger pools
-      if (s <= 2) {
-        minPoolSize *= 2;
-        if (s <= 1) {
-          minPoolSize *= 2;
-        }
-      }
-      map.renderers[s] = createPool(s, minPoolSize, 2 * minPoolSize);
+      var i = Math.min(minPoolSizes.length - 1, s - 1);
+      var j = Math.min(maxPoolSizes.length - 1, s - 1);
+      var minPoolSize = minPoolSizes[i];
+      var maxPoolSize = Math.max(minPoolSize, maxPoolSizes[j]);
+      map.renderers[s] = createPool(s, minPoolSize, maxPoolSize);
     }
   });
 
