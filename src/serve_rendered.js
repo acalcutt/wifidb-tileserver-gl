@@ -164,6 +164,7 @@ module.exports = function(options, repo, params, id, dataResolver) {
             var parts = req.url.split('/');
             var sourceId = parts[2];
             var source = map.sources[sourceId];
+            var sourceInfo = styleJSON.sources[sourceId];
             var z = parts[3] | 0,
                 x = parts[4] | 0,
                 y = parts[5].split('.')[0] | 0,
@@ -171,7 +172,7 @@ module.exports = function(options, repo, params, id, dataResolver) {
             source.getTile(z, x, y, function(err, data, headers) {
               if (err) {
                 //console.log('MBTiles error, serving empty', err);
-                createEmptyResponse(source.format, source.color, callback);
+                createEmptyResponse(sourceInfo.format, sourceInfo.color, callback);
                 return;
               }
 
