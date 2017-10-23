@@ -54,9 +54,7 @@ module.exports = function(options, allowedFonts) {
     );
   });
 
-  return new Promise(function(resolve, reject) {
-    fontListingPromise.then(function() {
-      resolve(app);
-    });
+  return fontListingPromise.then(function() {
+    return app;
   });
 };
