@@ -122,12 +122,18 @@ module.exports = function(options, repo, params, id, dataResolver) {
   var existingFonts = {};
   var fontListingPromise = new Promise(function(resolve, reject) {
     fs.readdir(options.paths.fonts, function(err, files) {
+      if (err) {
+        reject(err);
+        return;
+      }
       files.forEach(function(file) {
         fs.stat(path.join(options.paths.fonts, file), function(err, stats) {
-          if (!err) {
-            if (stats.isDirectory()) {
-              existingFonts[path.basename(file)] = true;
-            }
+          if (err) {
+            reject(err);
+            return;
+          }
+          if (stats.isDirectory()) {
+            existingFonts[path.basename(file)] = true;
           }
         });
       });
