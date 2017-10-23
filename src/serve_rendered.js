@@ -740,9 +740,8 @@ module.exports = function(options, repo, params, id, dataResolver) {
     return res.send(info);
   });
 
-  return new Promise(function(resolve, reject) {
-    Promise.all([fontListingPromise, renderersReadyPromise]).then(function() {
-      resolve(app);
-    });
+  return Promise.all([fontListingPromise, renderersReadyPromise]).then(function() {
+    return app;
   });
+
 };
