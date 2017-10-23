@@ -246,8 +246,9 @@ function start(opts) {
     startupPromises.push(new Promise(function(resolve, reject) {
       fs.readFile(templateFile, function(err, content) {
         if (err) {
-          console.error('Template not found:', err);
+          err = new Error('Template not found: ' + err.message);
           reject(err);
+          return;
         }
         var compiled = handlebars.compile(content.toString());
 
@@ -414,6 +415,11 @@ function start(opts) {
 
 module.exports = function(opts) {
   var running = start(opts);
+
+  running.startupPromise.catch(function(err) {
+    console.error(err.message);
+    process.exit(1);
+  });
 
   process.on('SIGINT', function() {
     process.exit();
