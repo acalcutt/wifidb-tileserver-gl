@@ -176,9 +176,7 @@ module.exports = function(options, repo, params, id, styles) {
     return res.send(info);
   });
 
-  return new Promise(function(resolve, reject) {
-    sourceInfoPromise.then(function() {
-      resolve(app);
-    });
+  return sourceInfoPromise.then(function() {
+    return app;
   });
 };
