@@ -37,7 +37,15 @@ module.exports = function(options, repo, params, id, styles) {
   var source;
   var sourceInfoPromise = new Promise(function(resolve, reject) {
     source = new mbtiles(mbtilesFile, function(err) {
+      if (err) {
+        reject(err);
+        return;
+      }
       source.getInfo(function(err, info) {
+        if (err) {
+          reject(err);
+          return;
+        }
         tileJSON['name'] = id;
         tileJSON['format'] = 'pbf';
 
