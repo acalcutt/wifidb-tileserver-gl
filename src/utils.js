@@ -110,9 +110,7 @@ module.exports.getFontsPbf = function(allowedFonts, fontPath, names, range, fall
     );
   });
 
-  return new Promise(function(resolve, reject) {
-    Promise.all(queue).then(function(values) {
-      return resolve(glyphCompose.combine(values));
-    }, reject);
+  return Promise.all(queue).then(function(values) {
+    return glyphCompose.combine(values);
   });
 };
