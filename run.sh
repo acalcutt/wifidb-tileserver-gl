@@ -7,3 +7,6 @@ export DISPLAY=:99.0
 
 cd /data
 node /usr/src/app/ -p 80 "$@"
+
+start-stop-daemon --stop --pidfile ~/xvfb.pid # stop xvfb when exiting
+rm ~/xvfb.pid
