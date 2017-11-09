@@ -192,7 +192,7 @@ module.exports = function(options, repo, params, id, dataResolver) {
                   response.data = zlib.unzipSync(data);
                 }
                 catch (err) {
-                  console.log("Skipping incorrect header for tile mbtiles://openmaptiles/%z/%x/%y.pbf", z, x, y);
+                  console.log("Skipping incorrect header for tile mbtiles://%s/%s/%s/%s.pbf", id, z, x, y);
                 }
                 if (options.dataDecoratorFunc) {
                   response.data = options.dataDecoratorFunc(
