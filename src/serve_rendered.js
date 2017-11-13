@@ -188,7 +188,12 @@ module.exports = function(options, repo, params, id, dataResolver) {
               }
 
               if (format == 'pbf') {
-                response.data = zlib.unzipSync(data);
+                try {
+                  response.data = zlib.unzipSync(data);
+                }
+                catch (err) {
+                  console.log("Skipping incorrect header for tile mbtiles://%s/%s/%s/%s.pbf", id, z, x, y);
+                }
                 if (options.dataDecoratorFunc) {
                   response.data = options.dataDecoratorFunc(
                     sourceId, 'data', response.data, z, x, y);
