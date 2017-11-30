@@ -5,7 +5,7 @@ ENV NODE_ENV="production"
 VOLUME /data
 WORKDIR /data
 EXPOSE 80
-ENTRYPOINT ["/usr/src/app/run.sh"]
+ENTRYPOINT ["/bin/bash", "/usr/src/app/run.sh"]
 
 RUN apt-get -qq update \
 && DEBIAN_FRONTEND=noninteractive apt-get -y install \
