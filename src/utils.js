@@ -84,7 +84,20 @@ var getFontPbf = function(allowedFonts, fontPath, name, range, fallbacks) {
         if (err) {
           console.error('ERROR: Font not found:', name);
           if (fallbacks && Object.keys(fallbacks).length) {
-            var fallbackName = Object.keys(fallbacks)[0];
+            var fallbackName;
+
+            var fontStyle = name.split(' ').pop();
+            if (['Regular', 'Bold', 'Italic'].indexOf(fontStyle) < 0) {
+              fontStyle = 'Regular';
+            }
+            fallbackName = 'Noto Sans ' + fontStyle;
+            if (!fallbacks[fallbackName]) {
+              fallbackName = 'Open Sans ' + fontStyle;
+              if (!fallbacks[fallbackName]) {
+                fallbackName = Object.keys(fallbacks)[0];
+              }
+            }
+
             console.error('ERROR: Trying to use', fallbackName, 'as a fallback');
             delete fallbacks[fallbackName];
             getFontPbf(null, fontPath, fallbackName, range, fallbacks).then(resolve, reject);
