@@ -10,46 +10,43 @@ var mbtiles = require('@mapbox/mbtiles');
 
 var packageJson = require('../package');
 
-var opts = require('nomnom')
-  .option('mbtiles', {
-    default: undefined,
-    help: 'MBTiles file (uses demo configuration);\n' +
-          '\t    ignored if the configuration file is also specified',
-    position: 0
-  })
-  .option('config', {
-    abbr: 'c',
-    default: 'config.json',
-    help: 'Configuration file'
-  })
-  .option('bind', {
-    abbr: 'b',
-    default: undefined,
-    help: 'Bind address'
-  })
-  .option('port', {
-    abbr: 'p',
-    default: 8080,
-    help: 'Port'
-  })
-  .option('cors', {
-    default: true,
-    help: 'Enable Cross-origin resource sharing headers'
-  })
-  .option('verbose', {
-    abbr: 'V',
-    flag: true,
-    help: 'More verbose output'
-  })
-  .option('version', {
-    abbr: 'v',
-    flag: true,
-    help: 'Version info',
-    callback: function() {
-      return packageJson.name + ' v' + packageJson.version;
-    }
-  }).parse();
-
+var opts = require('commander')
+  .description('tileserver-gl startup options')
+  .usage('tileserver-gl [mbtiles] [options]')
+  .option(
+    '--mbtiles <file>',
+    'MBTiles file (uses demo configuration);\n' +
+    '\t                  ignored if the configuration file is also specified'
+  )
+  .option(
+    '-c, --config <file>',
+    'Configuration file',
+    'config.json'
+  )
+  .option(
+    '-b, --bind <address>',
+    'Bind address'
+  )
+  .option(
+    '-p, --port <port>',
+    'Port',
+    parseInt,
+    8080
+  )
+  .option(
+    '-C|--no-cors',
+    'Disable Cross-origin resource sharing headers'
+  )
+  .option(
+    '-V, --verbose',
+    'More verbose output'
+  )
+  .option(
+    '-v, --version',
+    'Version info',
+    packageJson.version
+  )
+  .parse(process.argv);
 
 console.log('Starting ' + packageJson.name + ' v' + packageJson.version);
 
