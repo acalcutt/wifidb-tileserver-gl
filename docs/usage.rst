@@ -13,9 +13,9 @@ Getting started
     -h, --help            output usage information
     --mbtiles <file>      MBTiles file (uses demo configuration);
                           ignored if the configuration file is also specified
-    -c, --config <file>   Configuration file
+    -c, --config <file>   Configuration file [config.json]
     -b, --bind <address>  Bind address
-    -p, --port <port>     Port
+    -p, --port <port>     Port [8080]
     -C|--no-cors          Disable Cross-origin resource sharing headers
     -V, --verbose         More verbose output
     -v, --version         Version info

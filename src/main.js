@@ -20,7 +20,7 @@ var opts = require('commander')
   )
   .option(
     '-c, --config <file>',
-    'Configuration file',
+    'Configuration file [config.json]',
     'config.json'
   )
   .option(
@@ -29,7 +29,7 @@ var opts = require('commander')
   )
   .option(
     '-p, --port <port>',
-    'Port',
+    'Port [8080]',
     parseInt,
     8080
   )
