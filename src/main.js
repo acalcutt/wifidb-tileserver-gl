@@ -10,6 +10,11 @@ var mbtiles = require('@mapbox/mbtiles');
 
 var packageJson = require('../package');
 
+var args = process.argv;
+if (args.length >= 3 && args[2][0] != '-') {
+  args.splice(2, 0, '--mbtiles');
+}
+
 var opts = require('commander')
   .description('tileserver-gl startup options')
   .usage('tileserver-gl [mbtiles] [options]')
@@ -41,12 +46,11 @@ var opts = require('commander')
     '-V, --verbose',
     'More verbose output'
   )
-  .option(
-    '-v, --version',
-    'Version info',
-    packageJson.version
+  .version(
+    packageJson.version,
+    '-v, --version'
   )
-  .parse(process.argv);
+  .parse(args);
 
 console.log('Starting ' + packageJson.name + ' v' + packageJson.version);
 
