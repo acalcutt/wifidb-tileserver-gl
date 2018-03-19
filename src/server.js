@@ -43,9 +43,13 @@ function start(opts) {
   app.enable('trust proxy');
 
   if (process.env.NODE_ENV == 'production') {
-    app.use(morgan('tiny'));
+    app.use(morgan('tiny', {
+      skip: function(req, res) { return opts.silent && res.statusCode == 200 }
+    }));
   } else if (process.env.NODE_ENV !== 'test') {
-    app.use(morgan('dev'));
+    app.use(morgan('dev', {
+      skip: function(req, res) { return opts.silent && res.statusCode == 200 }
+    }));
   }
 
   var config = opts.config || null;

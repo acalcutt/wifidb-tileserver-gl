@@ -46,6 +46,10 @@ var opts = require('commander')
     '-V, --verbose',
     'More verbose output'
   )
+  .option(
+    '-s, --silent',
+    'Less verbose output'
+  )
   .version(
     packageJson.version,
     '-v, --version'
@@ -60,7 +64,8 @@ var startServer = function(configPath, config) {
     config: config,
     bind: opts.bind,
     port: opts.port,
-    cors: opts.cors
+    cors: opts.cors,
+    silent: opts.silent
   });
 };
 
