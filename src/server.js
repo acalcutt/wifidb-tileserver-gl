@@ -44,11 +44,11 @@ function start(opts) {
 
   if (process.env.NODE_ENV == 'production') {
     app.use(morgan('tiny', {
-      skip: function(req, res) { return opts.silent && res.statusCode == 200 }
+      skip: function(req, res) { return opts.silent && (res.statusCode == 200 || res.statusCode == 304) }
     }));
   } else if (process.env.NODE_ENV !== 'test') {
     app.use(morgan('dev', {
-      skip: function(req, res) { return opts.silent && res.statusCode == 200 }
+      skip: function(req, res) { return opts.silent && (res.statusCode == 200 || res.statusCode == 304) }
     }));
   }
 
