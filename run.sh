@@ -15,7 +15,7 @@ sleep 3
 export DISPLAY=:99.0
 
 cd /data
-node /usr/src/app/ -p 80 "$@" &
+node /opt/tileserver-gl/ -p 8080 -c /opt/tileserver-gl/configs/config.json  "$@" &
 child=$!
 wait "$child"
 
