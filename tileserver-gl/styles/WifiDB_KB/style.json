@@ -21,10 +21,6 @@
       "type": "vector",
       "url": "mbtiles://{v3}"
     },
-	"WifiDB_Legacy": {
-      "type": "vector",
-      "url": "mbtiles://{WifiDB_Legacy}"
-    },
 	"WifiDB": {
       "type": "vector",
       "url": "mbtiles://{WifiDB}"
@@ -1541,36 +1537,76 @@
 	{
       "id": "WifiDB_Legacy",
       "type": "circle",
-      "source": "WifiDB_Legacy",
+      "source": "WifiDB",
       "source-layer": "WifiDB_Legacy",
       "paint": {
 		"circle-color": {
 			"property": "sectype",
 			"type": "interval",
 			"stops": [
-				[1, "#00d900"],
-				[2, "#e57c00"],
-				[3, "#dd2222"]
+				[1, "#00802b"],
+				[2, "#cc7a00"],
+				[3, "#b30000"]
 			]
 		},
 		"circle-radius": 2,
-		"circle-opacity": 0.5,
+		"circle-opacity": 0.75,
 		"circle-blur": 0.5
 	}
     },
 	{
-      "id": "WifiDB",
+      "id": "WifiDB_2to3year",
       "type": "circle",
       "source": "WifiDB",
-      "source-layer": "WifiDB",
+      "source-layer": "WifiDB_2to3year",
       "paint": {
 		"circle-color": {
 			"property": "sectype",
 			"type": "interval",
 			"stops": [
-				[1, "#02ff02"],
-				[2, "#ff8a00"],
-				[3, "#f72222"]
+				[1, "#00b33c"],
+				[2, "#e68a00"],
+				[3, "#cc0000"]
+			]
+		},
+		"circle-radius": 2.5,
+		"circle-opacity": 1,
+		"circle-blur": 0.5
+	}
+    },
+	{
+      "id": "WifiDB_1to2year",
+      "type": "circle",
+      "source": "WifiDB",
+      "source-layer": "WifiDB_1to2year",
+      "paint": {
+		"circle-color": {
+			"property": "sectype",
+			"type": "interval",
+			"stops": [
+				[1, "#00e64d"],
+				[2, "#ff9900"],
+				[3, "#e60000"]
+			]
+		},
+		"circle-radius": 2.75,
+		"circle-opacity": 1,
+		"circle-blur": 0.5
+	}
+    },
+	{
+      "id": "WifiDB_0to1year",
+      "type": "circle",
+      "source": "WifiDB",
+      "source-layer": "WifiDB_0to1year",
+      "paint": {
+		"circle-color": {
+			"property": "sectype",
+			"type": "interval",
+			"stops": [
+				[1, "#1aff66"],
+				[2, "#ffad33"],
+				[3, "#ff1a1a"]
 			]
 		},
 		"circle-radius": 3,
