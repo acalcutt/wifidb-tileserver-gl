@@ -84,9 +84,6 @@
     },
     "WifiDB": {
       "mbtiles": "WifiDB.mbtiles"
-    },
-    "WifiDB_Legacy": {
-      "mbtiles": "WifiDB_Legacy.mbtiles"
     }
   }
 }
