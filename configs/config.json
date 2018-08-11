@@ -1,0 +1,92 @@
+{
+  "options": {
+    "paths": {
+      "root": "/opt/tileserver-gl/",
+      "fonts": "fonts",
+      "styles": "styles",
+      "mbtiles": "data"
+    }
+  },
+  "styles": {
+    "klokantech-basic": {
+      "style": "klokantech-basic/style.json",
+      "tilejson": {
+        "bounds": [
+          -180,
+          -85.0511,
+          180,
+          85.0511
+        ]
+      }
+    },
+    "osm-bright": {
+      "style": "osm-bright/style.json",
+      "tilejson": {
+        "bounds": [
+          -180,
+          -85.0511,
+          180,
+          85.0511
+        ]
+      }
+    },	
+    "NE2": {
+      "style": "NE2/style.json",
+      "tilejson": {
+        "bounds": [
+          -180,
+          -85.0511,
+          180,
+          85.0511
+        ]
+      }
+    },
+    "WifiDB": {
+      "style": "WifiDB/style.json",
+      "tilejson": {
+        "bounds": [
+          -180,
+          -85.0511,
+          180,
+          85.0511
+        ]
+      }
+    },	
+    "WifiDB_NE2": {
+      "style": "WifiDB_NE2/style.json",
+      "tilejson": {
+        "bounds": [
+          -180,
+          -85.0511,
+          180,
+          85.0511
+        ]
+      }
+    },	
+    "WifiDB_KB": {
+      "style": "WifiDB_KB/style.json",
+      "tilejson": {
+        "bounds": [
+          -180,
+          -85.0511,
+          180,
+          85.0511
+        ]
+      }
+    }
+  },
+  "data": {
+    "v3": {
+      "mbtiles": "osm-2018-07-16-v3.8-planet.mbtiles"
+    },
+    "NE2_HR_LC_SR_W_DR": {
+      "mbtiles": "NE2_HR_LC_SR_W_DR.mbtiles"
+    },
+    "WifiDB": {
+      "mbtiles": "WifiDB.mbtiles"
+    },
+    "WifiDB_Legacy": {
+      "mbtiles": "WifiDB_Legacy.mbtiles"
+    }
+  }
+}
