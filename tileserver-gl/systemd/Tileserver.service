@@ -1,0 +1,14 @@
+[Unit]
+Description=TileServer-GL Server
+After=Xvfb.service
+
+[Service]
+Type=simple
+User=tileservergl
+Group=tileservergl
+Environment="DISPLAY=:99.0"
+ExecStart=/home/tserver/.nvm/versions/node/v10.21.0/bin/node /opt/tileserver-gl/tileserver-gl-3.0.0/ -p 8080 -c /opt/tileserver-gl/configs/config-3.0.0.json
+ExecStop=/bin/kill -15 $MAINPID
+
+[Install]
+WantedBy=multi-user.target

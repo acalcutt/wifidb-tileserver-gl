@@ -1,0 +1,40 @@
+#Create User and Group for Tile Server
+adduser tileservergl
+addgroup tileservergl
+passwd tileservergl [your password]
+
+#Log in as tileservergl and install node as that user (I used node version manager to do this)
+nvm install v10.21.0
+nvm use v10.21.0
+
+#Log in as root and install node as that user. Then, download tileserver node_modules.
+nvm install v10.21.0
+nvm use v10.21.0
+cd /opt/tileserver-gl/tileserver-gl-3.0.0/
+npm install
+
+#Xvfb startup script, which is needed by Tileserver-GL. Starts on Display 99 Screen 0
+Service Name: Xvfb.service
+Service File: /etc/systemd/system/Xvfb.service
+-instructions-
+Place systemd/Xvfb.service at /etc/systemd/system/Xvfb.service
+systemctl daemon-reload
+systemctl enable Xvfb.service
+systemctl start Xvfb.service
+systemctl status Xvfb.service
+
+#Tileserver-GL startup script. Sets Environment to use Display 99 Screen 0 (without this is gets the error xcb_connect failed)
+Service Name: Tileserver.service
+Service File: /etc/systemd/system/Tileserver.service
+-instructions-
+Place systemd/Tileserver.service at /etc/systemd/system/Tileserver.service
+systemctl daemon-reload
+systemctl enable Tileserver.service
+systemctl start Tileserver.service
+systemctl status Tileserver.service
+
+
+
+
+
+
