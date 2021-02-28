@@ -1,6 +1,6 @@
 {
    "version":8,
-   "name":"WDB_OSM",
+   "name":"WDB_OSM_3D",
    "metadata":{
       "mapbox:autocomposite":false,
       "mapbox:groups":{
@@ -49,10 +49,6 @@
       "osm_basemap":{
          "type":"vector",
          "url":"mbtiles://{osm_basemap}"
-      },
-      "ne_basemap":{
-         "type":"vector",
-         "url":"mbtiles://{ne_basemap}"
       },
       "WdbMapTilesNew":{
          "type":"vector",
@@ -988,6 +984,30 @@
             }
          }
       },
+    {
+      "id": "building-3d",
+      "type": "fill-extrusion",
+      "source": "WdbMapTilesNew",
+      "source-layer": "building",
+      "filter": ["all", ["!has", "hide_3d"]],
+      "paint": {
+        "fill-extrusion-base": {
+          "property": "render_min_height",
+          "type": "identity"
+        },
+        "fill-extrusion-color": [
+          "case",
+          ["has", "colour"],
+          ["get", "colour"],
+          "hsl(39, 41%, 86%)"
+        ],
+        "fill-extrusion-height": {
+          "property": "render_height",
+          "type": "identity"
+        },
+        "fill-extrusion-opacity": 0.6
+      }
+    },
       {
          "id":"tunnel-service-track-casing",
          "type":"line",
