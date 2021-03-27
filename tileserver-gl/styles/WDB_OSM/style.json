@@ -4501,6 +4501,28 @@
             "text-halo-width":1
          }
       },
+    {
+      "id": "housenumber",
+      "type": "symbol",
+      "source": "wdb-map-gen",
+      "source-layer": "housenumber",
+      "minzoom": 17,
+      "filter": [
+        "==",
+        "$type",
+        "Point"
+      ],
+      "layout": {
+        "text-field": "{housenumber}",
+        "text-size": 10,
+        "text-font":[
+           "Noto Sans Regular"
+        ]
+      },
+      "paint": {
+        "text-color": "rgba(212, 177, 146, 1)"
+      }
+    },
       {
          "id":"road_oneway",
          "type":"symbol",
