@@ -24,7 +24,7 @@
   "sources": {
     "openmaptiles": {
         "type":"vector",
-        "url":"mbtiles://{WdbMapTilesNew}"
+        "url":"mbtiles://{wdb-map-gen}"
     },
     "osm_basemap":{
         "type":"vector",
