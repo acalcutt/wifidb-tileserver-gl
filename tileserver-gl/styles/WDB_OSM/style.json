@@ -34,7 +34,7 @@
          }
       },
       "mapbox:type":"template",
-      "openmaptiles:mapbox:owner":"openmaptiles",
+      "openmaptiles:mapbox:owner":"wdb-map-gen",
       "openmaptiles:mapbox:source:url":"mapbox://openmaptiles.4qljc88t",
       "openmaptiles:version":"3.x"
    },
@@ -86,31 +86,31 @@
          }
       },
       {
-        "id": "JAXA",
-        "type": "raster",
-        "source": "jaxa_basemap",
-        "layout":{
-           "visibility":"visible"
-        },
-        "paint":{
-           "raster-opacity":{
-              "base":1,
-              "stops":[
-                 [
-                    8,
-                    0.2
-                 ],
-                 [
-                    12,
-                    0.1
-                 ],
-                 [
-                    14,
-                    0.0
-                 ]
-              ]
-           }
-        }
+         "id":"JAXA",
+         "type":"raster",
+         "source":"jaxa_basemap",
+         "layout":{
+            "visibility":"visible"
+         },
+         "paint":{
+            "raster-opacity":{
+               "base":1,
+               "stops":[
+                  [
+                     8,
+                     0.2
+                  ],
+                  [
+                     12,
+                     0.1
+                  ],
+                  [
+                     14,
+                     0.0
+                  ]
+               ]
+            }
+         }
       },
       {
          "id":"NE2",
@@ -446,40 +446,40 @@
             }
          }
       },
-    {
-      "id":"water_fix",
-      "type":"fill",
-      "metadata":{
-        "mapbox:group":"1444849382550.77"
+      {
+         "id":"water_fix",
+         "type":"fill",
+         "metadata":{
+            "mapbox:group":"1444849382550.77"
+         },
+         "source":"osm_basemap",
+         "source-layer":"water",
+         "layout":{
+            "visibility":"visible"
+         },
+         "paint":{
+            "fill-color":"hsl(210, 67%, 85%)"
+         }
       },
-      "source":"osm_basemap",
-      "source-layer":"water",
-      "layout":{
-        "visibility":"visible"
+      {
+         "id":"water-pattern_fix",
+         "type":"fill",
+         "metadata":{
+            "mapbox:group":"1444849382550.77"
+         },
+         "source":"osm_basemap",
+         "source-layer":"water",
+         "layout":{
+            "visibility":"visible"
+         },
+         "paint":{
+            "fill-translate":[
+               0,
+               2.5
+            ],
+            "fill-pattern":"wave"
+         }
       },
-      "paint":{
-        "fill-color":"hsl(210, 67%, 85%)"
-      }
-    },
-    {
-      "id":"water-pattern_fix",
-      "type":"fill",
-      "metadata":{
-        "mapbox:group":"1444849382550.77"
-      },
-      "source":"osm_basemap",
-      "source-layer":"water",
-      "layout":{
-        "visibility":"visible"
-      },
-      "paint":{
-        "fill-translate":[
-          0,
-          2.5
-        ],
-        "fill-pattern":"wave"
-      }
-    },
       {
          "id":"waterway-other",
          "type":"line",
@@ -1015,30 +1015,42 @@
             }
          }
       },
-    {
-      "id": "building-3d",
-      "type": "fill-extrusion",
-      "source": "wdb-map-gen",
-      "source-layer": "building",
-      "filter": ["all", ["!has", "hide_3d"]],
-      "paint": {
-        "fill-extrusion-base": {
-          "property": "render_min_height",
-          "type": "identity"
-        },
-        "fill-extrusion-color": [
-          "case",
-          ["has", "colour"],
-          ["get", "colour"],
-          "hsl(39, 41%, 86%)"
-        ],
-        "fill-extrusion-height": {
-          "property": "render_height",
-          "type": "identity"
-        },
-        "fill-extrusion-opacity": 0.6
-      }
-    },
+      {
+         "id":"building-3d",
+         "type":"fill-extrusion",
+         "source":"wdb-map-gen",
+         "source-layer":"building",
+         "filter":[
+            "all",
+            [
+               "!has",
+               "hide_3d"
+            ]
+         ],
+         "paint":{
+            "fill-extrusion-base":{
+               "property":"render_min_height",
+               "type":"identity"
+            },
+            "fill-extrusion-color":[
+               "case",
+               [
+                  "has",
+                  "colour"
+               ],
+               [
+                  "get",
+                  "colour"
+               ],
+               "hsl(39, 41%, 86%)"
+            ],
+            "fill-extrusion-height":{
+               "property":"render_height",
+               "type":"identity"
+            },
+            "fill-extrusion-opacity":0.6
+         }
+      },
       {
          "id":"tunnel-service-track-casing",
          "type":"line",
@@ -3910,12 +3922,13 @@
          "type":"line",
          "source":"wdb-map-gen",
          "source-layer":"boundary",
+         "minzoom":2,
          "filter":[
             "all",
             [
                ">=",
                "admin_level",
-               4
+               3
             ],
             [
                "<=",
@@ -4501,28 +4514,28 @@
             "text-halo-width":1
          }
       },
-    {
-      "id": "housenumber",
-      "type": "symbol",
-      "source": "wdb-map-gen",
-      "source-layer": "housenumber",
-      "minzoom": 17,
-      "filter": [
-        "==",
-        "$type",
-        "Point"
-      ],
-      "layout": {
-        "text-field": "{housenumber}",
-        "text-size": 10,
-        "text-font":[
-           "Noto Sans Regular"
-        ]
+      {
+         "id":"housenumber",
+         "type":"symbol",
+         "source":"wdb-map-gen",
+         "source-layer":"housenumber",
+         "minzoom":17,
+         "filter":[
+            "==",
+            "$type",
+            "Point"
+         ],
+         "layout":{
+            "text-field":"{housenumber}",
+            "text-size":10,
+            "text-font":[
+               "Noto Sans Regular"
+            ]
+         },
+         "paint":{
+            "text-color":"rgba(212, 177, 146, 1)"
+         }
       },
-      "paint": {
-        "text-color": "rgba(212, 177, 146, 1)"
-      }
-    },
       {
          "id":"road_oneway",
          "type":"symbol",
