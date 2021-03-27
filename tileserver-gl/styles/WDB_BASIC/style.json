@@ -18,6 +18,18 @@
          "type":"vector",
          "url":"mbtiles://{wdb-map-gen}"
       },
+      "WifiDB_newest":{
+         "type":"vector",
+         "url":"mbtiles://{WifiDB_newest}"
+      },
+      "WifiDB":{
+         "type":"vector",
+         "url":"mbtiles://{WifiDB}"
+      },
+      "WifiDB_cells":{
+         "type":"vector",
+         "url":"mbtiles://{WifiDB_cells}"
+      },
       "NE2":{
          "type":"raster",
          "url":"mbtiles://{NE2}"
@@ -31,30 +43,6 @@
          "type":"background",
          "paint":{
             "background-color":"hsl(47, 26%, 88%)"
-         }
-      },
-      {
-         "id":"NE2",
-         "type":"raster",
-         "source":"NE2",
-         "maxzoom":8,
-         "layout":{
-            "visibility":"visible"
-         },
-         "paint":{
-            "raster-opacity":{
-               "base":1.5,
-               "stops":[
-                  [
-                     0,
-                     0.4
-                  ],
-                  [
-                     8,
-                     0.1
-                  ]
-               ]
-            }
          }
       },
       {
@@ -543,42 +531,6 @@
                   ]
                ]
             }
-         }
-      },
-      {
-         "id":"building-3d",
-         "type":"fill-extrusion",
-         "source":"wdb-map-gen",
-         "source-layer":"building",
-         "filter":[
-            "all",
-            [
-               "!has",
-               "hide_3d"
-            ]
-         ],
-         "paint":{
-            "fill-extrusion-base":{
-               "property":"render_min_height",
-               "type":"identity"
-            },
-            "fill-extrusion-color":[
-               "case",
-               [
-                  "has",
-                  "colour"
-               ],
-               [
-                  "get",
-                  "colour"
-               ],
-               "hsl(39, 41%, 86%)"
-            ],
-            "fill-extrusion-height":{
-               "property":"render_height",
-               "type":"identity"
-            },
-            "fill-extrusion-opacity":0.6
          }
       },
       {
