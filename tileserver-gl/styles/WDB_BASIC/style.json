@@ -1691,6 +1691,7 @@
          },
          "source":"wdb-map-gen",
          "source-layer":"place",
+         "minzoom":4,
          "filter":[
             "!in",
             "class",
