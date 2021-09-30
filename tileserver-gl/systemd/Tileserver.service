@@ -1,13 +1,13 @@
 [Unit]
-Description=TileServer-GL Server
+Description=X Virtual Frame Buffer Service for TileServer-GL
 After=Xvfb.service
 
 [Service]
 Type=simple
-User=tileservergl
-Group=tileservergl
+User=tserver
+Group=tserver
 Environment="DISPLAY=:99.0"
-ExecStart=/home/tserver/.nvm/versions/node/v10.21.0/bin/node /opt/tileserver-gl/tileserver-gl-3.0.0/ -p 8080 -c /opt/tileserver-gl/configs/config-3.0.0.json
+ExecStart=/home/tserver/.nvm/versions/node/v10.24.1/bin/node /opt/tileserver-gl/tileserver-gl-3.1.1/ -p 8080 -c /opt/tileserver-gl/configs/config-3.1.1.json
 ExecStop=/bin/kill -15 $MAINPID
 
 [Install]
