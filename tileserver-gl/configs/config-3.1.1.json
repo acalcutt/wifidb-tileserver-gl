@@ -1,7 +1,7 @@
 {
   "options": {
     "paths": {
-      "root": "/opt/tileserver-gl/tileserver-gl-3.0.0",
+      "root": "/opt/tileserver-gl/tileserver-gl-3.1.1",
       "fonts": "/opt/tileserver-gl/fonts",
       "styles": "/opt/tileserver-gl/styles",
       "mbtiles": "/opt/tileserver-gl/data"
@@ -84,7 +84,7 @@
       "mbtiles": "WifiDB.mbtiles"
     },
     "wdb-map-gen": {
-      "mbtiles": "wdb-map-gen_2021-03-26.mbtiles"
+      "mbtiles": "wdb-map-gen_2021-07-21.mbtiles"
     },
     "WifiDB_cells": {
       "mbtiles": "cell_networks.mbtiles"
@@ -94,6 +94,9 @@
     },
     "jaxa_color": {
       "mbtiles": "jaxa_color.mbtiles"
+    },
+    "jaxa_terrainrgb": {
+      "mbtiles": "jaxa_terrainrgb0-12.mbtiles"
     }
   }
 }
