@@ -1,16 +1,16 @@
 #Create User and Group for Tile Server
-adduser tileservergl
-addgroup tileservergl
-passwd tileservergl [your password]
+adduser tserver
+addgroup tserver
+passwd tserver [your password]
 
-#Log in as tileservergl and install node as that user (I used node version manager to do this)
-nvm install v10.21.0
-nvm use v10.21.0
+#Log in as tserver and install node as that user (I used node version manager to do this)
+nvm install v10.24.1
+nvm use v10.24.1
 
 #Log in as root and install node as that user. Then, download tileserver node_modules.
-nvm install v10.21.0
-nvm use v10.21.0
-cd /opt/tileserver-gl/tileserver-gl-3.0.0/
+nvm install v10.24.1
+nvm use v10.24.1
+cd /opt/tileserver-gl/tileserver-gl-3.1.1/
 npm install
 
 #Xvfb startup script, which is needed by Tileserver-GL. Starts on Display 99 Screen 0
