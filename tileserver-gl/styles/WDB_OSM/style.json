@@ -74,6 +74,10 @@
          "type":"vector",
          "url":"mbtiles://{WifiDB_cells}"
       },
+      "terrain": {
+         "type": "raster-dem",
+         "url": "mbtiles://{jaxa_terrainrgb}"
+      },
       "NE2":{
          "type":"raster",
          "url":"mbtiles://{NE2}"
@@ -86,7 +90,7 @@
          "id":"background",
          "type":"background",
          "paint":{
-            "background-color":"#f8f4f0"
+            "background-color":"#a2e49e"
          }
       },
       {
@@ -381,47 +385,12 @@
          }
       },
       {
-         "id":"JAXA",
-         "type":"raster",
-         "source":"jaxa_hillshade",
-         "layout":{
-            "visibility":"visible"
-         },
+         "id":"terrain",
+         "type":"hillshade",
          "paint":{
-            "raster-opacity":{
-               "base":1,
-               "stops":[
-                  [
-                     8,
-                     0.1
-                  ],
-                  [
-                     8,
-                     0.2
-                  ],
-                  [
-                     9,
-                     0.3
-                  ],
-                  [
-                     10,
-                     0.3
-                  ],
-                  [
-                     12,
-                     0.3
-                  ],
-                  [
-                     13,
-                     0.1
-                  ],
-                  [
-                     15,
-                     0.0
-                  ]
-               ]
-            }
-         }
+            "hillshade-shadow-color":"hsl(39, 21%, 33%)"
+         },
+         "source":"terrain"
       },
       {
          "id":"waterway_tunnel",
@@ -467,40 +436,6 @@
                   ]
                ]
             }
-         }
-      },
-      {
-         "id":"water_fix",
-         "type":"fill",
-         "metadata":{
-            "mapbox:group":"1444849382550.77"
-         },
-         "source":"osm_basemap",
-         "source-layer":"water",
-         "layout":{
-            "visibility":"visible"
-         },
-         "paint":{
-            "fill-color":"hsl(210, 67%, 85%)"
-         }
-      },
-      {
-         "id":"water-pattern_fix",
-         "type":"fill",
-         "metadata":{
-            "mapbox:group":"1444849382550.77"
-         },
-         "source":"osm_basemap",
-         "source-layer":"water",
-         "layout":{
-            "visibility":"visible"
-         },
-         "paint":{
-            "fill-translate":[
-               0,
-               2.5
-            ],
-            "fill-pattern":"wave"
          }
       },
       {
@@ -1153,7 +1088,7 @@
             "line-opacity":{
                "stops":[
                   [
-                     12,
+                     10,
                      0
                   ],
                   [
@@ -1166,8 +1101,8 @@
                "base":1.2,
                "stops":[
                   [
-                     12,
-                     0.5
+                     10,
+                     0.25
                   ],
                   [
                      13,
@@ -1371,8 +1306,8 @@
                "base":1.2,
                "stops":[
                   [
-                     15,
-                     1.2
+                     12,
+                     0.5
                   ],
                   [
                      20,
@@ -1459,7 +1394,7 @@
                "base":1.2,
                "stops":[
                   [
-                     13.5,
+                     10,
                      0
                   ],
                   [
@@ -2173,7 +2108,7 @@
             "line-opacity":{
                "stops":[
                   [
-                     12,
+                     10,
                      0
                   ],
                   [
@@ -2186,8 +2121,8 @@
                "base":1.2,
                "stops":[
                   [
-                     12,
-                     0.5
+                     10,
+                     0.25
                   ],
                   [
                      13,
@@ -2490,8 +2425,8 @@
                "base":1.2,
                "stops":[
                   [
-                     15,
-                     1.2
+                     12,
+                     0.5
                   ],
                   [
                      20,
@@ -2651,7 +2586,7 @@
                "base":1.2,
                "stops":[
                   [
-                     13.5,
+                     10,
                      0
                   ],
                   [
@@ -3485,8 +3420,8 @@
                "base":1.2,
                "stops":[
                   [
-                     15,
-                     1.2
+                     12,
+                     0.5
                   ],
                   [
                      20,
@@ -3535,8 +3470,8 @@
                "base":1.2,
                "stops":[
                   [
-                     15,
-                     1.2
+                     12,
+                     0.5
                   ],
                   [
                      20,
@@ -4185,7 +4120,7 @@
             "symbol-spacing":350,
             "text-field":"{name:latin} {name:nonlatin}",
             "text-font":[
-               "Noto Sans Italic"
+               "Open Sans Italic"
             ],
             "text-letter-spacing":0.2,
             "text-max-width":5,
@@ -4213,7 +4148,7 @@
             "symbol-spacing":350,
             "text-field":"{name:en}",
             "text-font":[
-               "Noto Sans Italic"
+               "Open Sans Italic"
             ],
             "text-letter-spacing":0.2,
             "text-max-width":5,
@@ -4249,7 +4184,7 @@
             "symbol-spacing":350,
             "text-field":"{name:en}",
             "text-font":[
-               "Noto Sans Italic"
+               "Open Sans Italic"
             ],
             "text-letter-spacing":0.2,
             "text-max-width":5,
@@ -4285,7 +4220,7 @@
             "symbol-spacing":350,
             "text-field":"{name:en}",
             "text-font":[
-               "Noto Sans Italic"
+               "Open Sans Italic"
             ],
             "text-letter-spacing":0.2,
             "text-max-width":5,
@@ -4346,7 +4281,7 @@
             "text-anchor":"top",
             "text-field":"{name:en}",
             "text-font":[
-               "Noto Sans Regular"
+               "Open Sans Regular"
             ],
             "text-max-width":9,
             "text-offset":[
@@ -4405,7 +4340,7 @@
             "text-anchor":"top",
             "text-field":"{name:en}",
             "text-font":[
-               "Noto Sans Regular"
+               "Open Sans Regular"
             ],
             "text-max-width":9,
             "text-offset":[
@@ -4463,7 +4398,7 @@
             "text-anchor":"top",
             "text-field":"{name:en}",
             "text-font":[
-               "Noto Sans Regular"
+               "Open Sans Regular"
             ],
             "text-max-width":9,
             "text-offset":[
@@ -4518,7 +4453,7 @@
             "text-anchor":"top",
             "text-field":"{name:en}",
             "text-font":[
-               "Noto Sans Regular"
+               "Open Sans Regular"
             ],
             "text-ignore-placement":false,
             "text-max-width":9,
@@ -4552,7 +4487,7 @@
             "text-field":"{housenumber}",
             "text-size":10,
             "text-font":[
-               "Noto Sans Regular"
+               "Open Sans Regular"
             ]
          },
          "paint":{
@@ -4672,19 +4607,19 @@
             "symbol-placement":"line",
             "text-field":"{name:latin} {name:nonlatin}",
             "text-font":[
-               "Noto Sans Regular"
+               "Open Sans Regular"
             ],
             "text-rotation-alignment":"map",
             "text-size":{
                "base":1,
                "stops":[
                   [
-                     13,
-                     12
+                     12,
+                     11
                   ],
                   [
-                     14,
-                     13
+                     12,
+                     11
                   ]
                ]
             }
@@ -4720,7 +4655,7 @@
             "symbol-placement":"line",
             "text-field":"{name:latin} {name:nonlatin}",
             "text-font":[
-               "Noto Sans Regular"
+               "Open Sans Regular"
             ],
             "text-rotation-alignment":"map",
             "text-size":{
@@ -4761,7 +4696,7 @@
             "symbol-placement":"line",
             "text-field":"{name:latin} {name:nonlatin}",
             "text-font":[
-               "Noto Sans Regular"
+               "Open Sans Regular"
             ],
             "text-rotation-alignment":"map",
             "text-size":{
@@ -4830,7 +4765,7 @@
             "symbol-spacing":200,
             "text-field":"{ref}",
             "text-font":[
-               "Noto Sans Regular"
+               "Open Sans Regular"
             ],
             "text-rotation-alignment":"viewport",
             "text-size":10
@@ -4887,13 +4822,13 @@
             "symbol-spacing":200,
             "text-field":"{ref}",
             "text-font":[
-               "Noto Sans Regular"
+               "Open Sans Bold"
             ],
             "text-rotation-alignment":"viewport",
             "text-size":10
          },
          "paint":{
-            "text-color":"rgba(0, 0, 0, 1)"
+            "text-color":"rgba(255, 255, 255, 1)"
          }
       },
       {
@@ -4941,7 +4876,7 @@
             "symbol-spacing":200,
             "text-field":"{ref}",
             "text-font":[
-               "Noto Sans Regular"
+               "Open Sans Regular"
             ],
             "text-rotation-alignment":"viewport",
             "text-size":10
@@ -4969,7 +4904,7 @@
             "text-anchor":"top",
             "text-field":"{name:en}",
             "text-font":[
-               "Noto Sans Regular"
+               "Open Sans Regular"
             ],
             "text-max-width":9,
             "text-offset":[
@@ -5009,7 +4944,7 @@
          "layout":{
             "text-field":"{name:en}",
             "text-font":[
-               "Noto Sans Bold"
+               "Open Sans Bold"
             ],
             "text-letter-spacing":0.1,
             "text-max-width":9,
@@ -5051,7 +4986,7 @@
          "layout":{
             "text-field":"{name:en}",
             "text-font":[
-               "Noto Sans Regular"
+               "Open Sans Regular"
             ],
             "text-max-width":8,
             "text-size":{
@@ -5091,7 +5026,7 @@
          "layout":{
             "text-field":"{name:en}",
             "text-font":[
-               "Noto Sans Regular"
+               "Open Sans Regular"
             ],
             "text-max-width":8,
             "text-size":{
@@ -5140,7 +5075,7 @@
          "layout":{
             "text-field":"{name:en}",
             "text-font":[
-               "Noto Sans Regular"
+               "Open Sans Regular"
             ],
             "text-max-width":8,
             "text-size":{
@@ -5192,7 +5127,7 @@
             "text-anchor":"left",
             "text-field":"{name:en}",
             "text-font":[
-               "Noto Sans Regular"
+               "Open Sans Regular"
             ],
             "text-max-width":8,
             "text-offset":[
@@ -5248,7 +5183,7 @@
          "layout":{
             "text-field":"{name:en}",
             "text-font":[
-               "Noto Sans Italic"
+               "Open Sans Italic"
             ],
             "text-max-width":6.25,
             "text-size":{
@@ -5301,7 +5236,7 @@
          "layout":{
             "text-field":"{name:en}",
             "text-font":[
-               "Noto Sans Bold"
+               "Open Sans Bold"
             ],
             "text-max-width":6.25,
             "text-size":{
@@ -5354,7 +5289,7 @@
          "layout":{
             "text-field":"{name:en}",
             "text-font":[
-               "Noto Sans Bold"
+               "Open Sans Bold"
             ],
             "text-max-width":6.25,
             "text-size":{
@@ -5407,7 +5342,7 @@
          "layout":{
             "text-field":"{name:en}",
             "text-font":[
-               "Noto Sans Bold"
+               "Open Sans Bold"
             ],
             "text-max-width":6.25,
             "text-size":{
@@ -5449,7 +5384,7 @@
          "layout":{
             "text-field":"{name:en}",
             "text-font":[
-               "Noto Sans Bold"
+               "Open Sans Bold"
             ],
             "text-max-width":6.25,
             "text-size":14,
