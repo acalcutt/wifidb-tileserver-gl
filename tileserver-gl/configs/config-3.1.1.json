@@ -1,102 +1,152 @@
 {
-  "options": {
-    "paths": {
-      "root": "/opt/tileserver-gl/tileserver-gl-3.1.1",
-      "fonts": "/opt/tileserver-gl/fonts",
-      "styles": "/opt/tileserver-gl/styles",
-      "mbtiles": "/opt/tileserver-gl/data"
-    }
-  },
-  "styles": {
-    "WDB_DARK_MATTER": {
-      "style": "WDB_DARK_MATTER/style.json",
-      "tilejson": {
-        "bounds": [
-          -180,
-          -85.0511,
-          180,
-          85.0511
-        ]
+   "options":{
+      "paths":{
+         "root":"/opt/tileserver-gl/tileserver-maptiler",
+         "fonts":"/opt/tileserver-gl/fonts",
+         "styles":"/opt/tileserver-gl/styles",
+         "mbtiles":"/opt/tileserver-gl/data"
       }
-    },
-    "WDB_ELEV": {
-      "style": "WDB_ELEV/style.json",
-      "tilejson": {
-        "bounds": [
-          -180,
-          -85.0511,
-          180,
-          85.0511
-        ]
+   },
+   "styles":{
+      "WDB_DARK_MATTER":{
+         "style":"WDB_DARK_MATTER/style.json",
+         "tilejson":{
+            "bounds":[
+               -180,
+               -85.0511,
+               180,
+               85.0511
+            ]
+         }
+      },
+      "WDB_ELEV":{
+         "style":"WDB_ELEV/style.json",
+         "tilejson":{
+            "bounds":[
+               -180,
+               -85.0511,
+               180,
+               85.0511
+            ]
+         }
+      },
+      "WDB_BASIC":{
+         "style":"WDB_BASIC/style.json",
+         "tilejson":{
+            "bounds":[
+               -180,
+               -85.0511,
+               180,
+               85.0511
+            ]
+         }
+      },
+      "WDB_ATV":{
+         "style":"WDB_ATV/style.json",
+         "tilejson":{
+            "bounds":[
+               -180,
+               -85.0511,
+               180,
+               85.0511
+            ]
+         }
+      },
+      "OpenTopoMap":{
+         "style":"OpenTopoMap/style.json",
+         "tilejson":{
+            "bounds":[
+               -180,
+               -85.0511,
+               180,
+               85.0511
+            ]
+         }
+      },
+      "WDB_OSM":{
+         "style":"WDB_OSM/style.json",
+         "tilejson":{
+            "bounds":[
+               -180,
+               -85.0511,
+               180,
+               85.0511
+            ]
+         }
+      },
+      "WDB_SAT":{
+         "style":"WDB_SAT/style.json",
+         "tilejson":{
+            "bounds":[
+               -180,
+               -85.0511,
+               180,
+               85.0511
+            ]
+         }
+      },
+      "WDB_NO_BACKGROUND":{
+         "style":"WDB_NO_BACKGROUND/style.json",
+         "tilejson":{
+            "bounds":[
+               -180,
+               -85.0511,
+               180,
+               85.0511
+            ]
+         }
+      },
+      "demotiles":{
+         "style":"demotiles/style.json",
+         "tilejson":{
+            "bounds":[
+               -180,
+               -85.0511,
+               180,
+               85.0511
+            ]
+         }
       }
-    },
-    "WDB_BASIC": {
-      "style": "WDB_BASIC/style.json",
-      "tilejson": {
-        "bounds": [
-          -180,
-          -85.0511,
-          180,
-          85.0511
-        ]
+   },
+   "data":{
+      "osm_basemap":{
+         "mbtiles":"osm_basemap.mbtiles"
+      },
+      "ne_basemap":{
+         "mbtiles":"ne_basemap.mbtiles"
+      },
+      "NE2":{
+         "mbtiles":"NE2_HR_LC_SR_W_DR.mbtiles"
+      },
+      "WifiDB_newest":{
+         "mbtiles":"WifiDB_newest.mbtiles"
+      },
+      "WifiDB":{
+         "mbtiles":"WifiDB.mbtiles"
+      },
+      "atv":{
+         "mbtiles":"atv_2022-05-15.mbtiles"
+      },
+      "wdb-map-gen":{
+         "mbtiles":"planetiler-2022-08-27.mbtiles"
+      },
+      "WifiDB_cells":{
+         "mbtiles":"cell_networks.mbtiles"
+      },
+      "jaxa_color":{
+         "mbtiles":"jaxa_color_releif.mbtiles"
+      },
+      "jaxa_hillshade":{
+         "mbtiles":"jaxa_hillshade_new.mbtiles"
+      },
+      "jaxa_terrainrgb":{
+         "mbtiles":"jaxa_terrainrgb0-12.mbtiles"
+      },
+      "landcover":{
+         "mbtiles":"landcover.mbtiles"
+      },
+      "demotiles":{
+         "mbtiles":"demotiles.mbtiles"
       }
-    },
-    "WDB_ATV": {
-      "style": "WDB_ATV/style.json",
-      "tilejson": {
-        "bounds": [
-          -180,
-          -85.0511,
-          180,
-          85.0511
-        ]
-      }
-    },
-    "WDB_OSM": {
-      "style": "WDB_OSM/style.json",
-      "tilejson": {
-        "bounds": [
-          -180,
-          -85.0511,
-          180,
-          85.0511
-        ]
-      }
-    }
-  },
-  "data": {
-    "osm_basemap": {
-      "mbtiles": "osm_basemap.mbtiles"
-    },
-    "ne_basemap": {
-      "mbtiles": "ne_basemap.mbtiles"
-    },
-    "jaxa_basemap": {
-      "mbtiles": "jaxa_basemap.mbtiles"
-    },
-    "NE2": {
-      "mbtiles": "NE2_HR_LC_SR_W_DR.mbtiles"
-    },
-    "WifiDB_newest": {
-      "mbtiles": "WifiDB_newest.mbtiles"
-    },
-    "WifiDB": {
-      "mbtiles": "WifiDB.mbtiles"
-    },
-    "wdb-map-gen": {
-      "mbtiles": "wdb-map-gen_2021-07-21.mbtiles"
-    },
-    "WifiDB_cells": {
-      "mbtiles": "cell_networks.mbtiles"
-    },
-    "jaxa_hillshade": {
-      "mbtiles": "jaxa_hillshade.mbtiles"
-    },
-    "jaxa_color": {
-      "mbtiles": "jaxa_color.mbtiles"
-    },
-    "jaxa_terrainrgb": {
-      "mbtiles": "jaxa_terrainrgb0-12.mbtiles"
-    }
-  }
+   }
 }
