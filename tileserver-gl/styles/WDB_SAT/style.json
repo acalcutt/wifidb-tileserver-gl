@@ -1,0 +1,87 @@
+{
+   "version":8,
+   "name":"WDB_SAT",
+   "metadata":{
+      "mapbox:autocomposite":false,
+      "mapbox:groups":{
+         "1444849242106.713":{
+            "collapsed":false,
+            "name":"Places"
+         },
+         "1444849334699.1902":{
+            "collapsed":true,
+            "name":"Bridges"
+         },
+         "1444849345966.4436":{
+            "collapsed":false,
+            "name":"Roads"
+         },
+         "1444849354174.1904":{
+            "collapsed":true,
+            "name":"Tunnels"
+         },
+         "1444849364238.8171":{
+            "collapsed":false,
+            "name":"Buildings"
+         },
+         "1444849382550.77":{
+            "collapsed":false,
+            "name":"Water"
+         },
+         "1444849388993.3071":{
+            "collapsed":false,
+            "name":"Land"
+         }
+      },
+      "mapbox:type":"template",
+      "openmaptiles:mapbox:owner":"wdb-map-gen",
+      "openmaptiles:mapbox:source:url":"mapbox://openmaptiles.4qljc88t",
+      "openmaptiles:version":"3.x"
+   },
+   "center":[
+      8.542,
+      47.372
+   ],
+   "zoom":11.6,
+   "bearing":0,
+   "pitch":0,
+   "sources":{
+      "sat":{
+         "type":"raster",
+         "tiles": ["https://mt0.google.com/vt/lyrs=s&hl=en&x={x}&y={y}&z={z}"],
+         "tileSize": 256,
+         "maxzoom": 20,
+         "attribution": "Google"
+
+      },
+      "WifiDB_newest":{
+         "type":"vector",
+         "url":"mbtiles://{WifiDB_newest}"
+      },
+      "WifiDB":{
+         "type":"vector",
+         "url":"mbtiles://{WifiDB}"
+      },
+      "WifiDB_cells":{
+         "type":"vector",
+         "url":"mbtiles://{WifiDB_cells}"
+      },
+      "terrain_source": {
+         "type": "raster-dem",
+         "url": "mbtiles://{jaxa_terrainrgb}"
+      },
+      "hillshade_source": {
+         "type": "raster-dem",
+         "url": "mbtiles://{jaxa_terrainrgb}"
+      }
+   },
+   "sprite":"{styleJsonFolder}/sprite",
+   "glyphs":"{fontstack}/{range}.pbf",
+   "layers":[
+      {
+         "id":"sat",
+         "type":"raster",
+         "source":"sat"
+      }
+   ]
+}

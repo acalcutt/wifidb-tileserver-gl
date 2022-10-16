@@ -50,7 +50,11 @@
 			"type": "vector",
 			"url": "mbtiles://{osm_basemap}"
 		},
-		"terrain": {
+		"terrain_source": {
+			"type": "raster-dem",
+			"url": "mbtiles://{jaxa_terrainrgb}"
+		},
+		"hillshade_source": {
 			"type": "raster-dem",
 			"url": "mbtiles://{jaxa_terrainrgb}"
 		},
@@ -61,6 +65,10 @@
 		"wdb-map-gen": {
 			"type": "vector",
 			"url": "mbtiles://{wdb-map-gen}"
+		},
+		"atv": {
+			"type": "vector",
+			"url": "mbtiles://{atv}"
 		}
 	},
 	"sprite": "{styleJsonFolder}/sprite",
@@ -100,12 +108,12 @@
 			}
 		},
 		{
-			"id": "terrain",
+			"id": "hillshade",
 			"type": "hillshade",
 			"paint": {
 				"hillshade-shadow-color": "hsl(39, 21%, 33%)"
 			},
-			"source": "terrain"
+			"source": "hillshade_source"
 		},
 		{
 			"id": "waterway_tunnel",
@@ -840,7 +848,7 @@
 		{
 			"id": "track_path",
 			"type": "line",
-			"source": "wdb-map-gen",
+			"source": "atv",
 			"source-layer": "atv",
 			"filter": [
 				"all",
@@ -850,7 +858,8 @@
 					"track",
 					"path",
 					"unclassified",
-					"cycleway"
+					"cycleway",
+					"footway"
 				],
 				[
 					"!has",
@@ -889,7 +898,7 @@
 		{
 			"id": "maxwidth_path",
 			"type": "line",
-			"source": "wdb-map-gen",
+			"source": "atv",
 			"source-layer": "atv",
 			"filter": [
 				"all",
@@ -923,7 +932,7 @@
 		{
 			"id": "snowmobile_path",
 			"type": "line",
-			"source": "wdb-map-gen",
+			"source": "atv",
 			"source-layer": "atv",
 			"filter": [
 				"all",
@@ -953,7 +962,7 @@
 		{
 			"id": "snowmobile_restricted_path",
 			"type": "line",
-			"source": "wdb-map-gen",
+			"source": "atv",
 			"source-layer": "atv",
 			"filter": [
 				"all",
@@ -980,7 +989,7 @@
 		{
 			"id": "atv_path",
 			"type": "line",
-			"source": "wdb-map-gen",
+			"source": "atv",
 			"source-layer": "atv",
 			"filter": [
 				"all",
@@ -1008,7 +1017,7 @@
 		{
 			"id": "atv_restricted_path",
 			"type": "line",
-			"source": "wdb-map-gen",
+			"source": "atv",
 			"source-layer": "atv",
 			"filter": [
 				"all",
@@ -1036,7 +1045,7 @@
 		{
 			"id": "ohv_path",
 			"type": "line",
-			"source": "wdb-map-gen",
+			"source": "atv",
 			"source-layer": "atv",
 			"filter": [
 				"all",
@@ -1064,7 +1073,7 @@
 		{
 			"id": "ohv_restricted_path",
 			"type": "line",
-			"source": "wdb-map-gen",
+			"source": "atv",
 			"source-layer": "atv",
 			"filter": [
 				"all",
@@ -1092,7 +1101,7 @@
 		{
 			"id": "motorcycle_path",
 			"type": "line",
-			"source": "wdb-map-gen",
+			"source": "atv",
 			"source-layer": "atv",
 			"filter": [
 				"all",
@@ -1120,7 +1129,7 @@
 		{
 			"id": "motorcycle_restricted_path",
 			"type": "line",
-			"source": "wdb-map-gen",
+			"source": "atv",
 			"source-layer": "atv",
 			"filter": [
 				"all",
@@ -1148,7 +1157,7 @@
 		{
 			"id": "4wd_only_path",
 			"type": "line",
-			"source": "wdb-map-gen",
+			"source": "atv",
 			"source-layer": "atv",
 			"filter": [
 				"all",
@@ -1176,7 +1185,7 @@
 		{
 			"id": "4wd_only_restricted_path",
 			"type": "line",
-			"source": "wdb-map-gen",
+			"source": "atv",
 			"source-layer": "atv",
 			"filter": [
 				"all",
@@ -1204,20 +1213,18 @@
 		{
 			"id": "atv_points",
 			"type": "symbol",
-			"source": "wdb-map-gen",
+			"source": "atv",
 			"source-layer": "atv",
+			"minzoom": 3,
 			"filter": [
-				"all",
-				[
-					"==",
-					"class",
-					"point"
-				]
+				"==",
+				"$type",
+				"Point"
 			],
 			"layout": {
-				"icon-image": "{class}_11",
+				"icon-image": "atv_11",
 				"text-anchor": "top",
-				"text-field": "{name:en}",
+				"text-field": "{name}",
 				"text-font": [
 					"Noto Sans Regular"
 				],

@@ -33,6 +33,14 @@
       "NE2":{
          "type":"raster",
          "url":"mbtiles://{NE2}"
+      },
+      "terrain_source": {
+         "type": "raster-dem",
+         "url": "mbtiles://{jaxa_terrainrgb}"
+      },
+      "hillshade_source": {
+         "type": "raster-dem",
+         "url": "mbtiles://{jaxa_terrainrgb}"
       }
    },
    "glyphs":"{fontstack}/{range}.pbf",
@@ -1833,7 +1841,7 @@
             ]
          ],
          "layout":{
-            "text-field":"{name:en}",
+            "text-field":"{name}",
             "text-font":[
                "Noto Sans Regular"
             ],

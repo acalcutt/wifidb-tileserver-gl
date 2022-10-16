@@ -50,14 +50,9 @@
          "type":"vector",
          "url":"mbtiles://{osm_basemap}"
       },
-      "jaxa_terrainrgb": {
-         "type": "raster-dem",
-         "url": "mbtiles://{jaxa_terrainrgb}"
-      },
-      "terrain": {
-         "type": "raster-dem",
-         "url": "mbtiles://{jaxa_terrainrgb}",
-         "maxzoom":12
+      "jaxa_hillshade":{
+         "type":"raster",
+         "url":"mbtiles://{jaxa_hillshade}"
       },
       "jaxa_color":{
          "type":"raster",
@@ -386,12 +381,31 @@
          }
       },
       {
-         "id":"jaxa_terrainrgb",
-         "type":"hillshade",
-         "paint":{
-            "hillshade-shadow-color":"hsl(39, 21%, 33%)"
+         "id":"jaxa_hillshade",
+         "type":"raster",
+         "source":"jaxa_hillshade",
+         "layout":{
+            "visibility":"visible"
          },
-         "source":"jaxa_terrainrgb"
+         "paint":{
+            "raster-opacity":{
+               "base":1,
+               "stops":[
+                  [
+                     0,
+                     1
+                  ],
+                  [
+                     10,
+                     0.5
+                  ],
+                  [
+                     15,
+                     0.0
+                  ]
+               ]
+            }
+		}
       },
       {
          "id":"waterway_tunnel",

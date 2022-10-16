@@ -50,10 +50,6 @@
          "type":"vector",
          "url":"mbtiles://{osm_basemap}"
       },
-      "jaxa_hillshade":{
-         "type":"raster",
-         "url":"mbtiles://{jaxa_hillshade}"
-      },
       "jaxa_color":{
          "type":"raster",
          "url":"mbtiles://{jaxa_color}"
@@ -74,13 +70,13 @@
          "type":"vector",
          "url":"mbtiles://{WifiDB_cells}"
       },
-      "terrain": {
+      "terrain_source": {
          "type": "raster-dem",
          "url": "mbtiles://{jaxa_terrainrgb}"
       },
-      "NE2":{
-         "type":"raster",
-         "url":"mbtiles://{NE2}"
+      "hillshade_source": {
+         "type": "raster-dem",
+         "url": "mbtiles://{jaxa_terrainrgb}"
       }
    },
    "sprite":"{styleJsonFolder}/sprite",
@@ -119,39 +115,6 @@
                ]
             }
 		}
-      },
-      {
-         "id":"landcover-glacier",
-         "type":"fill",
-         "metadata":{
-            "mapbox:group":"1444849388993.3071"
-         },
-         "source":"wdb-map-gen",
-         "source-layer":"landcover",
-         "filter":[
-            "==",
-            "subclass",
-            "glacier"
-         ],
-         "layout":{
-            "visibility":"visible"
-         },
-         "paint":{
-            "fill-color":"#fff",
-            "fill-opacity":{
-               "base":1,
-               "stops":[
-                  [
-                     0,
-                     0.9
-                  ],
-                  [
-                     10,
-                     0.3
-                  ]
-               ]
-            }
-         }
       },
       {
          "id":"landuse-residential",
@@ -385,12 +348,12 @@
          }
       },
       {
-         "id":"terrain",
+         "id":"hillshade",
          "type":"hillshade",
          "paint":{
             "hillshade-shadow-color":"hsl(39, 21%, 33%)"
          },
-         "source":"terrain"
+         "source":"hillshade_source"
       },
       {
          "id":"waterway_tunnel",
@@ -4118,7 +4081,7 @@
          "layout":{
             "symbol-placement":"line",
             "symbol-spacing":350,
-            "text-field":"{name:latin} {name:nonlatin}",
+            "text-field": ["case",["has","name_en"],["get","name_en"],["case",["has","name:en"],["get","name:en"],["case",["has","name:latin"],["get","name:latin"],["get","name:nonlatin"]]]],
             "text-font":[
                "Open Sans Italic"
             ],
@@ -4146,7 +4109,7 @@
          "layout":{
             "symbol-placement":"line",
             "symbol-spacing":350,
-            "text-field":"{name:en}",
+            "text-field": ["case",["has","name_en"],["get","name_en"],["case",["has","name:en"],["get","name:en"],["case",["has","name:latin"],["get","name:latin"],["get","name:nonlatin"]]]],
             "text-font":[
                "Open Sans Italic"
             ],
@@ -4218,7 +4181,7 @@
          "layout":{
             "symbol-placement":"point",
             "symbol-spacing":350,
-            "text-field":"{name:en}",
+            "text-field": ["case",["has","name_en"],["get","name_en"],["case",["has","name:en"],["get","name:en"],["case",["has","name:latin"],["get","name:latin"],["get","name:nonlatin"]]]],
             "text-font":[
                "Open Sans Italic"
             ],
@@ -4605,7 +4568,7 @@
          ],
          "layout":{
             "symbol-placement":"line",
-            "text-field":"{name:latin} {name:nonlatin}",
+            "text-field": ["case",["has","name_en"],["get","name_en"],["case",["has","name:en"],["get","name:en"],["case",["has","name:latin"],["get","name:latin"],["get","name:nonlatin"]]]],
             "text-font":[
                "Open Sans Regular"
             ],
@@ -4653,7 +4616,7 @@
          ],
          "layout":{
             "symbol-placement":"line",
-            "text-field":"{name:latin} {name:nonlatin}",
+            "text-field": ["case",["has","name_en"],["get","name_en"],["case",["has","name:en"],["get","name:en"],["case",["has","name:latin"],["get","name:latin"],["get","name:nonlatin"]]]],
             "text-font":[
                "Open Sans Regular"
             ],
@@ -4694,7 +4657,7 @@
          ],
          "layout":{
             "symbol-placement":"line",
-            "text-field":"{name:latin} {name:nonlatin}",
+            "text-field": ["case",["has","name_en"],["get","name_en"],["case",["has","name:en"],["get","name:en"],["case",["has","name:latin"],["get","name:latin"],["get","name:nonlatin"]]]],
             "text-font":[
                "Open Sans Regular"
             ],

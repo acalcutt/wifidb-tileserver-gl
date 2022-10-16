@@ -30,6 +30,11 @@
         "type":"vector",
         "url":"mbtiles://{osm_basemap}"
     },
+    "terrain": {
+       "type": "raster-dem",
+       "url": "mbtiles://{jaxa_terrainrgb}",
+       "maxzoom":12
+     },
     "WifiDB_newest":{
         "type":"vector",
         "url":"mbtiles://{WifiDB_newest}"
