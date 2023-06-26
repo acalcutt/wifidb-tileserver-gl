@@ -34,7 +34,7 @@
          }
       },
       "mapbox:type":"template",
-      "openmaptiles:mapbox:owner":"wdb-map-gen",
+      "openmaptiles:mapbox:owner":"openmaptiles",
       "openmaptiles:mapbox:source:url":"mapbox://openmaptiles.4qljc88t",
       "openmaptiles:version":"3.x"
    },
@@ -50,9 +50,13 @@
          "type":"vector",
          "url":"mbtiles://{osm_basemap}"
       },
-      "jaxa_color":{
+      "jaxa_basemap":{
          "type":"raster",
-         "url":"mbtiles://{jaxa_color}"
+         "url":"mbtiles://{jaxa_basemap}"
+      },
+      "WdbMapTilesNew":{
+         "type":"vector",
+         "url":"mbtiles://{WdbMapTilesNew}"
       },
       "wdb-map-gen":{
          "type":"vector",
@@ -70,10 +74,6 @@
          "type":"vector",
          "url":"mbtiles://{WifiDB_cells}"
       },
-      "terrain": {
-         "type": "raster-dem",
-         "url": "mbtiles://{jaxa_terrainrgb}"
-      },
       "NE2":{
          "type":"raster",
          "url":"mbtiles://{NE2}"
@@ -86,35 +86,59 @@
          "id":"background",
          "type":"background",
          "paint":{
-            "background-color":"#a2e49e"
+            "background-color":"#f8f4f0"
          }
       },
       {
-         "id":"jaxa_color",
+        "id": "JAXA",
+        "type": "raster",
+        "source": "jaxa_basemap",
+        "layout":{
+           "visibility":"visible"
+        },
+        "paint":{
+           "raster-opacity":{
+              "base":1,
+              "stops":[
+                 [
+                    8,
+                    0.2
+                 ],
+                 [
+                    12,
+                    0.1
+                 ],
+                 [
+                    14,
+                    0.0
+                 ]
+              ]
+           }
+        }
+      },
+      {
+         "id":"NE2",
          "type":"raster",
-         "source":"jaxa_color",
+         "source":"NE2",
+         "maxzoom":8,
          "layout":{
             "visibility":"visible"
          },
          "paint":{
             "raster-opacity":{
-               "base":1,
+               "base":1.5,
                "stops":[
                   [
                      0,
-                     1
+                     0.4
                   ],
                   [
-                     10,
-                     0.5
-                  ],
-                  [
-                     15,
-                     0.0
+                     8,
+                     0.1
                   ]
                ]
             }
-		}
+         }
       },
       {
          "id":"landcover-glacier",
@@ -122,7 +146,7 @@
          "metadata":{
             "mapbox:group":"1444849388993.3071"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"landcover",
          "filter":[
             "==",
@@ -155,7 +179,7 @@
          "metadata":{
             "mapbox:group":"1444849388993.3071"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"landuse",
          "filter":[
             "all",
@@ -192,7 +216,7 @@
          "metadata":{
             "mapbox:group":"1444849388993.3071"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"landuse",
          "filter":[
             "all",
@@ -217,7 +241,7 @@
       {
          "id":"landuse-industrial",
          "type":"fill",
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"landuse",
          "filter":[
             "all",
@@ -247,7 +271,7 @@
          "metadata":{
             "mapbox:group":"1444849388993.3071"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"landuse",
          "filter":[
             "==",
@@ -264,7 +288,7 @@
          "metadata":{
             "mapbox:group":"1444849388993.3071"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"landuse",
          "filter":[
             "==",
@@ -281,7 +305,7 @@
          "metadata":{
             "mapbox:group":"1444849388993.3071"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"landuse",
          "filter":[
             "==",
@@ -298,7 +322,7 @@
          "metadata":{
             "mapbox:group":"1444849388993.3071"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"landuse",
          "filter":[
             "==",
@@ -318,7 +342,7 @@
          "metadata":{
             "mapbox:group":"1444849388993.3071"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"landcover",
          "filter":[
             "==",
@@ -350,7 +374,7 @@
          "metadata":{
             "mapbox:group":"1444849388993.3071"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"landcover",
          "filter":[
             "==",
@@ -381,17 +405,9 @@
          }
       },
       {
-         "id":"terrain",
-         "type":"hillshade",
-         "paint":{
-            "hillshade-shadow-color":"hsl(39, 21%, 33%)"
-         },
-         "source":"terrain"
-      },
-      {
          "id":"waterway_tunnel",
          "type":"line",
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"waterway",
          "minzoom":14,
          "filter":[
@@ -434,47 +450,47 @@
             }
          }
       },
-      {
-         "id":"water_fix",
-         "type":"fill",
-         "metadata":{
-            "mapbox:group":"1444849382550.77"
-         },
-         "source":"osm_basemap",
-         "source-layer":"water",
-         "layout":{
-            "visibility":"visible"
-         },
-         "paint":{
-            "fill-color":"hsl(210, 67%, 85%)"
-         }
+    {
+      "id":"water_fix",
+      "type":"fill",
+      "metadata":{
+        "mapbox:group":"1444849382550.77"
       },
-      {
-         "id":"water-pattern_fix",
-         "type":"fill",
-         "metadata":{
-            "mapbox:group":"1444849382550.77"
-         },
-         "source":"osm_basemap",
-         "source-layer":"water",
-         "layout":{
-            "visibility":"visible"
-         },
-         "paint":{
-            "fill-translate":[
-               0,
-               2.5
-            ],
-            "fill-pattern":"wave"
-         }
+      "source":"osm_basemap",
+      "source-layer":"water",
+      "layout":{
+        "visibility":"visible"
       },
+      "paint":{
+        "fill-color":"hsl(210, 67%, 85%)"
+      }
+    },
+    {
+      "id":"water-pattern_fix",
+      "type":"fill",
+      "metadata":{
+        "mapbox:group":"1444849382550.77"
+      },
+      "source":"osm_basemap",
+      "source-layer":"water",
+      "layout":{
+        "visibility":"visible"
+      },
+      "paint":{
+        "fill-translate":[
+          0,
+          2.5
+        ],
+        "fill-pattern":"wave"
+      }
+    },
       {
          "id":"waterway-other",
          "type":"line",
          "metadata":{
             "mapbox:group":"1444849382550.77"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"waterway",
          "filter":[
             "all",
@@ -518,7 +534,7 @@
          "metadata":{
             "mapbox:group":"1444849382550.77"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"waterway",
          "filter":[
             "all",
@@ -566,7 +582,7 @@
          "metadata":{
             "mapbox:group":"1444849382550.77"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"waterway",
          "filter":[
             "all",
@@ -614,7 +630,7 @@
          "metadata":{
             "mapbox:group":"1444849382550.77"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"waterway",
          "filter":[
             "all",
@@ -666,7 +682,7 @@
          "metadata":{
             "mapbox:group":"1444849382550.77"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"waterway",
          "filter":[
             "all",
@@ -713,7 +729,7 @@
          "metadata":{
             "mapbox:group":"1444849382550.77"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"waterway",
          "filter":[
             "all",
@@ -764,7 +780,7 @@
          "metadata":{
             "mapbox:group":"1444849382550.77"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"water",
          "maxzoom":8,
          "filter":[
@@ -805,7 +821,7 @@
          "metadata":{
             "mapbox:group":"1444849382550.77"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"water",
          "filter":[
             "all",
@@ -833,7 +849,7 @@
          "metadata":{
             "mapbox:group":"1444849382550.77"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"water",
          "filter":[
             "all",
@@ -857,7 +873,7 @@
          "metadata":{
             "mapbox:group":"1444849382550.77"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"water",
          "filter":[
             "all"
@@ -879,7 +895,7 @@
          "metadata":{
             "mapbox:group":"1444849382550.77"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"landcover",
          "filter":[
             "==",
@@ -912,7 +928,7 @@
          "metadata":{
             "mapbox:group":"1444849382550.77"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"landcover",
          "filter":[
             "all",
@@ -1003,49 +1019,37 @@
             }
          }
       },
-      {
-         "id":"building-3d",
-         "type":"fill-extrusion",
-         "source":"wdb-map-gen",
-         "source-layer":"building",
-         "filter":[
-            "all",
-            [
-               "!has",
-               "hide_3d"
-            ]
-         ],
-         "paint":{
-            "fill-extrusion-base":{
-               "property":"render_min_height",
-               "type":"identity"
-            },
-            "fill-extrusion-color":[
-               "case",
-               [
-                  "has",
-                  "colour"
-               ],
-               [
-                  "get",
-                  "colour"
-               ],
-               "hsl(39, 41%, 86%)"
-            ],
-            "fill-extrusion-height":{
-               "property":"render_height",
-               "type":"identity"
-            },
-            "fill-extrusion-opacity":0.6
-         }
-      },
+    {
+      "id": "building-3d",
+      "type": "fill-extrusion",
+      "source": "wdb-map-gen",
+      "source-layer": "building",
+      "filter": ["all", ["!has", "hide_3d"]],
+      "paint": {
+        "fill-extrusion-base": {
+          "property": "render_min_height",
+          "type": "identity"
+        },
+        "fill-extrusion-color": [
+          "case",
+          ["has", "colour"],
+          ["get", "colour"],
+          "hsl(39, 41%, 86%)"
+        ],
+        "fill-extrusion-height": {
+          "property": "render_height",
+          "type": "identity"
+        },
+        "fill-extrusion-opacity": 0.6
+      }
+    },
       {
          "id":"tunnel-service-track-casing",
          "type":"line",
          "metadata":{
             "mapbox:group":"1444849354174.1904"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"transportation",
          "filter":[
             "all",
@@ -1095,7 +1099,7 @@
          "metadata":{
             "mapbox:group":"1444849354174.1904"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"transportation",
          "filter":[
             "all",
@@ -1156,7 +1160,7 @@
          "metadata":{
             "mapbox:group":"1444849354174.1904"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"transportation",
          "filter":[
             "all",
@@ -1199,7 +1203,7 @@
          "metadata":{
             "mapbox:group":"1444849354174.1904"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"transportation",
          "filter":[
             "all",
@@ -1249,7 +1253,7 @@
          "metadata":{
             "mapbox:group":"1444849354174.1904"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"transportation",
          "filter":[
             "all",
@@ -1303,7 +1307,7 @@
          "metadata":{
             "mapbox:group":"1444849354174.1904"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"transportation",
          "filter":[
             "all",
@@ -1353,7 +1357,7 @@
          "metadata":{
             "mapbox:group":"1444849354174.1904"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"transportation",
          "filter":[
             "all",
@@ -1399,7 +1403,7 @@
          "metadata":{
             "mapbox:group":"1444849354174.1904"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"transportation",
          "filter":[
             "all",
@@ -1445,7 +1449,7 @@
          "metadata":{
             "mapbox:group":"1444849354174.1904"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"transportation",
          "filter":[
             "all",
@@ -1491,7 +1495,7 @@
          "metadata":{
             "mapbox:group":"1444849354174.1904"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"transportation",
          "filter":[
             "all",
@@ -1537,7 +1541,7 @@
          "metadata":{
             "mapbox:group":"1444849354174.1904"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"transportation",
          "filter":[
             "all",
@@ -1583,7 +1587,7 @@
          "metadata":{
             "mapbox:group":"1444849354174.1904"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"transportation",
          "filter":[
             "all",
@@ -1626,7 +1630,7 @@
       {
          "id":"ferry",
          "type":"line",
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"transportation",
          "filter":[
             "all",
@@ -1655,7 +1659,7 @@
          "metadata":{
             "mapbox:group":"1444849345966.4436"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"aeroway",
          "minzoom":12,
          "filter":[
@@ -1695,7 +1699,7 @@
          "metadata":{
             "mapbox:group":"1444849345966.4436"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"aeroway",
          "minzoom":12,
          "filter":[
@@ -1735,7 +1739,7 @@
          "metadata":{
             "mapbox:group":"1444849345966.4436"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"aeroway",
          "minzoom":4,
          "filter":[
@@ -1778,7 +1782,7 @@
          "metadata":{
             "mapbox:group":"1444849345966.4436"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"aeroway",
          "minzoom":4,
          "filter":[
@@ -1835,7 +1839,7 @@
          "metadata":{
             "mapbox:group":"1444849345966.4436"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"aeroway",
          "minzoom":4,
          "filter":[
@@ -1892,7 +1896,7 @@
          "metadata":{
             
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"transportation",
          "filter":[
             "all",
@@ -1921,7 +1925,7 @@
          "metadata":{
             
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"transportation",
          "filter":[
             "all",
@@ -1963,7 +1967,7 @@
          "metadata":{
             "mapbox:group":"1444849345966.4436"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"transportation",
          "filter":[
             "all",
@@ -1994,7 +1998,7 @@
          "metadata":{
             "mapbox:group":"1444849345966.4436"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"transportation",
          "minzoom":12,
          "filter":[
@@ -2047,7 +2051,7 @@
          "metadata":{
             "mapbox:group":"1444849345966.4436"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"transportation",
          "minzoom":13,
          "filter":[
@@ -2104,7 +2108,7 @@
          "metadata":{
             "mapbox:group":"1444849345966.4436"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"transportation",
          "filter":[
             "all",
@@ -2176,7 +2180,7 @@
          "metadata":{
             "mapbox:group":"1444849345966.4436"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"transportation",
          "filter":[
             "all",
@@ -2222,7 +2226,7 @@
          "metadata":{
             "mapbox:group":"1444849345966.4436"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"transportation",
          "minzoom":5,
          "filter":[
@@ -2287,7 +2291,7 @@
          "metadata":{
             "mapbox:group":"1444849345966.4436"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"transportation",
          "minzoom":5,
          "filter":[
@@ -2352,7 +2356,7 @@
          "metadata":{
             "mapbox:group":"1444849345966.4436"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"transportation",
          "minzoom":4,
          "filter":[
@@ -2421,7 +2425,7 @@
          "metadata":{
             "mapbox:group":"1444849345966.4436"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"transportation",
          "filter":[
             "all",
@@ -2472,7 +2476,7 @@
          "metadata":{
             "mapbox:group":"1444849345966.4436"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"transportation",
          "minzoom":12,
          "filter":[
@@ -2524,7 +2528,7 @@
          "metadata":{
             "mapbox:group":"1444849345966.4436"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"transportation",
          "minzoom":13,
          "filter":[
@@ -2580,7 +2584,7 @@
          "metadata":{
             "mapbox:group":"1444849345966.4436"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"transportation",
          "filter":[
             "all",
@@ -2637,7 +2641,7 @@
          "metadata":{
             "mapbox:group":"1444849345966.4436"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"transportation",
          "filter":[
             "all",
@@ -2686,7 +2690,7 @@
          "metadata":{
             "mapbox:group":"1444849345966.4436"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"transportation",
          "filter":[
             "all",
@@ -2742,7 +2746,7 @@
          "metadata":{
             "mapbox:group":"1444849345966.4436"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"transportation",
          "filter":[
             "all",
@@ -2798,7 +2802,7 @@
          "metadata":{
             "mapbox:group":"1444849345966.4436"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"transportation",
          "minzoom":5,
          "filter":[
@@ -2855,7 +2859,7 @@
          "metadata":{
             "mapbox:group":"1444849345966.4436"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"transportation",
          "filter":[
             "all",
@@ -2904,7 +2908,7 @@
          "metadata":{
             "mapbox:group":"1444849345966.4436"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"transportation",
          "filter":[
             "all",
@@ -2961,7 +2965,7 @@
          "metadata":{
             "mapbox:group":"1444849345966.4436"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"transportation",
          "filter":[
             "all",
@@ -3006,7 +3010,7 @@
          "metadata":{
             "mapbox:group":"1444849345966.4436"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"transportation",
          "filter":[
             "all",
@@ -3062,7 +3066,7 @@
          "metadata":{
             "mapbox:group":"1444849345966.4436"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"transportation",
          "filter":[
             "all",
@@ -3117,7 +3121,7 @@
          "metadata":{
             "mapbox:group":"1444849345966.4436"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"transportation",
          "filter":[
             "all",
@@ -3176,7 +3180,7 @@
          "metadata":{
             "mapbox:group":"1444849334699.1902"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"transportation",
          "filter":[
             "all",
@@ -3226,7 +3230,7 @@
          "metadata":{
             "mapbox:group":"1444849334699.1902"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"transportation",
          "filter":[
             "all",
@@ -3279,7 +3283,7 @@
          "metadata":{
             "mapbox:group":"1444849334699.1902"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"transportation",
          "filter":[
             "all",
@@ -3322,7 +3326,7 @@
          "metadata":{
             "mapbox:group":"1444849334699.1902"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"transportation",
          "filter":[
             "all",
@@ -3372,7 +3376,7 @@
          "metadata":{
             "mapbox:group":"1444849334699.1902"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"transportation",
          "filter":[
             "all",
@@ -3421,7 +3425,7 @@
          "metadata":{
             "mapbox:group":"1444849334699.1902"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"transportation",
          "filter":[
             "all",
@@ -3467,7 +3471,7 @@
          "metadata":{
             "mapbox:group":"1444849334699.1902"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"transportation",
          "filter":[
             "all",
@@ -3517,7 +3521,7 @@
          "metadata":{
             "mapbox:group":"1444849334699.1902"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"transportation",
          "filter":[
             "all",
@@ -3566,7 +3570,7 @@
          "metadata":{
             "mapbox:group":"1444849334699.1902"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"transportation",
          "filter":[
             "all",
@@ -3618,7 +3622,7 @@
          "metadata":{
             "mapbox:group":"1444849334699.1902"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"transportation",
          "filter":[
             "all",
@@ -3664,7 +3668,7 @@
          "metadata":{
             "mapbox:group":"1444849334699.1902"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"transportation",
          "filter":[
             "all",
@@ -3710,7 +3714,7 @@
          "metadata":{
             "mapbox:group":"1444849334699.1902"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"transportation",
          "filter":[
             "all",
@@ -3755,7 +3759,7 @@
          "metadata":{
             "mapbox:group":"1444849334699.1902"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"transportation",
          "filter":[
             "all",
@@ -3797,7 +3801,7 @@
          "metadata":{
             "mapbox:group":"1444849334699.1902"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"transportation",
          "filter":[
             "all",
@@ -3840,7 +3844,7 @@
       {
          "id":"cablecar",
          "type":"line",
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"transportation",
          "minzoom":13,
          "filter":[
@@ -3872,7 +3876,7 @@
       {
          "id":"cablecar-dash",
          "type":"line",
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"transportation",
          "minzoom":13,
          "filter":[
@@ -3908,15 +3912,14 @@
       {
          "id":"boundary-land-level-4",
          "type":"line",
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"boundary",
-         "minzoom":2,
          "filter":[
             "all",
             [
                ">=",
                "admin_level",
-               3
+               4
             ],
             [
                "<=",
@@ -3963,7 +3966,7 @@
       {
          "id":"boundary-land-level-2",
          "type":"line",
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"boundary",
          "filter":[
             "all",
@@ -4016,7 +4019,7 @@
       {
          "id":"boundary-land-disputed",
          "type":"line",
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"boundary",
          "filter":[
             "all",
@@ -4068,7 +4071,7 @@
       {
          "id":"boundary-water",
          "type":"line",
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"boundary",
          "minzoom":4,
          "filter":[
@@ -4130,7 +4133,7 @@
       {
          "id":"waterway-name",
          "type":"symbol",
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"waterway",
          "minzoom":13,
          "filter":[
@@ -4166,7 +4169,7 @@
       {
          "id":"water-name-lakeline",
          "type":"symbol",
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"water_name",
          "filter":[
             "==",
@@ -4194,7 +4197,7 @@
       {
          "id":"water-name-ocean",
          "type":"symbol",
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"water_name",
          "filter":[
             "all",
@@ -4230,7 +4233,7 @@
       {
          "id":"water-name-other",
          "type":"symbol",
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"water_name",
          "filter":[
             "all",
@@ -4278,7 +4281,7 @@
       {
          "id":"poi-level-3",
          "type":"symbol",
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"poi",
          "minzoom":16,
          "filter":[
@@ -4332,7 +4335,7 @@
       {
          "id":"poi-level-2",
          "type":"symbol",
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"poi",
          "minzoom":15,
          "filter":[
@@ -4391,7 +4394,7 @@
       {
          "id":"poi-level-1",
          "type":"symbol",
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"poi",
          "minzoom":14,
          "filter":[
@@ -4449,7 +4452,7 @@
       {
          "id":"poi-railway",
          "type":"symbol",
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"poi",
          "minzoom":13,
          "filter":[
@@ -4503,31 +4506,9 @@
          }
       },
       {
-         "id":"housenumber",
-         "type":"symbol",
-         "source":"wdb-map-gen",
-         "source-layer":"housenumber",
-         "minzoom":17,
-         "filter":[
-            "==",
-            "$type",
-            "Point"
-         ],
-         "layout":{
-            "text-field":"{housenumber}",
-            "text-size":10,
-            "text-font":[
-               "Noto Sans Regular"
-            ]
-         },
-         "paint":{
-            "text-color":"rgba(212, 177, 146, 1)"
-         }
-      },
-      {
          "id":"road_oneway",
          "type":"symbol",
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"transportation",
          "minzoom":15,
          "filter":[
@@ -4576,7 +4557,7 @@
       {
          "id":"road_oneway_opposite",
          "type":"symbol",
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"transportation",
          "minzoom":15,
          "filter":[
@@ -4625,7 +4606,7 @@
       {
          "id":"highway-name-path",
          "type":"symbol",
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"transportation_name",
          "minzoom":15.5,
          "filter":[
@@ -4663,7 +4644,7 @@
       {
          "id":"highway-name-minor",
          "type":"symbol",
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"transportation_name",
          "minzoom":15,
          "filter":[
@@ -4711,7 +4692,7 @@
       {
          "id":"highway-name-major",
          "type":"symbol",
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"transportation_name",
          "minzoom":12.2,
          "filter":[
@@ -4752,7 +4733,7 @@
       {
          "id":"highway-shield",
          "type":"symbol",
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"transportation_name",
          "minzoom":8,
          "filter":[
@@ -4807,7 +4788,7 @@
       {
          "id":"highway-shield-us-interstate",
          "type":"symbol",
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"transportation_name",
          "minzoom":7,
          "filter":[
@@ -4864,7 +4845,7 @@
       {
          "id":"highway-shield-us-other",
          "type":"symbol",
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"transportation_name",
          "minzoom":9,
          "filter":[
@@ -4918,7 +4899,7 @@
       {
          "id":"airport-label-major",
          "type":"symbol",
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"aerodrome_label",
          "minzoom":10,
          "filter":[
@@ -4959,9 +4940,8 @@
          "metadata":{
             "mapbox:group":"1444849242106.713"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"place",
-         "minzoom":4,
          "filter":[
             "!in",
             "class",
@@ -5006,7 +4986,7 @@
          "metadata":{
             "mapbox:group":"1444849242106.713"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"place",
          "filter":[
             "==",
@@ -5046,7 +5026,7 @@
          "metadata":{
             "mapbox:group":"1444849242106.713"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"place",
          "filter":[
             "==",
@@ -5086,7 +5066,7 @@
          "metadata":{
             "mapbox:group":"1444849242106.713"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"place",
          "minzoom":6,
          "filter":[
@@ -5135,7 +5115,7 @@
          "metadata":{
             "mapbox:group":"1444849242106.713"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"place",
          "minzoom":6,
          "filter":[
@@ -5191,7 +5171,7 @@
          "metadata":{
             "mapbox:group":"1444849242106.713"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"place",
          "filter":[
             "all",
@@ -5244,7 +5224,7 @@
          "metadata":{
             "mapbox:group":"1444849242106.713"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"place",
          "filter":[
             "all",
@@ -5297,7 +5277,7 @@
          "metadata":{
             "mapbox:group":"1444849242106.713"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"place",
          "filter":[
             "all",
@@ -5350,7 +5330,7 @@
          "metadata":{
             "mapbox:group":"1444849242106.713"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"place",
          "filter":[
             "all",
@@ -5403,7 +5383,7 @@
          "metadata":{
             "mapbox:group":"1444849242106.713"
          },
-         "source":"wdb-map-gen",
+         "source":"WdbMapTilesNew",
          "source-layer":"place",
          "maxzoom":1,
          "filter":[

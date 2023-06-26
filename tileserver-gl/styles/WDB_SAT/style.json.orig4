@@ -1,6 +1,6 @@
 {
    "version":8,
-   "name":"WDB_NO_BACKGROUND",
+   "name":"WDB_OSM_3D",
    "metadata":{
       "mapbox:autocomposite":false,
       "mapbox:groups":{
@@ -39,13 +39,25 @@
       "openmaptiles:version":"3.x"
    },
    "center":[
-      -71.9265767,
-      42.378033
+      8.542,
+      47.372
    ],
-   "zoom":6,
+   "zoom":11.6,
    "bearing":0,
    "pitch":0,
    "sources":{
+      "osm_basemap":{
+         "type":"vector",
+         "url":"mbtiles://{osm_basemap}"
+      },
+      "jaxa_hillshade":{
+         "type":"raster",
+         "url":"mbtiles://{jaxa_hillshade}"
+      },
+      "jaxa_color":{
+         "type":"raster",
+         "url":"mbtiles://{jaxa_color}"
+      },
       "wdb-map-gen":{
          "type":"vector",
          "url":"mbtiles://{wdb-map-gen}"
@@ -65,11 +77,82 @@
       "terrain": {
          "type": "raster-dem",
          "url": "mbtiles://{jaxa_terrainrgb}"
+      },
+      "NE2":{
+         "type":"raster",
+         "url":"mbtiles://{NE2}"
       }
    },
    "sprite":"{styleJsonFolder}/sprite",
    "glyphs":"{fontstack}/{range}.pbf",
    "layers":[
+      {
+         "id":"background",
+         "type":"background",
+         "paint":{
+            "background-color":"#a2e49e"
+         }
+      },
+      {
+         "id":"jaxa_color",
+         "type":"raster",
+         "source":"jaxa_color",
+         "layout":{
+            "visibility":"visible"
+         },
+         "paint":{
+            "raster-opacity":{
+               "base":1,
+               "stops":[
+                  [
+                     0,
+                     1
+                  ],
+                  [
+                     10,
+                     0.5
+                  ],
+                  [
+                     15,
+                     0.0
+                  ]
+               ]
+            }
+		}
+      },
+      {
+         "id":"landcover-glacier",
+         "type":"fill",
+         "metadata":{
+            "mapbox:group":"1444849388993.3071"
+         },
+         "source":"wdb-map-gen",
+         "source-layer":"landcover",
+         "filter":[
+            "==",
+            "subclass",
+            "glacier"
+         ],
+         "layout":{
+            "visibility":"visible"
+         },
+         "paint":{
+            "fill-color":"#fff",
+            "fill-opacity":{
+               "base":1,
+               "stops":[
+                  [
+                     0,
+                     0.9
+                  ],
+                  [
+                     10,
+                     0.3
+                  ]
+               ]
+            }
+         }
+      },
       {
          "id":"landuse-residential",
          "type":"fill",
@@ -4035,7 +4118,7 @@
          "layout":{
             "symbol-placement":"line",
             "symbol-spacing":350,
-            "text-field": ["case",["has","name_en"],["get","name_en"],["case",["has","name:en"],["get","name:en"],["case",["has","name:latin"],["get","name:latin"],["get","name:nonlatin"]]]],
+            "text-field":"{name:latin} {name:nonlatin}",
             "text-font":[
                "Open Sans Italic"
             ],
@@ -4063,7 +4146,7 @@
          "layout":{
             "symbol-placement":"line",
             "symbol-spacing":350,
-            "text-field": ["case",["has","name_en"],["get","name_en"],["case",["has","name:en"],["get","name:en"],["case",["has","name:latin"],["get","name:latin"],["get","name:nonlatin"]]]],
+            "text-field":"{name:en}",
             "text-font":[
                "Open Sans Italic"
             ],
@@ -4135,7 +4218,7 @@
          "layout":{
             "symbol-placement":"point",
             "symbol-spacing":350,
-            "text-field": ["case",["has","name_en"],["get","name_en"],["case",["has","name:en"],["get","name:en"],["case",["has","name:latin"],["get","name:latin"],["get","name:nonlatin"]]]],
+            "text-field":"{name:en}",
             "text-font":[
                "Open Sans Italic"
             ],
@@ -4522,7 +4605,7 @@
          ],
          "layout":{
             "symbol-placement":"line",
-            "text-field": ["case",["has","name_en"],["get","name_en"],["case",["has","name:en"],["get","name:en"],["case",["has","name:latin"],["get","name:latin"],["get","name:nonlatin"]]]],
+            "text-field":"{name:latin} {name:nonlatin}",
             "text-font":[
                "Open Sans Regular"
             ],
@@ -4570,7 +4653,7 @@
          ],
          "layout":{
             "symbol-placement":"line",
-            "text-field": ["case",["has","name_en"],["get","name_en"],["case",["has","name:en"],["get","name:en"],["case",["has","name:latin"],["get","name:latin"],["get","name:nonlatin"]]]],
+            "text-field":"{name:latin} {name:nonlatin}",
             "text-font":[
                "Open Sans Regular"
             ],
@@ -4611,7 +4694,7 @@
          ],
          "layout":{
             "symbol-placement":"line",
-            "text-field": ["case",["has","name_en"],["get","name_en"],["case",["has","name:en"],["get","name:en"],["case",["has","name:latin"],["get","name:latin"],["get","name:nonlatin"]]]],
+            "text-field":"{name:latin} {name:nonlatin}",
             "text-font":[
                "Open Sans Regular"
             ],

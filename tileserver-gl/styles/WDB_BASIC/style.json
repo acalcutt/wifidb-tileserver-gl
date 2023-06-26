@@ -1,6 +1,6 @@
 {
    "version":8,
-   "name":"Basic",
+   "name":"WDB_BASIC",
    "metadata":{
       "mapbox:autocomposite":false,
       "mapbox:type":"template",
@@ -539,28 +539,6 @@
                   ]
                ]
             }
-         }
-      },
-      {
-         "id":"housenumber",
-         "type":"symbol",
-         "source":"wdb-map-gen",
-         "source-layer":"housenumber",
-         "minzoom":17,
-         "filter":[
-            "==",
-            "$type",
-            "Point"
-         ],
-         "layout":{
-            "text-field":"{housenumber}",
-            "text-font":[
-               "Noto Sans Regular"
-            ],
-            "text-size":10
-         },
-         "paint":{
-            "text-color":"rgba(212, 177, 146, 1)"
          }
       },
       {
@@ -1572,6 +1550,28 @@
                   ]
                ]
             }
+         }
+      },
+      {
+         "id":"housenumber",
+         "type":"symbol",
+         "source":"wdb-map-gen",
+         "source-layer":"housenumber",
+         "minzoom":17,
+         "filter":[
+            "==",
+            "$type",
+            "Point"
+         ],
+         "layout":{
+            "text-field":"{housenumber}",
+            "text-font":[
+               "Noto Sans Regular"
+            ],
+            "text-size":10
+         },
+         "paint":{
+            "text-color":"rgba(212, 177, 146, 1)"
          }
       },
       {

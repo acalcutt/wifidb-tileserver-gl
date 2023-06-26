@@ -69,6 +69,10 @@
 		"offroad_trails": {
 			"type": "vector",
 			"url": "mbtiles://{atv}"
+		},
+		"contour_250m": {
+			"type": "vector",
+			"url": "mbtiles://{contour_250m}"
 		}
 	},
 	"sprite": "{styleJsonFolder}/sprite",
@@ -107,6 +111,54 @@
 				}
 			}
 		}, 
+		{
+			"id": "contour-lines",
+			"type": "line",
+			"source": "contour_250m",
+			"source-layer": "contour_250m",
+			"layout": {
+				"line-cap": "round",
+				"visibility": "visible"
+			},
+			"paint": {
+				"line-color": "#6E7071"
+			}
+		},
+		{
+			"id": "hillshade",
+			"type": "hillshade",
+			"paint": {
+				"hillshade-shadow-color": "hsl(39, 21%, 33%)"
+			},
+			"source": "hillshade_source"
+		},
+      {
+         "id":"contour_label",
+         "type":"symbol",
+         "source":"contour_250m",
+         "source-layer":"contour_250m",
+         "filter":[
+            "==",
+            "$type",
+            "LineString"
+         ],
+         "layout":{
+            "symbol-placement":"line",
+            "text-field": "{elev}",
+            "text-font":[
+               "Open Sans Italic"
+            ],
+            "text-letter-spacing":0,
+            "text-line-height": 1.6,
+            "text-max-angle": 10,
+            "text-size":12
+         },
+         "paint":{
+            "text-color":"#74aee9",
+            "text-halo-color":"rgba(255,255,255,0.7)",
+            "text-halo-width":1.5
+         }
+      },
 		{
 			"id": "waterway_tunnel",
 			"type": "line",
