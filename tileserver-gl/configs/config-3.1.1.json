@@ -1,7 +1,8 @@
 {
    "options":{
+      "maxRendererPoolSizes": [6],
       "paths":{
-         "root":"/opt/tileserver-gl/tileserver-maptiler",
+         "root":"/opt/tileserver-gl/maptiler-tileserver",
          "fonts":"/opt/tileserver-gl/fonts",
          "styles":"/opt/tileserver-gl/styles",
          "mbtiles":"/opt/tileserver-gl/data"
@@ -52,8 +53,19 @@
             ]
          }
       },
-      "OpenTopoMap":{
-         "style":"OpenTopoMap/style.json",
+      "WDB_GPSTRAILS":{
+         "style":"WDB_GPSTRAILS/style.json",
+         "tilejson":{
+            "bounds":[
+               -180,
+               -85.0511,
+               180,
+               85.0511
+            ]
+         }
+      },
+      "WDB_OSM_ATV":{
+         "style":"WDB_OSM_ATV/style.json",
          "tilejson":{
             "bounds":[
                -180,
@@ -65,6 +77,17 @@
       },
       "WDB_OSM":{
          "style":"WDB_OSM/style.json",
+         "tilejson":{
+            "bounds":[
+               -180,
+               -85.0511,
+               180,
+               85.0511
+            ]
+         }
+      },
+      "WDB_OCEAN":{
+         "style":"WDB_OCEAN/style.json",
          "tilejson":{
             "bounds":[
                -180,
@@ -109,14 +132,8 @@
       }
    },
    "data":{
-      "osm_basemap":{
-         "mbtiles":"osm_basemap.mbtiles"
-      },
       "ne_basemap":{
          "mbtiles":"ne_basemap.mbtiles"
-      },
-      "NE2":{
-         "mbtiles":"NE2_HR_LC_SR_W_DR.mbtiles"
       },
       "WifiDB_newest":{
          "mbtiles":"WifiDB_newest.mbtiles"
@@ -124,29 +141,50 @@
       "WifiDB":{
          "mbtiles":"WifiDB.mbtiles"
       },
-      "atv":{
-         "mbtiles":"atv_2022-05-15.mbtiles"
-      },
       "wdb-map-gen":{
-         "mbtiles":"planetiler-2022-08-27.mbtiles"
+         "mbtiles":"planetiler-2022-12-02.mbtiles"
       },
       "WifiDB_cells":{
          "mbtiles":"cell_networks.mbtiles"
       },
       "jaxa_color":{
-         "mbtiles":"jaxa_color_releif.mbtiles"
+         "mbtiles":"jaxa_color.mbtiles"
       },
       "jaxa_hillshade":{
-         "mbtiles":"jaxa_hillshade_new.mbtiles"
+         "mbtiles":"jaxa_hillshade.mbtiles"
       },
       "jaxa_terrainrgb":{
          "mbtiles":"jaxa_terrainrgb0-12.mbtiles"
       },
-      "landcover":{
-         "mbtiles":"landcover.mbtiles"
+      "osm_basemap":{
+         "mbtiles":"osm_basemap.mbtiles"
+      },
+      "atv":{
+         "mbtiles":"offroad_trails.mbtiles"
+      },
+      "contour_250m":{
+         "mbtiles":"contour_250m.mbtiles"
       },
       "demotiles":{
          "mbtiles":"demotiles.mbtiles"
+      },
+      "landcover":{
+         "mbtiles":"landcover.mbtiles"
+      },
+      "NE2":{
+         "mbtiles":"NE2_HR_LC_SR_W_DR.mbtiles"
+      },
+      "atv-trails":{
+         "mbtiles":"atv-trails.mbtiles"
+      },
+      "atv-points":{
+         "mbtiles":"atv-points.mbtiles"
+      },
+      "ocean-rgb-2":{
+         "mbtiles":"gebco_terrainrgb0-8.mbtiles"
+      },
+      "gebco_color_releif":{
+         "mbtiles":"gebco_color_releif.mbtiles"
       }
    }
 }
