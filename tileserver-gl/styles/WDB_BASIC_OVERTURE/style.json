@@ -9,18 +9,6 @@
   "bearing": 0,
   "pitch": 0,
   "sources": {
-    "wdb-map-gen": {
-      "type": "vector",
-      "url": "mbtiles://{wdb-map-gen}"
-    },
-    "terrain_source": {
-      "type": "raster-dem",
-      "url": "mbtiles://{jaxa_terrainrgb}"
-    },
-    "hillshade_source": {
-      "type": "raster-dem",
-      "url": "mbtiles://{jaxa_terrainrgb}"
-    },
     "overture": {
       "type": "vector",
       "url": "pmtiles://{overture}"
