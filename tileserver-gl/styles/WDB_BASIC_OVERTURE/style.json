@@ -71,6 +71,35 @@
       }
     },
     {
+      "id": "landuse_recreation_track",
+      "type": "fill",
+      "source": "overture",
+      "source-layer": "base/landUse",
+      "filter": [
+        "any",
+        [
+          "in",
+          "subType",
+          "recreation"
+        ]
+      ],
+      "paint": {
+        "fill-color": [
+          "interpolate",
+          [
+            "linear"
+          ],
+          [
+            "zoom"
+          ],
+          0,
+          "#dddccf",
+          12,
+          "#d3d29c"
+        ]
+      }
+    },
+    {
       "id": "landuse_school",
       "type": "fill",
       "source": "overture",
@@ -546,6 +575,36 @@
       }
     },
     {
+      "id": "footway",
+      "type": "line",
+      "source": "overture",
+      "source-layer": "transportation/segment",
+      "layout": {
+        "visibility": "visible"
+      },
+      "paint": {
+        "line-color": "#f7eeed",
+        "line-width": 2,
+        "line-dasharray": [
+          2,
+          2
+        ]
+      },
+      "filter": [
+        "all",
+        [
+          "==",
+          "$type",
+          "LineString"
+        ],
+        [
+          "==",
+          "class",
+          "footway"
+        ]
+      ]
+    },
+    {
       "id": "road_area_pier",
       "type": "fill",
       "metadata": {},
@@ -697,7 +756,10 @@
           "in",
           "class",
           "minor",
-          "service"
+          "service",
+          "parkingAisle",
+          "unclassified",
+          "unknown"
         ]
       ],
       "layout": {
@@ -875,6 +937,7 @@
         [
           "in",
           "class",
+          "residential",
           "secondary",
           "tertiary"
         ]
@@ -1327,45 +1390,50 @@
       }
     },
     {
-      "id": "road_major_label",
+      "id": "road_label",
       "type": "symbol",
       "source": "overture",
       "source-layer": "transportation/segment",
-      "minzoom": 13,
-      "filter": [
-        "==",
-        "$type",
-        "LineString"
-      ],
+      "minzoom": 14,
       "layout": {
-        "symbol-placement": "line",
-        "text-field": "{name:latin} {name:nonlatin}",
         "text-font": [
           "Noto Sans Regular"
         ],
-        "text-letter-spacing": 0.1,
-        "text-rotation-alignment": "map",
         "text-size": {
-          "base": 1.4,
+          "base": 1,
           "stops": [
             [
-              10,
-              8
+              14,
+              9
             ],
             [
-              20,
-              14
+              18,
+              13
             ]
           ]
         },
-        "text-transform": "uppercase",
-        "visibility": "visible"
+        "text-field": "{name}",
+        "text-anchor": "center",
+        "text-offset": [
+          0,
+          0
+        ],
+        "symbol-placement": "line"
       },
       "paint": {
-        "text-color": "#000",
-        "text-halo-color": "hsl(0, 0%, 100%)",
-        "text-halo-width": 2
-      }
+        "text-color": "#000000",
+        "text-halo-color": "rgba(255, 255, 255, 0.97)",
+        "text-halo-width": 1
+      },
+      "metadata": {},
+      "filter": [
+        "all",
+        [
+          "!=",
+          "subclass",
+          "ferry"
+        ]
+      ]
     },
     {
       "id": "place-other",
