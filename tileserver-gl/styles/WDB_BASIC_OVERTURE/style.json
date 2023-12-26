@@ -1440,7 +1440,7 @@
       "type": "symbol",
       "source": "overture",
       "source-layer": "places/place",
-      "minzoom": 15,
+      "minzoom": 9,
       "filter": [
         "!in",
         "class",
@@ -1580,11 +1580,51 @@
       "source": "overture",
       "source-layer": "admins/locality",
       "minzoom": 5,
-      "maxzoom": 7,
+      "maxzoom": 9,
       "filter": [
         "==",
         "adminLevel",
         4
+      ],
+      "layout": {
+        "text-field": "{name}",
+        "text-font": [
+          "Noto Sans Bold"
+        ],
+        "text-max-width": 6.25,
+        "text-size": {
+          "stops": [
+            [
+              1,
+              11
+            ],
+            [
+              4,
+              17
+            ]
+          ]
+        },
+        "text-transform": "uppercase",
+        "visibility": "visible"
+      },
+      "paint": {
+        "text-color": "#334",
+        "text-halo-blur": 1,
+        "text-halo-color": "rgba(255,255,255,0.8)",
+        "text-halo-width": 2
+      }
+    },
+    {
+      "id": "locality-admin6",
+      "type": "symbol",
+      "source": "overture",
+      "source-layer": "admins/locality",
+      "minzoom": 9,
+      "maxzoom": 12,
+      "filter": [
+        "==",
+        "adminLevel",
+        6
       ],
       "layout": {
         "text-field": "{name}",
