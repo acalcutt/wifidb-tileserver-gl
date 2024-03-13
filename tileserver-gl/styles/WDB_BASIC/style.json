@@ -1,12 +1,12 @@
 {
    "version":8,
-   "name":"WDB_BASIC",
+   "name":"Basic",
    "metadata":{
       "mapbox:autocomposite":false,
       "mapbox:type":"template",
       "maputnik:renderer":"mbgljs",
       "openmaptiles:version":"3.x",
-      "openmaptiles:mapbox:owner":"wdb-map-gen",
+      "openmaptiles:mapbox:owner":"openmaptiles",
       "openmaptiles:mapbox:source:url":"mapbox://openmaptiles.4qljc88t"
    },
    "sources":{
@@ -14,9 +14,9 @@
          "type":"vector",
          "url":"mbtiles://{osm_basemap}"
       },
-      "wdb-map-gen":{
+      "openmaptiles":{
          "type":"vector",
-         "url":"mbtiles://{wdb-map-gen}"
+         "url":"mbtiles://{openmaptiles}"
       },
       "WifiDB_newest":{
          "type":"vector",
@@ -56,7 +56,7 @@
       {
          "id":"landuse-residential",
          "type":"fill",
-         "source":"wdb-map-gen",
+         "source":"openmaptiles",
          "source-layer":"landuse",
          "filter":[
             "all",
@@ -84,7 +84,7 @@
       {
          "id":"landcover_grass",
          "type":"fill",
-         "source":"wdb-map-gen",
+         "source":"openmaptiles",
          "source-layer":"landcover",
          "filter":[
             "==",
@@ -99,7 +99,7 @@
       {
          "id":"landcover_wood",
          "type":"fill",
-         "source":"wdb-map-gen",
+         "source":"openmaptiles",
          "source-layer":"landcover",
          "filter":[
             "==",
@@ -141,7 +141,7 @@
       {
          "id":"water",
          "type":"fill",
-         "source":"wdb-map-gen",
+         "source":"openmaptiles",
          "source-layer":"water",
          "filter":[
             "all",
@@ -171,7 +171,7 @@
       {
          "id":"water_intermittent",
          "type":"fill",
-         "source":"wdb-map-gen",
+         "source":"openmaptiles",
          "source-layer":"water",
          "filter":[
             "all",
@@ -197,7 +197,7 @@
       {
          "id":"landcover-ice-shelf",
          "type":"fill",
-         "source":"wdb-map-gen",
+         "source":"openmaptiles",
          "source-layer":"landcover",
          "filter":[
             "==",
@@ -215,7 +215,7 @@
       {
          "id":"landcover-glacier",
          "type":"fill",
-         "source":"wdb-map-gen",
+         "source":"openmaptiles",
          "source-layer":"landcover",
          "filter":[
             "==",
@@ -248,7 +248,7 @@
          "metadata":{
             
          },
-         "source":"wdb-map-gen",
+         "source":"openmaptiles",
          "source-layer":"landcover",
          "filter":[
             "all",
@@ -267,7 +267,7 @@
       {
          "id":"landuse",
          "type":"fill",
-         "source":"wdb-map-gen",
+         "source":"openmaptiles",
          "source-layer":"landuse",
          "filter":[
             "==",
@@ -284,7 +284,7 @@
       {
          "id":"landuse_overlay_national_park",
          "type":"fill",
-         "source":"wdb-map-gen",
+         "source":"openmaptiles",
          "source-layer":"landcover",
          "filter":[
             "==",
@@ -311,7 +311,7 @@
       {
          "id":"waterway-tunnel",
          "type":"line",
-         "source":"wdb-map-gen",
+         "source":"openmaptiles",
          "source-layer":"waterway",
          "filter":[
             "all",
@@ -366,7 +366,7 @@
       {
          "id":"waterway",
          "type":"line",
-         "source":"wdb-map-gen",
+         "source":"openmaptiles",
          "source-layer":"waterway",
          "filter":[
             "all",
@@ -411,7 +411,7 @@
       {
          "id":"waterway_intermittent",
          "type":"line",
-         "source":"wdb-map-gen",
+         "source":"openmaptiles",
          "source-layer":"waterway",
          "filter":[
             "all",
@@ -460,7 +460,7 @@
       {
          "id":"tunnel_railway_transit",
          "type":"line",
-         "source":"wdb-map-gen",
+         "source":"openmaptiles",
          "source-layer":"transportation",
          "minzoom":0,
          "filter":[
@@ -509,7 +509,7 @@
       {
          "id":"building",
          "type":"fill",
-         "source":"wdb-map-gen",
+         "source":"openmaptiles",
          "source-layer":"building",
          "paint":{
             "fill-antialias":true,
@@ -547,7 +547,7 @@
          "metadata":{
             
          },
-         "source":"wdb-map-gen",
+         "source":"openmaptiles",
          "source-layer":"transportation",
          "filter":[
             "all",
@@ -576,7 +576,7 @@
          "metadata":{
             
          },
-         "source":"wdb-map-gen",
+         "source":"openmaptiles",
          "source-layer":"transportation",
          "filter":[
             "all",
@@ -615,7 +615,7 @@
       {
          "id":"road_bridge_area",
          "type":"fill",
-         "source":"wdb-map-gen",
+         "source":"openmaptiles",
          "source-layer":"transportation",
          "filter":[
             "all",
@@ -641,7 +641,7 @@
       {
          "id":"road_path",
          "type":"line",
-         "source":"wdb-map-gen",
+         "source":"openmaptiles",
          "source-layer":"transportation",
          "filter":[
             "all",
@@ -685,7 +685,7 @@
       {
          "id":"road_minor",
          "type":"line",
-         "source":"wdb-map-gen",
+         "source":"openmaptiles",
          "source-layer":"transportation",
          "minzoom":13,
          "filter":[
@@ -726,7 +726,7 @@
       {
          "id":"tunnel_minor",
          "type":"line",
-         "source":"wdb-map-gen",
+         "source":"openmaptiles",
          "source-layer":"transportation",
          "filter":[
             "all",
@@ -774,7 +774,7 @@
       {
          "id":"tunnel_major",
          "type":"line",
-         "source":"wdb-map-gen",
+         "source":"openmaptiles",
          "source-layer":"transportation",
          "filter":[
             "all",
@@ -828,7 +828,7 @@
          "metadata":{
             "mapbox:group":"1444849345966.4436"
          },
-         "source":"wdb-map-gen",
+         "source":"openmaptiles",
          "source-layer":"aeroway",
          "minzoom":4,
          "filter":[
@@ -871,7 +871,7 @@
          "metadata":{
             "mapbox:group":"1444849345966.4436"
          },
-         "source":"wdb-map-gen",
+         "source":"openmaptiles",
          "source-layer":"aeroway",
          "minzoom":12,
          "filter":[
@@ -916,7 +916,7 @@
          "metadata":{
             "mapbox:group":"1444849345966.4436"
          },
-         "source":"wdb-map-gen",
+         "source":"openmaptiles",
          "source-layer":"aeroway",
          "minzoom":4,
          "filter":[
@@ -958,7 +958,7 @@
       {
          "id":"road_trunk_primary",
          "type":"line",
-         "source":"wdb-map-gen",
+         "source":"openmaptiles",
          "source-layer":"transportation",
          "filter":[
             "all",
@@ -998,7 +998,7 @@
       {
          "id":"road_secondary_tertiary",
          "type":"line",
-         "source":"wdb-map-gen",
+         "source":"openmaptiles",
          "source-layer":"transportation",
          "filter":[
             "all",
@@ -1038,7 +1038,7 @@
       {
          "id":"road_major_motorway",
          "type":"line",
-         "source":"wdb-map-gen",
+         "source":"openmaptiles",
          "source-layer":"transportation",
          "filter":[
             "all",
@@ -1078,7 +1078,7 @@
       {
          "id":"railway-transit",
          "type":"line",
-         "source":"wdb-map-gen",
+         "source":"openmaptiles",
          "source-layer":"transportation",
          "filter":[
             "all",
@@ -1116,7 +1116,7 @@
       {
          "id":"railway",
          "type":"line",
-         "source":"wdb-map-gen",
+         "source":"openmaptiles",
          "source-layer":"transportation",
          "filter":[
             "==",
@@ -1146,7 +1146,7 @@
       {
          "id":"waterway-bridge-case",
          "type":"line",
-         "source":"wdb-map-gen",
+         "source":"openmaptiles",
          "source-layer":"waterway",
          "filter":[
             "all",
@@ -1198,7 +1198,7 @@
       {
          "id":"waterway-bridge",
          "type":"line",
-         "source":"wdb-map-gen",
+         "source":"openmaptiles",
          "source-layer":"waterway",
          "filter":[
             "all",
@@ -1237,7 +1237,7 @@
       {
          "id":"bridge_minor case",
          "type":"line",
-         "source":"wdb-map-gen",
+         "source":"openmaptiles",
          "source-layer":"transportation",
          "filter":[
             "all",
@@ -1294,7 +1294,7 @@
       {
          "id":"bridge_major case",
          "type":"line",
-         "source":"wdb-map-gen",
+         "source":"openmaptiles",
          "source-layer":"transportation",
          "filter":[
             "all",
@@ -1354,7 +1354,7 @@
       {
          "id":"bridge_minor",
          "type":"line",
-         "source":"wdb-map-gen",
+         "source":"openmaptiles",
          "source-layer":"transportation",
          "filter":[
             "all",
@@ -1398,7 +1398,7 @@
       {
          "id":"bridge_major",
          "type":"line",
-         "source":"wdb-map-gen",
+         "source":"openmaptiles",
          "source-layer":"transportation",
          "filter":[
             "all",
@@ -1445,7 +1445,7 @@
       {
          "id":"admin_sub",
          "type":"line",
-         "source":"wdb-map-gen",
+         "source":"openmaptiles",
          "source-layer":"boundary",
          "filter":[
             "in",
@@ -1468,7 +1468,7 @@
       {
          "id":"admin_country_z0-4",
          "type":"line",
-         "source":"wdb-map-gen",
+         "source":"openmaptiles",
          "source-layer":"boundary",
          "minzoom":0,
          "maxzoom":5,
@@ -1514,7 +1514,7 @@
       {
          "id":"admin_country_z5-",
          "type":"line",
-         "source":"wdb-map-gen",
+         "source":"openmaptiles",
          "source-layer":"boundary",
          "minzoom":5,
          "filter":[
@@ -1555,7 +1555,7 @@
       {
          "id":"housenumber",
          "type":"symbol",
-         "source":"wdb-map-gen",
+         "source":"openmaptiles",
          "source-layer":"housenumber",
          "minzoom":17,
          "filter":[
@@ -1577,7 +1577,7 @@
       {
          "id":"poi_label",
          "type":"symbol",
-         "source":"wdb-map-gen",
+         "source":"openmaptiles",
          "source-layer":"poi",
          "minzoom":14,
          "filter":[
@@ -1618,7 +1618,7 @@
       {
          "id":"airport-label",
          "type":"symbol",
-         "source":"wdb-map-gen",
+         "source":"openmaptiles",
          "source-layer":"aerodrome_label",
          "minzoom":10,
          "filter":[
@@ -1653,7 +1653,7 @@
       {
          "id":"road_major_label",
          "type":"symbol",
-         "source":"wdb-map-gen",
+         "source":"openmaptiles",
          "source-layer":"transportation_name",
          "minzoom":13,
          "filter":[
@@ -1697,7 +1697,7 @@
          "metadata":{
             "mapbox:group":"1444849242106.713"
          },
-         "source":"wdb-map-gen",
+         "source":"openmaptiles",
          "source-layer":"place",
          "minzoom":4,
          "filter":[
@@ -1744,7 +1744,7 @@
          "metadata":{
             "mapbox:group":"1444849242106.713"
          },
-         "source":"wdb-map-gen",
+         "source":"openmaptiles",
          "source-layer":"place",
          "filter":[
             "==",
@@ -1784,7 +1784,7 @@
          "metadata":{
             "mapbox:group":"1444849242106.713"
          },
-         "source":"wdb-map-gen",
+         "source":"openmaptiles",
          "source-layer":"place",
          "filter":[
             "==",
@@ -1824,7 +1824,7 @@
          "metadata":{
             "mapbox:group":"1444849242106.713"
          },
-         "source":"wdb-map-gen",
+         "source":"openmaptiles",
          "source-layer":"place",
          "minzoom":6,
          "filter":[
@@ -1873,7 +1873,7 @@
          "metadata":{
             "mapbox:group":"1444849242106.713"
          },
-         "source":"wdb-map-gen",
+         "source":"openmaptiles",
          "source-layer":"place",
          "minzoom":6,
          "filter":[
@@ -1929,7 +1929,7 @@
          "metadata":{
             "mapbox:group":"1444849242106.713"
          },
-         "source":"wdb-map-gen",
+         "source":"openmaptiles",
          "source-layer":"place",
          "filter":[
             "all",
@@ -1982,7 +1982,7 @@
          "metadata":{
             "mapbox:group":"1444849242106.713"
          },
-         "source":"wdb-map-gen",
+         "source":"openmaptiles",
          "source-layer":"place",
          "filter":[
             "all",
@@ -2035,7 +2035,7 @@
          "metadata":{
             "mapbox:group":"1444849242106.713"
          },
-         "source":"wdb-map-gen",
+         "source":"openmaptiles",
          "source-layer":"place",
          "filter":[
             "all",
@@ -2088,7 +2088,7 @@
          "metadata":{
             "mapbox:group":"1444849242106.713"
          },
-         "source":"wdb-map-gen",
+         "source":"openmaptiles",
          "source-layer":"place",
          "filter":[
             "all",
@@ -2141,7 +2141,7 @@
          "metadata":{
             "mapbox:group":"1444849242106.713"
          },
-         "source":"wdb-map-gen",
+         "source":"openmaptiles",
          "source-layer":"place",
          "maxzoom":1,
          "filter":[

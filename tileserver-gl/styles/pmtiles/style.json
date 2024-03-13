@@ -1,6 +1,6 @@
 {
   "version": 8,
-  "name": "WDB_OSM_3D",
+  "name": "PMTiles_Test",
   "metadata": {
     "mapbox:autocomposite": false,
     "mapbox:groups": {
@@ -34,7 +34,7 @@
       }
     },
     "mapbox:type": "template",
-    "openmaptiles:mapbox:owner": "openmaptiles",
+    "openmaptiles:mapbox:owner": "wifidb.net",
     "openmaptiles:mapbox:source:url": "mapbox://openmaptiles.4qljc88t",
     "openmaptiles:version": "3.x"
   },
@@ -46,45 +46,31 @@
   "bearing": 0,
   "pitch": 0,
   "sources": {
-    "osm_basemap": {
-      "type": "vector",
-      "url": "mbtiles://{osm_basemap}"
-    },
-    "gebco_color_releif": {
-      "type": "raster",
-      "url": "mbtiles://{gebco_color_releif}"
-    },
-    "jaxa_color": {
-      "type": "raster",
-      "url": "mbtiles://{jaxa_color}"
-    },
     "openmaptiles": {
       "type": "vector",
-      "url": "mbtiles://{openmaptiles}"
+      "url": "pmtiles://{planetiler_2023-09-02_pmtiles}"
     },
-    "WifiDB_newest": {
+    "osm_basemap_pmtiles": {
       "type": "vector",
-      "url": "mbtiles://{WifiDB_newest}"
+      "url": "pmtiles://{osm_basemap_pmtiles}"
     },
-    "WifiDB": {
-      "type": "vector",
-      "url": "mbtiles://{WifiDB}"
+    "gebco_color_releif_pmtiles": {
+      "type": "raster",
+      "url": "pmtiles://{gebco_color_releif_pmtiles}"
     },
-    "WifiDB_cells": {
-      "type": "vector",
-      "url": "mbtiles://{WifiDB_cells}"
+    "jaxa_color_pmtiles": {
+      "type": "raster",
+      "url": "mbtiles://{jaxa_color_pmtiles}"
     },
     "terrain_source": {
       "type": "raster-dem",
-      "url": "mbtiles://{jaxa_terrainrgb_webp}"
+      "encoding": "terrarium",
+      "url": "pmtiles://{gebco_terrarium0-8_pmtiles}"
     },
     "hillshade_source": {
       "type": "raster-dem",
-      "url": "mbtiles://{jaxa_terrainrgb_webp}"
-    },
-    "overture": {
-      "type": "vector",
-      "url": "pmtiles://{overture}"
+      "encoding": "terrarium",
+      "url": "pmtiles://{gebco_terrarium0-8_pmtiles}"
     }
   },
   "sprite": "{styleJsonFolder}/sprite",
@@ -98,9 +84,9 @@
       }
     },
     {
-      "id": "gebco_color_releif",
+      "id": "gebco_color_releif_pmtiles",
       "type": "raster",
-      "source": "gebco_color_releif",
+      "source": "gebco_color_releif_pmtiles",
       "layout": {
         "visibility": "visible"
       },
@@ -127,7 +113,7 @@
     {
       "id": "land",
       "type": "fill",
-      "source": "osm_basemap",
+      "source": "osm_basemap_pmtiles",
       "source-layer": "land",
       "layout": {
         "visibility": "visible"
@@ -139,7 +125,7 @@
     {
       "id": "jaxa_color",
       "type": "raster",
-      "source": "jaxa_color",
+      "source": "jaxa_color_pmtiles",
       "layout": {
         "visibility": "visible"
       },
@@ -858,11 +844,41 @@
     {
       "id": "building",
       "type": "fill",
-      "source": "overture",
-      "source-layer": "buildings/building",
+      "metadata": {
+        "mapbox:group": "1444849364238.8171"
+      },
+      "source": "openmaptiles",
+      "source-layer": "building",
       "paint": {
         "fill-antialias": true,
-        "fill-color": "rgba(222, 211, 190, 1)",
+        "fill-color": {
+          "base": 1,
+          "stops": [
+            [
+              15.5,
+              "#f2eae2"
+            ],
+            [
+              16,
+              "#dfdbd7"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "id": "building-top",
+      "type": "fill",
+      "metadata": {
+        "mapbox:group": "1444849364238.8171"
+      },
+      "source": "openmaptiles",
+      "source-layer": "building",
+      "layout": {
+        "visibility": "visible"
+      },
+      "paint": {
+        "fill-color": "#f2eae2",
         "fill-opacity": {
           "base": 1,
           "stops": [
@@ -871,20 +887,28 @@
               0
             ],
             [
-              15,
+              16,
               1
             ]
           ]
         },
-        "fill-outline-color": {
+        "fill-outline-color": "#dfdbd7",
+        "fill-translate": {
+          "base": 1,
           "stops": [
             [
-              15,
-              "rgba(212, 177, 146, 0)"
+              14,
+              [
+                0,
+                0
+              ]
             ],
             [
               16,
-              "rgba(212, 177, 146, 0.5)"
+              [
+                -2,
+                -2
+              ]
             ]
           ]
         }
@@ -893,8 +917,8 @@
     {
       "id": "building-3d",
       "type": "fill-extrusion",
-      "source": "overture",
-      "source-layer": "buildings/building",
+      "source": "openmaptiles",
+      "source-layer": "building",
       "filter": [
         "all",
         [
@@ -903,6 +927,10 @@
         ]
       ],
       "paint": {
+        "fill-extrusion-base": {
+          "property": "render_min_height",
+          "type": "identity"
+        },
         "fill-extrusion-color": [
           "case",
           [
@@ -913,69 +941,13 @@
             "get",
             "colour"
           ],
-          [
-            "interpolate",
-            ["linear"],
-            ["case",["has","height"],["get","height"],["case",["has","numFloors"],["*", ["get", "numFloors"], 3],3]], 0, "lightgray", 200, "royalblue", 400, "lightblue"
-          ]
+          "hsl(39, 41%, 86%)"
         ],
-        "fill-extrusion-height": [
-            "interpolate",
-            ["linear"],
-            ["zoom"],
-            14,
-            0,
-            15,
-            ["case",["has","height"],["get","height"],["case",["has","numFloors"],["*", ["get", "numFloors"], 3],3]]
-        ],
-        "fill-extrusion-base": ["case",
-            [">=", ["get", "zoom"], 16],
-            ["get", "render_min_height"], 0
-        ]
-      }
-    },
-    {
-      "id": "building-3d-part",
-      "type": "fill-extrusion",
-      "source": "overture",
-      "source-layer": "buildings/part",
-      "filter": [
-        "all",
-        [
-          "!has",
-          "hide_3d"
-        ]
-      ],
-      "paint": {
-        "fill-extrusion-color": [
-          "case",
-          [
-            "has",
-            "colour"
-          ],
-          [
-            "get",
-            "colour"
-          ],
-          [
-            "interpolate",
-            ["linear"],
-            ["case",["has","height"],["get","height"],["case",["has","numFloors"],["*", ["get", "numFloors"], 3],3]], 0, "lightgray", 200, "royalblue", 400, "lightblue"
-          ]
-        ],
-        "fill-extrusion-height": [
-            "interpolate",
-            ["linear"],
-            ["zoom"],
-            14,
-            0,
-            15,
-            ["case",["has","height"],["get","height"],["case",["has","numFloors"],["*", ["get", "numFloors"], 3],3]]
-        ],
-        "fill-extrusion-base": ["case",
-            [">=", ["get", "zoom"], 16],
-            ["get", "render_min_height"], 0
-        ]
+        "fill-extrusion-height": {
+          "property": "render_height",
+          "type": "identity"
+        },
+        "fill-extrusion-opacity": 0.6
       }
     },
     {

@@ -62,9 +62,9 @@
       "type": "raster",
       "url": "mbtiles://{jaxa_color}"
     },
-    "wdb-map-gen": {
+    "openmaptiles": {
       "type": "vector",
-      "url": "mbtiles://{wdb-map-gen}"
+      "url": "mbtiles://{openmaptiles}"
     },
     "atv-trails": {
       "type": "vector",
@@ -115,7 +115,7 @@
     {
       "id": "waterway_tunnel",
       "type": "line",
-      "source": "wdb-map-gen",
+      "source": "openmaptiles",
       "source-layer": "waterway",
       "minzoom": 14,
       "filter": [
@@ -164,7 +164,7 @@
       "metadata": {
         "mapbox:group": "1444849382550.77"
       },
-      "source": "wdb-map-gen",
+      "source": "openmaptiles",
       "source-layer": "waterway",
       "filter": [
         "all",
@@ -208,7 +208,7 @@
       "metadata": {
         "mapbox:group": "1444849382550.77"
       },
-      "source": "wdb-map-gen",
+      "source": "openmaptiles",
       "source-layer": "waterway",
       "filter": [
         "all",
@@ -256,7 +256,7 @@
       "metadata": {
         "mapbox:group": "1444849382550.77"
       },
-      "source": "wdb-map-gen",
+      "source": "openmaptiles",
       "source-layer": "waterway",
       "filter": [
         "all",
@@ -304,7 +304,7 @@
       "metadata": {
         "mapbox:group": "1444849382550.77"
       },
-      "source": "wdb-map-gen",
+      "source": "openmaptiles",
       "source-layer": "waterway",
       "filter": [
         "all",
@@ -356,7 +356,7 @@
       "metadata": {
         "mapbox:group": "1444849382550.77"
       },
-      "source": "wdb-map-gen",
+      "source": "openmaptiles",
       "source-layer": "waterway",
       "filter": [
         "all",
@@ -403,7 +403,7 @@
       "metadata": {
         "mapbox:group": "1444849382550.77"
       },
-      "source": "wdb-map-gen",
+      "source": "openmaptiles",
       "source-layer": "waterway",
       "filter": [
         "all",
@@ -454,7 +454,7 @@
       "metadata": {
         "mapbox:group": "1444849382550.77"
       },
-      "source": "wdb-map-gen",
+      "source": "openmaptiles",
       "source-layer": "water",
       "maxzoom": 8,
       "filter": [
@@ -495,7 +495,7 @@
       "metadata": {
         "mapbox:group": "1444849382550.77"
       },
-      "source": "wdb-map-gen",
+      "source": "openmaptiles",
       "source-layer": "water",
       "filter": [
         "all",
@@ -523,7 +523,7 @@
       "metadata": {
         "mapbox:group": "1444849382550.77"
       },
-      "source": "wdb-map-gen",
+      "source": "openmaptiles",
       "source-layer": "water",
       "filter": [
         "all",
@@ -547,7 +547,7 @@
       "metadata": {
         "mapbox:group": "1444849382550.77"
       },
-      "source": "wdb-map-gen",
+      "source": "openmaptiles",
       "source-layer": "water",
       "filter": [
         "all"
@@ -569,7 +569,7 @@
       "metadata": {
         "mapbox:group": "1444849382550.77"
       },
-      "source": "wdb-map-gen",
+      "source": "openmaptiles",
       "source-layer": "landcover",
       "filter": [
         "==",
@@ -602,7 +602,7 @@
       "metadata": {
         "mapbox:group": "1444849382550.77"
       },
-      "source": "wdb-map-gen",
+      "source": "openmaptiles",
       "source-layer": "landcover",
       "filter": [
         "all",
@@ -631,7 +631,7 @@
     {
       "id": "boundary-land-level-4",
       "type": "line",
-      "source": "wdb-map-gen",
+      "source": "openmaptiles",
       "source-layer": "boundary",
       "minzoom": 2,
       "filter": [
@@ -686,7 +686,7 @@
     {
       "id": "boundary-land-level-2",
       "type": "line",
-      "source": "wdb-map-gen",
+      "source": "openmaptiles",
       "source-layer": "boundary",
       "filter": [
         "all",
@@ -739,7 +739,7 @@
     {
       "id": "boundary-land-disputed",
       "type": "line",
-      "source": "wdb-map-gen",
+      "source": "openmaptiles",
       "source-layer": "boundary",
       "filter": [
         "all",
@@ -791,7 +791,7 @@
     {
       "id": "boundary-water",
       "type": "line",
-      "source": "wdb-map-gen",
+      "source": "openmaptiles",
       "source-layer": "boundary",
       "minzoom": 4,
       "filter": [

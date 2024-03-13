@@ -12,6 +12,28 @@
     "overture": {
       "type": "vector",
       "url": "pmtiles://{overture}"
+    },
+    "WifiDB_newest": {
+      "type": "vector",
+      "url": "mbtiles://{WifiDB_newest}"
+    },
+    "WifiDB": {
+      "type": "vector",
+      "url": "mbtiles://{WifiDB}"
+    },
+    "WifiDB_cells": {
+      "type": "vector",
+      "url": "mbtiles://{WifiDB_cells}"
+    },
+    "terrain_source": {
+      "type": "raster-dem",
+      "encoding": "terrarium",
+      "url": "mbtiles://{jaxa_terrarium}"
+    },
+    "hillshade_source": {
+      "type": "raster-dem",
+      "encoding": "terrarium",
+      "url": "mbtiles://{jaxa_terrarium}"
     }
   },
   "glyphs": "{fontstack}/{range}.pbf",

@@ -34,7 +34,7 @@
          }
       },
       "mapbox:type": "template",
-      "openmaptiles:mapbox:owner": "wdb-map-gen",
+      "openmaptiles:mapbox:owner": "openmaptiles",
       "openmaptiles:mapbox:source:url": "mapbox://openmaptiles.4qljc88t",
       "openmaptiles:version": "3.x"
    },
@@ -50,9 +50,9 @@
          "type": "raster",
          "url": "mbtiles://{jaxa_color}"
       },
-      "wdb-map-gen": {
+      "openmaptiles": {
          "type": "vector",
-         "url": "mbtiles://{wdb-map-gen}"
+         "url": "mbtiles://{openmaptiles}"
       },
       "terrain_source": {
          "type": "raster-dem",
@@ -114,7 +114,7 @@
          "metadata": {
             "mapbox:group": "1444849388993.3071"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "landuse",
          "filter": [
             "all",
@@ -151,7 +151,7 @@
          "metadata": {
             "mapbox:group": "1444849388993.3071"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "landuse",
          "filter": [
             "all",
@@ -176,7 +176,7 @@
       {
          "id": "landuse-industrial",
          "type": "fill",
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "landuse",
          "filter": [
             "all",
@@ -206,7 +206,7 @@
          "metadata": {
             "mapbox:group": "1444849388993.3071"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "landuse",
          "filter": [
             "==",
@@ -223,7 +223,7 @@
          "metadata": {
             "mapbox:group": "1444849388993.3071"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "landuse",
          "filter": [
             "==",
@@ -240,7 +240,7 @@
          "metadata": {
             "mapbox:group": "1444849388993.3071"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "landuse",
          "filter": [
             "==",
@@ -257,7 +257,7 @@
          "metadata": {
             "mapbox:group": "1444849388993.3071"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "landuse",
          "filter": [
             "==",
@@ -277,7 +277,7 @@
          "metadata": {
             "mapbox:group": "1444849388993.3071"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "landcover",
          "filter": [
             "==",
@@ -309,7 +309,7 @@
          "metadata": {
             "mapbox:group": "1444849388993.3071"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "landcover",
          "filter": [
             "==",
@@ -327,7 +327,7 @@
          "metadata": {
             "mapbox:group": "1444849388993.3071"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "park",
          "filter": [
             "==",
@@ -350,7 +350,7 @@
       {
          "id": "waterway_tunnel",
          "type": "line",
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "waterway",
          "minzoom": 14,
          "filter": [
@@ -399,7 +399,7 @@
          "metadata": {
             "mapbox:group": "1444849382550.77"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "waterway",
          "filter": [
             "all",
@@ -443,7 +443,7 @@
          "metadata": {
             "mapbox:group": "1444849382550.77"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "waterway",
          "filter": [
             "all",
@@ -491,7 +491,7 @@
          "metadata": {
             "mapbox:group": "1444849382550.77"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "waterway",
          "filter": [
             "all",
@@ -539,7 +539,7 @@
          "metadata": {
             "mapbox:group": "1444849382550.77"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "waterway",
          "filter": [
             "all",
@@ -591,7 +591,7 @@
          "metadata": {
             "mapbox:group": "1444849382550.77"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "waterway",
          "filter": [
             "all",
@@ -638,7 +638,7 @@
          "metadata": {
             "mapbox:group": "1444849382550.77"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "waterway",
          "filter": [
             "all",
@@ -689,7 +689,7 @@
          "metadata": {
             "mapbox:group": "1444849382550.77"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "water",
          "maxzoom": 8,
          "filter": [
@@ -730,7 +730,7 @@
          "metadata": {
             "mapbox:group": "1444849382550.77"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "water",
          "filter": [
             "all",
@@ -758,7 +758,7 @@
          "metadata": {
             "mapbox:group": "1444849382550.77"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "water",
          "filter": [
             "all",
@@ -782,7 +782,7 @@
          "metadata": {
             "mapbox:group": "1444849382550.77"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "water",
          "filter": [
             "all"
@@ -804,7 +804,7 @@
          "metadata": {
             "mapbox:group": "1444849382550.77"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "landcover",
          "filter": [
             "==",
@@ -837,7 +837,7 @@
          "metadata": {
             "mapbox:group": "1444849382550.77"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "landcover",
          "filter": [
             "all",
@@ -861,7 +861,7 @@
          "metadata": {
             "mapbox:group": "1444849364238.8171"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "building",
          "paint": {
             "fill-antialias": true,
@@ -886,7 +886,7 @@
          "metadata": {
             "mapbox:group": "1444849364238.8171"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "building",
          "layout": {
             "visibility": "visible"
@@ -931,7 +931,7 @@
       {
          "id": "building-3d",
          "type": "fill-extrusion",
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "building",
          "filter": [
             "all",
@@ -970,7 +970,7 @@
          "metadata": {
             "mapbox:group": "1444849354174.1904"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "transportation",
          "filter": [
             "all",
@@ -1020,7 +1020,7 @@
          "metadata": {
             "mapbox:group": "1444849354174.1904"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "transportation",
          "filter": [
             "all",
@@ -1081,7 +1081,7 @@
          "metadata": {
             "mapbox:group": "1444849354174.1904"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "transportation",
          "filter": [
             "all",
@@ -1124,7 +1124,7 @@
          "metadata": {
             "mapbox:group": "1444849354174.1904"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "transportation",
          "filter": [
             "all",
@@ -1174,7 +1174,7 @@
          "metadata": {
             "mapbox:group": "1444849354174.1904"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "transportation",
          "filter": [
             "all",
@@ -1228,7 +1228,7 @@
          "metadata": {
             "mapbox:group": "1444849354174.1904"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "transportation",
          "filter": [
             "all",
@@ -1278,7 +1278,7 @@
          "metadata": {
             "mapbox:group": "1444849354174.1904"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "transportation",
          "filter": [
             "all",
@@ -1324,7 +1324,7 @@
          "metadata": {
             "mapbox:group": "1444849354174.1904"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "transportation",
          "filter": [
             "all",
@@ -1370,7 +1370,7 @@
          "metadata": {
             "mapbox:group": "1444849354174.1904"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "transportation",
          "filter": [
             "all",
@@ -1416,7 +1416,7 @@
          "metadata": {
             "mapbox:group": "1444849354174.1904"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "transportation",
          "filter": [
             "all",
@@ -1462,7 +1462,7 @@
          "metadata": {
             "mapbox:group": "1444849354174.1904"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "transportation",
          "filter": [
             "all",
@@ -1508,7 +1508,7 @@
          "metadata": {
             "mapbox:group": "1444849354174.1904"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "transportation",
          "filter": [
             "all",
@@ -1551,7 +1551,7 @@
       {
          "id": "ferry",
          "type": "line",
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "transportation",
          "filter": [
             "all",
@@ -1580,7 +1580,7 @@
          "metadata": {
             "mapbox:group": "1444849345966.4436"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "aeroway",
          "minzoom": 12,
          "filter": [
@@ -1620,7 +1620,7 @@
          "metadata": {
             "mapbox:group": "1444849345966.4436"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "aeroway",
          "minzoom": 12,
          "filter": [
@@ -1660,7 +1660,7 @@
          "metadata": {
             "mapbox:group": "1444849345966.4436"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "aeroway",
          "minzoom": 4,
          "filter": [
@@ -1703,7 +1703,7 @@
          "metadata": {
             "mapbox:group": "1444849345966.4436"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "aeroway",
          "minzoom": 4,
          "filter": [
@@ -1760,7 +1760,7 @@
          "metadata": {
             "mapbox:group": "1444849345966.4436"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "aeroway",
          "minzoom": 4,
          "filter": [
@@ -1815,7 +1815,7 @@
          "id": "road_area_pier",
          "type": "fill",
          "metadata": {},
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "transportation",
          "filter": [
             "all",
@@ -1842,7 +1842,7 @@
          "id": "road_pier",
          "type": "line",
          "metadata": {},
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "transportation",
          "filter": [
             "all",
@@ -1884,7 +1884,7 @@
          "metadata": {
             "mapbox:group": "1444849345966.4436"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "transportation",
          "filter": [
             "all",
@@ -1915,7 +1915,7 @@
          "metadata": {
             "mapbox:group": "1444849345966.4436"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "transportation",
          "minzoom": 12,
          "filter": [
@@ -1968,7 +1968,7 @@
          "metadata": {
             "mapbox:group": "1444849345966.4436"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "transportation",
          "minzoom": 13,
          "filter": [
@@ -2025,7 +2025,7 @@
          "metadata": {
             "mapbox:group": "1444849345966.4436"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "transportation",
          "filter": [
             "all",
@@ -2097,7 +2097,7 @@
          "metadata": {
             "mapbox:group": "1444849345966.4436"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "transportation",
          "filter": [
             "all",
@@ -2143,7 +2143,7 @@
          "metadata": {
             "mapbox:group": "1444849345966.4436"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "transportation",
          "minzoom": 5,
          "filter": [
@@ -2208,7 +2208,7 @@
          "metadata": {
             "mapbox:group": "1444849345966.4436"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "transportation",
          "minzoom": 5,
          "filter": [
@@ -2273,7 +2273,7 @@
          "metadata": {
             "mapbox:group": "1444849345966.4436"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "transportation",
          "minzoom": 4,
          "filter": [
@@ -2342,7 +2342,7 @@
          "metadata": {
             "mapbox:group": "1444849345966.4436"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "transportation",
          "filter": [
             "all",
@@ -2393,7 +2393,7 @@
          "metadata": {
             "mapbox:group": "1444849345966.4436"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "transportation",
          "minzoom": 12,
          "filter": [
@@ -2445,7 +2445,7 @@
          "metadata": {
             "mapbox:group": "1444849345966.4436"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "transportation",
          "minzoom": 13,
          "filter": [
@@ -2501,7 +2501,7 @@
          "metadata": {
             "mapbox:group": "1444849345966.4436"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "transportation",
          "filter": [
             "all",
@@ -2558,7 +2558,7 @@
          "metadata": {
             "mapbox:group": "1444849345966.4436"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "transportation",
          "filter": [
             "all",
@@ -2607,7 +2607,7 @@
          "metadata": {
             "mapbox:group": "1444849345966.4436"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "transportation",
          "filter": [
             "all",
@@ -2663,7 +2663,7 @@
          "metadata": {
             "mapbox:group": "1444849345966.4436"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "transportation",
          "filter": [
             "all",
@@ -2719,7 +2719,7 @@
          "metadata": {
             "mapbox:group": "1444849345966.4436"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "transportation",
          "minzoom": 5,
          "filter": [
@@ -2776,7 +2776,7 @@
          "metadata": {
             "mapbox:group": "1444849345966.4436"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "transportation",
          "filter": [
             "all",
@@ -2825,7 +2825,7 @@
          "metadata": {
             "mapbox:group": "1444849345966.4436"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "transportation",
          "filter": [
             "all",
@@ -2882,7 +2882,7 @@
          "metadata": {
             "mapbox:group": "1444849345966.4436"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "transportation",
          "filter": [
             "all",
@@ -2927,7 +2927,7 @@
          "metadata": {
             "mapbox:group": "1444849345966.4436"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "transportation",
          "filter": [
             "all",
@@ -2983,7 +2983,7 @@
          "metadata": {
             "mapbox:group": "1444849345966.4436"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "transportation",
          "filter": [
             "all",
@@ -3038,7 +3038,7 @@
          "metadata": {
             "mapbox:group": "1444849345966.4436"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "transportation",
          "filter": [
             "all",
@@ -3097,7 +3097,7 @@
          "metadata": {
             "mapbox:group": "1444849334699.1902"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "transportation",
          "filter": [
             "all",
@@ -3147,7 +3147,7 @@
          "metadata": {
             "mapbox:group": "1444849334699.1902"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "transportation",
          "filter": [
             "all",
@@ -3200,7 +3200,7 @@
          "metadata": {
             "mapbox:group": "1444849334699.1902"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "transportation",
          "filter": [
             "all",
@@ -3243,7 +3243,7 @@
          "metadata": {
             "mapbox:group": "1444849334699.1902"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "transportation",
          "filter": [
             "all",
@@ -3293,7 +3293,7 @@
          "metadata": {
             "mapbox:group": "1444849334699.1902"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "transportation",
          "filter": [
             "all",
@@ -3342,7 +3342,7 @@
          "metadata": {
             "mapbox:group": "1444849334699.1902"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "transportation",
          "filter": [
             "all",
@@ -3388,7 +3388,7 @@
          "metadata": {
             "mapbox:group": "1444849334699.1902"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "transportation",
          "filter": [
             "all",
@@ -3438,7 +3438,7 @@
          "metadata": {
             "mapbox:group": "1444849334699.1902"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "transportation",
          "filter": [
             "all",
@@ -3487,7 +3487,7 @@
          "metadata": {
             "mapbox:group": "1444849334699.1902"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "transportation",
          "filter": [
             "all",
@@ -3539,7 +3539,7 @@
          "metadata": {
             "mapbox:group": "1444849334699.1902"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "transportation",
          "filter": [
             "all",
@@ -3585,7 +3585,7 @@
          "metadata": {
             "mapbox:group": "1444849334699.1902"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "transportation",
          "filter": [
             "all",
@@ -3631,7 +3631,7 @@
          "metadata": {
             "mapbox:group": "1444849334699.1902"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "transportation",
          "filter": [
             "all",
@@ -3676,7 +3676,7 @@
          "metadata": {
             "mapbox:group": "1444849334699.1902"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "transportation",
          "filter": [
             "all",
@@ -3718,7 +3718,7 @@
          "metadata": {
             "mapbox:group": "1444849334699.1902"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "transportation",
          "filter": [
             "all",
@@ -3761,7 +3761,7 @@
       {
          "id": "cablecar",
          "type": "line",
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "transportation",
          "minzoom": 13,
          "filter": [
@@ -3793,7 +3793,7 @@
       {
          "id": "cablecar-dash",
          "type": "line",
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "transportation",
          "minzoom": 13,
          "filter": [
@@ -3829,7 +3829,7 @@
       {
          "id": "boundary-land-level-4",
          "type": "line",
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "boundary",
          "minzoom": 2,
          "filter": [
@@ -3884,7 +3884,7 @@
       {
          "id": "boundary-land-level-2",
          "type": "line",
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "boundary",
          "filter": [
             "all",
@@ -3937,7 +3937,7 @@
       {
          "id": "boundary-land-disputed",
          "type": "line",
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "boundary",
          "filter": [
             "all",
@@ -3989,7 +3989,7 @@
       {
          "id": "boundary-water",
          "type": "line",
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "boundary",
          "minzoom": 4,
          "filter": [
@@ -4051,7 +4051,7 @@
       {
          "id": "waterway-name",
          "type": "symbol",
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "waterway",
          "minzoom": 13,
          "filter": [
@@ -4123,7 +4123,7 @@
       {
          "id": "water-name-lakeline",
          "type": "symbol",
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "water_name",
          "filter": [
             "==",
@@ -4187,7 +4187,7 @@
       {
          "id": "water-name-ocean",
          "type": "symbol",
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "water_name",
          "filter": [
             "all",
@@ -4223,7 +4223,7 @@
       {
          "id": "water-name-other",
          "type": "symbol",
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "water_name",
          "filter": [
             "all",
@@ -4307,7 +4307,7 @@
       {
          "id": "poi-level-3",
          "type": "symbol",
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "poi",
          "minzoom": 16,
          "filter": [
@@ -4361,7 +4361,7 @@
       {
          "id": "poi-level-2",
          "type": "symbol",
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "poi",
          "minzoom": 15,
          "filter": [
@@ -4420,7 +4420,7 @@
       {
          "id": "poi-level-1",
          "type": "symbol",
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "poi",
          "minzoom": 14,
          "filter": [
@@ -4478,7 +4478,7 @@
       {
          "id": "poi-railway",
          "type": "symbol",
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "poi",
          "minzoom": 13,
          "filter": [
@@ -4534,7 +4534,7 @@
       {
          "id": "housenumber",
          "type": "symbol",
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "housenumber",
          "minzoom": 17,
          "filter": [
@@ -4556,7 +4556,7 @@
       {
          "id": "road_oneway",
          "type": "symbol",
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "transportation",
          "minzoom": 15,
          "filter": [
@@ -4605,7 +4605,7 @@
       {
          "id": "road_oneway_opposite",
          "type": "symbol",
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "transportation",
          "minzoom": 15,
          "filter": [
@@ -4683,7 +4683,7 @@
       {
          "id": "highway-name-path",
          "type": "symbol",
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "transportation_name",
          "minzoom": 15.5,
          "filter": [
@@ -4757,7 +4757,7 @@
       {
          "id": "highway-name-minor",
          "type": "symbol",
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "transportation_name",
          "minzoom": 15,
          "filter": [
@@ -4841,7 +4841,7 @@
       {
          "id": "highway-name-major",
          "type": "symbol",
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "transportation_name",
          "minzoom": 12.2,
          "filter": [
@@ -4918,7 +4918,7 @@
       {
          "id": "highway-shield",
          "type": "symbol",
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "transportation_name",
          "minzoom": 8,
          "filter": [
@@ -4971,7 +4971,7 @@
       {
          "id": "highway-shield-us-interstate",
          "type": "symbol",
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "transportation_name",
          "minzoom": 7,
          "filter": [
@@ -5028,7 +5028,7 @@
       {
          "id": "highway-shield-us-other",
          "type": "symbol",
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "transportation_name",
          "minzoom": 9,
          "filter": [
@@ -5082,7 +5082,7 @@
       {
          "id": "airport-label-major",
          "type": "symbol",
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "aerodrome_label",
          "minzoom": 10,
          "filter": [
@@ -5123,7 +5123,7 @@
          "metadata": {
             "mapbox:group": "1444849242106.713"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "place",
          "minzoom": 4,
          "filter": [
@@ -5170,7 +5170,7 @@
          "metadata": {
             "mapbox:group": "1444849242106.713"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "place",
          "filter": [
             "==",
@@ -5210,7 +5210,7 @@
          "metadata": {
             "mapbox:group": "1444849242106.713"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "place",
          "filter": [
             "==",
@@ -5250,7 +5250,7 @@
          "metadata": {
             "mapbox:group": "1444849242106.713"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "place",
          "minzoom": 6,
          "filter": [
@@ -5299,7 +5299,7 @@
          "metadata": {
             "mapbox:group": "1444849242106.713"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "place",
          "minzoom": 6,
          "filter": [
@@ -5355,7 +5355,7 @@
          "metadata": {
             "mapbox:group": "1444849242106.713"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "place",
          "filter": [
             "all",
@@ -5408,7 +5408,7 @@
          "metadata": {
             "mapbox:group": "1444849242106.713"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "place",
          "filter": [
             "all",
@@ -5461,7 +5461,7 @@
          "metadata": {
             "mapbox:group": "1444849242106.713"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "place",
          "filter": [
             "all",
@@ -5514,7 +5514,7 @@
          "metadata": {
             "mapbox:group": "1444849242106.713"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "place",
          "filter": [
             "all",
@@ -5567,7 +5567,7 @@
          "metadata": {
             "mapbox:group": "1444849242106.713"
          },
-         "source": "wdb-map-gen",
+         "source": "openmaptiles",
          "source-layer": "place",
          "maxzoom": 1,
          "filter": [
