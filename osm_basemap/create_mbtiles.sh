@@ -16,4 +16,4 @@ unzip -o data/coastlines-split-4326.zip -d data
 [ ! -f data/land.geojson ] && ogr2ogr -progress -f GeoJSON data/land.geojson data/land-polygons-complete-4326/land_polygons.shp
 [ ! -f data/coastlines.geojson ] && ogr2ogr -progress -f GeoJSON data/coastlines.geojson data/coastlines-split-4326/lines.shp
 
-/opt/tippecanoe-1.35.0/tippecanoe -zg -o data/osm_basemap.mbtiles --drop-densest-as-needed --extend-zooms-if-still-dropping data/land.geojson data/water.geojson data/coastlines.geojson
+/opt/tippecanoe-1.35.0/tippecanoe -z12 -o data/osm_basemap.mbtiles --drop-densest-as-needed --extend-zooms-if-still-dropping data/land.geojson data/water.geojson data/coastlines.geojson
